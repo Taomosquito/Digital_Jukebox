@@ -1,7 +1,23 @@
 {
+  "compilerOptions": {
+    "target": "ESNext", // Or "ESNext" for latest features
+    "module": "ESNext", // Use ESModules
+    "moduleResolution": "node", // Resolves modules using Node's algorithm
+    "esModuleInterop": true, // Ensures compatibility with CommonJS modules
+    "strict": true, // Enable strict type checking
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["Back-end/*.ts", "Front-end/src/*.ts"],
+  "exclude": ["node_modules"]
+}
+/*
+ORIGINAL DOCUMENT
+{
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
   ]
 }
+*/
