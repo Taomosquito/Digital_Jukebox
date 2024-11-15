@@ -6,9 +6,10 @@
     "esModuleInterop": true, // Ensures compatibility with CommonJS modules
     "strict": true, // Enable strict type checking
     "skipLibCheck": true, // Skip type checking of declaration files
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": ["vite/client"]
   },
-  "include": ["Back-end/*.ts", "Front-end/src/*.ts"],
+  "include": ["Back-end/*.ts", "Front-end/src/*.ts", "Front-end/src/hooks/*.ts", "Frontend/src/**/*", "src", "Front-end/vite-env.d.ts"],
   "exclude": ["node_modules"]
 }
 /*
