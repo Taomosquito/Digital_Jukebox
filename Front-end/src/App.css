@@ -1,4 +1,36 @@
-#root {
+/* Default styles for larger screens */
+
+.App {
+  /* margin: 24px; */
+  display: flex;
+  background-color: black;
+  /* min-height: 100vh; */
+  min-width: 100vh;
+  
+}
+
+/* For tablets */
+/* @media (max-width: 768px) {
+  .App {
+    margin: 24px
+  }
+  
+} */
+
+/* For mobiles */
+/* @media (max-width: 480px) {
+  .App {
+    margin: 24px
+  }
+  
+} */
+
+
+
+
+/*DEFAULT VITE STYLING */
+
+/* #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -39,4 +71,4 @@
 
 .read-the-docs {
   color: #888;
-}
+} */

@@ -1,0 +1,120 @@
+.side-nav-bar {
+  background-color: #171616;
+  display: flex;
+  flex-direction: column;
+  justify-content:space-evenly;
+  padding: 8px;
+  align-items: center;
+  -webkit-box-shadow: 0 4px 6px -6px #222;
+  -moz-box-shadow: 0 4px 6px -6px #222;
+  box-shadow: 0 0px 8px -5px #222;
+  min-height: 100vh;
+}
+.side-nav-bar__logo {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 100px
+}
+
+.side-nav-bar__icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
+  align-items: center;
+  
+}
+
+.side-nav-bar__admin-control{
+  display: flex;
+  flex-direction: column;
+  justify-content:space-between;
+  padding: 8px;
+  align-items: center;
+}
+
+i {
+  padding: 0.5em;
+}
+
+.side-nav-bar__media-control {
+  display: flex;
+  flex-direction: column;
+  justify-content:space-evenly;
+  padding: 8px;
+  align-items: center;
+  margin-top: 200px;
+}
+
+.side-nav-bar__logout {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
+  position: absolute;
+  bottom: 100px;
+}
+
+.side-nav-bar__login{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
+  position: absolute;
+  margin-top: 200px;
+  transform: rotate(180deg)
+}
+
+// Logo Icon
+.fa-champagne-glasses {
+  color: #EED559;
+  font-size: 3em;
+}
+
+// Home icon
+.fa-house{
+  color: #8b8c8d;
+  font-size: 2em;
+}
+
+// Add admin user icon
+.fa-user-plus{
+  color: #8b8c8d;
+  font-size: 2em;
+}
+
+// Search icon
+.fa-magnifying-glass{
+  color: #8b8c8d;
+  font-size: 2em;
+}
+
+// Clear playlist icon
+.fa-heart-circle-xmark{
+  color: #8b8c8d;
+  font-size: 2em;
+}
+
+// Media control Pause icon
+.fa-circle-pause{
+  color: #8b8c8d;
+  font-size: 2em;
+}
+
+// Media control Forward or Next track icon
+.fa-forward-step{
+  color: #8b8c8d;
+  font-size: 2em;
+}
+// Logout icon
+.fa-arrow-right-from-bracket {
+  color: #e30202;
+  font-size: 2em; /* 2 times the size of the parent font size */ 
+}
+
+// Login Icon
+.fa-arrow-right-to-bracket {
+  color: #8b8c8d;
+  font-size: 2em;
+}
