@@ -1,0 +1,1 @@
+{"root":["./jest.config.ts","./vite.config.ts","./Back-end/server.ts","./Front-end/vite-env.d.ts","./Front-end/src/hooks/useMusicApi.ts","./Front-end/src/App.tsx","./Front-end/src/main.tsx","./Front-end/src/components/ClientPlayer.tsx"],"version":"5.6.3"}
