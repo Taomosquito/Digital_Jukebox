@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import '../styles/SideNavigation.scss';
 
-const SideNavigation = (props) => {
+const SideNavigation = () => {
   const [isMenuActive, setIsMenuActive] = useState(false);
 
   const handleSearchClick = () => {
