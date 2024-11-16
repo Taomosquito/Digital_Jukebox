@@ -1,0 +1,11 @@
+import React, { useEffect, useReducer } from "react";
+import axios from "axios";
+
+export const ACTIONS = {
+  GET_MUSIC_DATA: 'GET_MUSIC_DATA',
+  SET_MUSIC_DATA: 'SET_MUSIC_DATA',
+  SELECT_TRACK: 'SELECT_TRACK',
+  FAV_TRACK_ADDED: 'FAV_PHOTO_ADDED',
+  FAV_TRACK_REMOVED: 'FAV_PHOTO_REMOVED',
+  CLOSE_MUSIC_DETAILS: 'CLOSE_MUSIC_DETAILS',
+};
