@@ -1,10 +1,20 @@
-import express from "express"; // This works with esModuleInterop
+import express from "express";
+import path from "path";
 const PORT = 3000;
 const app = express();
-// Define a route with types for the request and response objects
-app.get("/", (req, res) => {
-    // No need to type `req` and `res` explicitly if you're fine with implicit types
-    res.send("Hello World");
+// Use import.meta.url to resolve the path in ES Modules
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+// Path to the build folder
+const buildPath = path.resolve(__dirname, "../"); // Adjust this path as needed
+// Serve static files from the React build directory
+app.use(express.static(buildPath));
+// Define API routes if needed
+app.get("/api", (req, res) => {
+    res.json({ message: "Hello from the API!" });
+});
+// Catch-all route to serve the React app for any other requests
+app.get("*", (req, res) => {
+    res.sendFile(path.resolve(buildPath, "index.html"));
 });
 // Start the server
 app.listen(PORT, () => {
