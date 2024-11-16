@@ -14,7 +14,7 @@
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 100px
+  top: 0px
 }
 
 .side-nav-bar__icon {
@@ -23,13 +23,13 @@
   justify-content: space-between;
   padding: 8px;
   align-items: center;
-  
 }
 
 .side-nav-bar__admin-control{
   display: flex;
   flex-direction: column;
   justify-content:space-between;
+  cursor: pointer;
   padding: 8px;
   align-items: center;
 }
@@ -42,28 +42,44 @@ i {
   display: flex;
   flex-direction: column;
   justify-content:space-evenly;
+  cursor: pointer;
   padding: 8px;
   align-items: center;
-  margin-top: 200px;
+  // margin-top: 200px;
 }
 
 .side-nav-bar__logout {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  cursor: pointer;
   padding: 8px;
   position: absolute;
-  bottom: 100px;
+  bottom: 0px;
 }
 
 .side-nav-bar__login{
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  cursor: pointer;
   padding: 8px;
   position: absolute;
   margin-top: 200px;
   transform: rotate(180deg)
+}
+
+.fa-champagne-glasses:hover,
+.fa-house:hover,
+.fa-user-plus:hover,
+.fa-magnifying-glass:hover,
+.fa-circle-pause:hover,
+.fa-heart-circle-xmark:hover,
+.fa-forward-step:hover,
+.fa-arrow-right-from-bracket:hover,
+.fa-arrow-right-to-bracket:hover
+{
+  text-shadow: 0 0 10px #EED559;
 }
 
 // Logo Icon
@@ -110,7 +126,7 @@ i {
 // Logout icon
 .fa-arrow-right-from-bracket {
   color: #e30202;
-  font-size: 2em; /* 2 times the size of the parent font size */ 
+  font-size: 2em;
 }
 
 // Login Icon
@@ -118,3 +134,65 @@ i {
   color: #8b8c8d;
   font-size: 2em;
 }
+
+.side-nav-bar__search-link{
+  display: none;
+}
+
+
+// =============
+
+@media (max-width: 900px) {
+  .side-nav-bar__logo,
+  .fa-champagne-glasses,
+  .fa-house,
+  .fa-user-plus,
+  .fa-magnifying-glass,
+  .fa-circle-pause,
+  .fa-heart-circle-xmark,
+  .fa-forward-step,
+  .fa-arrow-right-from-bracket,
+  .fa-arrow-right-to-bracket {
+    font-size: 1.5em;
+  }
+}
+
+
+/* Media query for mobile devices */
+@media (max-width: 510px) {
+  /* Hide all the icons by default */
+  .side-nav-bar,
+  .side-nav-bar__icon,
+  .side-nav-bar__admin-control,
+  .side-nav-bar__media-control,
+  .side-nav-bar__logout,
+  .side-nav-bar__login {
+    display: none;
+  }
+
+  /* Show the search icon link */
+  .side-nav-bar__search-link {
+    display: flex;
+    flex-direction: column;
+    font-size: 1em;
+    color: #8b8c8d;
+    cursor: pointer;
+    padding: 8px;
+    text-align: center;
+    top: 0px
+    
+  }
+
+.side-nav-bar__search-link:hover {
+  text-shadow: 0 0 10px #EED559;
+}
+}
+
+// /* Toggle icons visibility when search link is clicked */
+// .side-nav-bar__search-link.active + .side-nav-bar__icon,
+// .side-nav-bar__search-link.active + .side-nav-bar__admin-control,
+// .side-nav-bar__search-link.active + .side-nav-bar__media-control,
+// .side-nav-bar__search-link.active + .side-nav-bar__logout,
+// .side-nav-bar__search-link.active + .side-nav-bar__login {
+//   display: block;
+// }
