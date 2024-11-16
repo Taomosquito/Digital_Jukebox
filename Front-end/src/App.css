@@ -1,12 +1,23 @@
 /* Default styles for larger screens */
 
+#root {
+  min-width: 100vw;
+  margin: 0 auto;
+  text-align: center;
+}
+
 .App {
   /* margin: 24px; */
   display: flex;
   background-color: black;
-  /* min-height: 100vh; */
-  min-width: 100vh;
-  
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+@media (max-width: 480px) {
+  .App {
+    margin: 24px
+  }
 }
 
 /* For tablets */
