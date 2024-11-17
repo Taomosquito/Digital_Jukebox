@@ -12,10 +12,7 @@ function App() {
 
   return (
     <div className='App'>
-    <SideNavigationBar />
-    {/* <ClientPlayer /> */}
-
-      
+      <SideNavigationBar />
     </div>
   )
 }
