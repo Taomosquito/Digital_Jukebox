@@ -5,13 +5,14 @@
     "moduleResolution": "node",
     "jsx": "react-jsx",
     "esModuleInterop": true,
-    "strict": true
+    "strict": true,
+    "typeRoots": ["node_modules/@types"]
   },
   "include": [
     "Front-end/src/**/*.ts",
-    "Back-end/src/**/*.ts",
+    "Back-end/*.ts",
     "Front-end/src/**/*.tsx",
-    "Back-end/src/**/*.tsx",
+    "Back-end/*.tsx",
     "./vite-env.d.ts"
   ],
   "exclude": ["node_modules", "build", "dist", "public"]
