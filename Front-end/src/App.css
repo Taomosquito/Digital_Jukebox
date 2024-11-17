@@ -3,8 +3,10 @@
 
 .App {
   display: flex;
-  background-color: black;
+  background-image: url('../Images/SoundWaveImage.jpg');
+  /* background-color: black; */
   min-height: 100vh;
   min-width: 100vw;
   margin: 0 auto;
 }
+
