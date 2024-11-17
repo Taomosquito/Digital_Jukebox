@@ -3,7 +3,8 @@ import React, { useState } from "react";
 // import viteLogo from '/vite.svg'
 import './App.css'
 import ClientPlayer from './components/ClientPlayer'
-import SideNavigation from './components/SideNavigationBar'
+import SideNavigationBar from './components/SideNavigationBar'
+import SearchSong from './components/SearchSong'
 
 
 function App() {
@@ -11,7 +12,7 @@ function App() {
 
   return (
     <div className='App'>
-    <SideNavigation />
+    <SideNavigationBar />
     {/* <ClientPlayer /> */}
 
       

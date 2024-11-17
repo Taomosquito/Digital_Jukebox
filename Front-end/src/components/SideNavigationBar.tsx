@@ -1,13 +1,20 @@
 
 import React, { useState } from 'react';
 import '../styles/SideNavigation.scss';
+import SearchModal from './SearchSong';  // Import the SearchModal
 
 const SideNavigation = () => {
   const [isMenuActive, setIsMenuActive] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSearchClick = () => {
-    setIsMenuActive((prevState) => !prevState);
+    setIsModalOpen(true);
   };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
 
   return (
     <>
@@ -27,7 +34,7 @@ const SideNavigation = () => {
         <div className="side-nav-bar__admin-control">
           <i className="fas fa-house"></i>
           <i className="fas fa-user-plus"></i>
-          <i className="fas fa-magnifying-glass"></i>
+          <i className="fas fa-magnifying-glass" onClick={handleSearchClick}></i>
           <i className="fas fa-heart-circle-xmark"></i>
         </div>
         <br></br>
@@ -49,6 +56,10 @@ const SideNavigation = () => {
         </div> */}
       </div>
     </div>
+
+    {/* Search Modal */}
+    <SearchModal isOpen={isModalOpen} onClose={handleCloseModal} />
+    
     </>
   );
 };
