@@ -14,7 +14,6 @@ const dbConfig = {
     dbPass: process.env.DB_PASS,
     dbName: process.env.DB_NAME,
 };
-console.log(dbConfig);
 const PORT = 3000;
 const app = express();
 // Path to the build folder
@@ -33,15 +32,6 @@ pool
     .connect()
     .then(() => console.log("Connected to PostgreSQL database"))
     .catch((err) => console.error("Error connecting to PostgreSQL database: ", err));
-(async () => {
-    try {
-        const res = await pool.query("SELECT NOW()");
-        console.log("Database connected:", res.rows);
-    }
-    catch (err) {
-        console.error("Database connection error:", err);
-    }
-})();
 // Fetch songs from Deezer API
 const fetchSongsFromDeezer = async (query) => {
     const apiKey = process.env.VITE_DEEZER_API_KEY;
@@ -57,7 +47,6 @@ const fetchSongsFromDeezer = async (query) => {
             q: query,
         },
     });
-    console.log(response.data.data);
     return response.data.data;
 };
 // Insert song API IDs into the database
@@ -74,33 +63,30 @@ const insertSongIntoDatabase = async (songApiId) => {
         console.error("Error inserting song into DB:", error);
     }
 };
-// Define API route to connect to Deezer
-app.get("/api", async (req, res) => {
-    const query = req.query.q; // Get the search query parameter
-    console.log(query);
+// Function to execute your logic on boot
+const runOnBoot = async () => {
+    const query = "pop"; // Replace with your desired default query or logic
+    console.log("Running startup task with query:", query);
     try {
         // Fetch songs from Deezer API
         const songs = await fetchSongsFromDeezer(query);
         // Insert each song's API ID into the database
-        const insertPromises = songs.map(async (song) => {
+        for (const song of songs) {
             console.log("Processing song:", song.id);
             await insertSongIntoDatabase(song.id);
-        });
-        // Wait for all insert operations to complete
-        await Promise.all(insertPromises);
-        // Respond with the data from Deezer API
-        res.json(songs);
+        }
+        console.log("Startup task completed successfully.");
     }
     catch (error) {
-        console.error("Error in /api/search route:", error);
-        res.status(500).json({ message: "Failed to process request" });
+        console.error("Error during startup task:", error);
     }
-});
+};
 // Catch-all route to serve the React app for any other requests
 app.get("*", (req, res) => {
     res.sendFile(path.resolve(buildPath, "index.html"));
 });
 // Start the server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`Server is running on port: ${PORT}`);
+    await runOnBoot();
 });
