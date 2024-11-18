@@ -10,7 +10,6 @@ const ClientPlayer = ({ rawResults, onSelectedSongsChange }: ClientPlayerProps) 
   const organizeResults = (results: any[]) => {
     return results.sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
   };
-
   const organizedResults = organizeResults(rawResults); //a, b, c
 
   // Track play state per song

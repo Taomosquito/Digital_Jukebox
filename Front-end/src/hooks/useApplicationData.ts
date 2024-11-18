@@ -2,9 +2,14 @@
 import { useState } from 'react';
 
 export const useApplication = () => {
+  // State for search and selected songs
   const [searchTerm, setSearchTerm] = useState('');
   const [submittedSearchTerm, setSubmittedSearchTerm] = useState('');
   const [selectedSongs, setSelectedSongs] = useState<any[]>([]);
+
+  // State for side navigation and modal visibility
+  const [isMenuActive, setIsMenuActive] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Handle input change for search term
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,7 +30,8 @@ export const useApplication = () => {
     setSearchTerm('');
     setSubmittedSearchTerm('');
     setSelectedSongs([]);
-    onClose(); // Callback to close the modal
+    setIsModalOpen(false); // Close the modal
+    onClose(); // Callback to close the modal from the parent
   };
 
   // Update the selected songs in the parent component
@@ -37,6 +43,19 @@ export const useApplication = () => {
   const handleAddToPlaylist = () => {
     console.log('Songs added to playlist:', selectedSongs);
     setSelectedSongs([]); // Clear selected songs after adding
+  };
+
+  // Side navigation and modal toggle functions
+  const handleToggleMenu = () => {
+    setIsMenuActive(!isMenuActive);
+  };
+
+  const handleSearchClick = () => {
+    setIsModalOpen(true); // Open the modal
+  };
+
+  const handleCloseSideNav = () => {
+    setIsMenuActive(false); // Close the side navigation
   };
 
   // Scroll control functions
@@ -74,11 +93,16 @@ export const useApplication = () => {
     submittedSearchTerm,
     setSubmittedSearchTerm,
     selectedSongs,
+    isMenuActive,
+    isModalOpen,
     handleChange,
     handleSubmit,
     handleCloseModal,
     handleSelectedSongsChange,
     handleAddToPlaylist,
+    handleToggleMenu,
+    handleSearchClick,
+    handleCloseSideNav,
     handleScrollDown,
     handleScrollUp,
     handleScrollLeft,

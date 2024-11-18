@@ -1,25 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '../styles/SideNavigation.scss';
-import SearchModal from './SearchSong';  // Import the SearchModal
+import SearchModal from './SearchSong';
+import { useApplication } from '../hooks/useApplicationData';
 
 const SideNavigation = () => {
-  const [isMenuActive, setIsMenuActive] = useState(false); // Controls the visibility of the side nav
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Toggles the menu visibility
-  const handleToggleMenu = () => {
-    setIsMenuActive(!isMenuActive);
-  };
-
-  // Opens the search modal
-  const handleSearchClick = () => {
-    setIsModalOpen(true);
-  };
-
-  // Closes the search modal
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+  const {
+    isMenuActive,
+    isModalOpen,
+    handleToggleMenu,
+    handleSearchClick,
+    handleCloseModal,
+    handleCloseSideNav
+  } = useApplication(); // Use the custom hook for state and functions
 
   return (
     <>
@@ -29,11 +21,13 @@ const SideNavigation = () => {
       </div>
 
       {/* Mobile search toggle link */}
-      <div className="side-nav-bar__search-link"
+      <div
+        className="side-nav-bar__search-link"
         onClick={() => {
-                handleSearchClick();
-                handleToggleMenu();
-              }}>
+          handleSearchClick(); // Open the search modal
+          handleCloseSideNav(); // and close the side navigation
+        }}
+      >
         <i className="fas fa-magnifying-glass"></i>
       </div>
 
@@ -44,10 +38,11 @@ const SideNavigation = () => {
           <div className="side-nav-bar__admin-control">
             <i className="fas fa-house"></i>
             <i className="fas fa-user-plus"></i>
-            <i className="fas fa-magnifying-glass"
+            <i
+              className="fas fa-magnifying-glass"
               onClick={() => {
                 handleSearchClick();
-                handleToggleMenu();
+                handleCloseSideNav(); // Close the menu when the search is triggered
               }}
             ></i>
             <i className="fas fa-heart-circle-xmark"></i>
@@ -69,7 +64,7 @@ const SideNavigation = () => {
       </div>
 
       {/* Search Modal */}
-      <SearchModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <SearchModal isOpen={isModalOpen} onClose={() => handleCloseModal(() => {})} />
     </>
   );
 };
