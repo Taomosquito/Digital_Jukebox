@@ -18,8 +18,6 @@ const dbConfig = {
   dbName: process.env.DB_NAME,
 };
 
-console.log(dbConfig);
-
 const PORT: number = 3000;
 const app = express();
 
@@ -44,15 +42,6 @@ pool
   .catch((err: string) =>
     console.error("Error connecting to PostgreSQL database: ", err)
   );
-
-(async () => {
-  try {
-    const res = await pool.query("SELECT NOW()");
-    console.log("Database connected:", res.rows);
-  } catch (err) {
-    console.error("Database connection error:", err);
-  }
-})();
 
 // Interface for Deezer song response
 interface Song {
@@ -92,7 +81,6 @@ const fetchSongsFromDeezer = async (query: string) => {
       },
     }
   );
-  console.log(response.data.data);
   return response.data.data;
 };
 
@@ -111,31 +99,26 @@ const insertSongIntoDatabase = async (songApiId: string) => {
   }
 };
 
-// Define API route to connect to Deezer
-app.get("/api", async (req: Request, res: Response): Promise<any> => {
-  const query = req.query.q as string; // Get the search query parameter
-  console.log(query);
+// Function to execute your logic on boot
+const runOnBoot = async () => {
+  const query = "pop"; // Replace with your desired default query or logic
+  console.log("Running startup task with query:", query);
 
   try {
     // Fetch songs from Deezer API
     const songs = await fetchSongsFromDeezer(query);
 
     // Insert each song's API ID into the database
-    const insertPromises = songs.map(async (song) => {
+    for (const song of songs) {
       console.log("Processing song:", song.id);
       await insertSongIntoDatabase(song.id);
-    });
+    }
 
-    // Wait for all insert operations to complete
-    await Promise.all(insertPromises);
-
-    // Respond with the data from Deezer API
-    res.json(songs);
+    console.log("Startup task completed successfully.");
   } catch (error) {
-    console.error("Error in /api/search route:", error);
-    res.status(500).json({ message: "Failed to process request" });
+    console.error("Error during startup task:", error);
   }
-});
+};
 
 // Catch-all route to serve the React app for any other requests
 app.get("*", (req, res) => {
@@ -143,6 +126,7 @@ app.get("*", (req, res) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server is running on port: ${PORT}`);
+  await runOnBoot();
 });
