@@ -1,69 +1,7 @@
-// import React from 'react';
-
-// interface ClientPlayerProps {
-//   rawResults: any[];  // Receive raw results to organize
-// }
-
-// const ClientPlayer = ({ rawResults }: ClientPlayerProps) => {
-//   // This function organizes the raw results (e.g., sorting by song title)
-//   const organizeResults = (results: any[]) => {
-//     return results.sort((a, b) => a.title.localeCompare(b.title)); // Sort the result by title or track name
-//   };
-
-//   const organizedResults = organizeResults(rawResults);
-
-//   const formatDuration = (seconds: number): string => {
-//     const minutes = Math.floor(seconds / 60);
-//     const remainingSeconds = seconds % 60;
-//     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-//   };
-
-//   return (
-//     <div>
-//       {organizedResults.length > 0 ? (
-//         <table>
-//           <thead>
-//             <tr>
-//               <th>Album</th>
-//               <th>Track</th>
-//               <th>Artist</th>
-//               <th>Time</th>
-//               <th>Preview</th>
-//               <th>Action</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {organizedResults.map((song) => (
-//               <tr key={song.id}>
-//                 <td>
-//                   <img src={song.album.cover} alt={song.title} width="50" height="50" />
-//                 </td>
-//                 <td>{song.title}</td>
-//                 <td>{song.artist.name}</td>
-//                 <td>{formatDuration(song.duration)}</td>
-//                 <td>
-//                   <audio controls>
-//                     <source src={song.preview} type="audio/mp3" />
-//                   </audio>
-//                 </td>
-//                 <td>"Add link Pending"</td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       ) : (
-//         <p>No results found.</p>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default ClientPlayer;
-
-import React, { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 
 interface ClientPlayerProps {
-  rawResults: any[];  // Receive raw results to organize
+  rawResults: any[];
   onSelectedSongsChange: (selectedSongs: any[]) => void;  // Callback to send selected songs back to parent
 }
 
@@ -73,7 +11,11 @@ const ClientPlayer = ({ rawResults, onSelectedSongsChange }: ClientPlayerProps) 
     return results.sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
   };
 
-  const organizedResults = organizeResults(rawResults);
+  const organizedResults = organizeResults(rawResults); //a, b, c
+
+  // Track play state per song
+  const [playingSong, setPlayingSong] = useState<string | null>(null); // Store ID of the currently playing song
+  const audioRefs = useRef<{ [key: string]: HTMLAudioElement | null }>({}); // Store refs for each audio element
 
   // Format the song duration into a readable time format
   const formatDuration = (seconds: number): string => {
@@ -95,6 +37,24 @@ const ClientPlayer = ({ rawResults, onSelectedSongsChange }: ClientPlayerProps) 
       onSelectedSongsChange(updatedSelection);
       return updatedSelection;
     });
+  };
+
+  const handlePlayClick = (song: any) => {
+    if (audioRefs.current[song.id]) {
+      if (playingSong === song.id) {
+        // If the clicked song is already playing, pause it
+        audioRefs.current[song.id]?.pause();
+        setPlayingSong(null); // Reset the playing song state
+      } else {
+        // Pause the currently playing song
+        if (playingSong !== null && audioRefs.current[playingSong]) {
+          audioRefs.current[playingSong]?.pause();
+        }
+        // Play the new song
+        audioRefs.current[song.id]?.play();
+        setPlayingSong(song.id); // Update the currently playing song state
+      }
+    }
   };
 
   return (
@@ -121,7 +81,11 @@ const ClientPlayer = ({ rawResults, onSelectedSongsChange }: ClientPlayerProps) 
                 <td>{song.artist.name}</td>
                 <td>{formatDuration(song.duration)}</td>
                 <td>
-                  <audio controls>
+                  <i
+                    className={`fa-solid ${playingSong === song.id ? 'fa-pause' : 'fa-play'}`}
+                    onClick={() => handlePlayClick(song)}
+                  ></i>
+                  <audio ref={(el) => { audioRefs.current[song.id] = el }} hidden>
                     <source src={song.preview} type="audio/mp3" />
                   </audio>
                 </td>

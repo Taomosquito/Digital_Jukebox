@@ -331,7 +331,6 @@ const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
         </div>
 
         <div className="bottom-buttons">
-          {/* Conditional render: only show the "Add Selected Songs to JukeBox" button if there are selected songs */}
           {selectedSongs.length > 0 && (
                 <button
                   className="submit-playlist-button"
