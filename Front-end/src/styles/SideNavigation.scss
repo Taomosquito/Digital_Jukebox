@@ -1,21 +1,237 @@
+// .side-nav-bar {
+//   background-color: #171616;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content:space-evenly;
+//   padding: 8px;
+//   backdrop-filter: blur(10.2px);
+//   -webkit-box-shadow: 0 4px 6px -6px #222;
+//   -moz-box-shadow: 0 4px 6px -6px #222;
+//   box-shadow: 0 0px 8px -5px #222;
+//   min-height: 100vh;
+// }
+// .side-nav-bar__logo {
+//   display: flex;
+//   flex-direction: column;
+//   position: absolute;
+//   top: 0px
+// }
+
+// .side-nav-bar__icon {
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: space-between;
+//   padding: 8px;
+// }
+
+// .side-nav-bar__admin-control{
+//   display: flex;
+//   flex-direction: column;
+//   justify-content:space-between;
+//   cursor: pointer;
+//   padding: 8px;
+// }
+
+// i {
+//   padding: 0.5em;
+// }
+
+// .side-nav-bar__media-control {
+//   display: flex;
+//   flex-direction: column;
+//   justify-content:space-evenly;
+//   cursor: pointer;
+//   padding: 8px;
+// }
+
+// .side-nav-bar__logout {
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: space-between;
+//   cursor: pointer;
+//   padding: 8px;
+//   position: absolute;
+//   bottom: 0px;
+// }
+
+// .side-nav-bar__login{
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: space-between;
+//   cursor: pointer;
+//   padding: 8px;
+//   position: absolute;
+//   margin-top: 200px;
+//   transform: rotate(180deg)
+// }
+
+// .fa-champagne-glasses:hover,
+// .fa-house:hover,
+// .fa-user-plus:hover,
+// .fa-magnifying-glass:hover,
+// .fa-circle-pause:hover,
+// .fa-heart-circle-xmark:hover,
+// .fa-forward-step:hover,
+// .fa-arrow-right-from-bracket:hover,
+// .fa-arrow-right-to-bracket:hover
+// {
+//   text-shadow: 0 0 10px #EED559;
+// }
+
+// // Logo Icon
+// .fa-champagne-glasses {
+//   color: #EED559;
+//   font-size: 3em;
+// }
+
+// // Home icon
+// .fa-house{
+//   color: #8b8c8d;
+//   font-size: 1.5em;
+// }
+
+// // Add admin user icon
+// .fa-user-plus{
+//   color: #8b8c8d;
+//   font-size: 1.5em;
+// }
+
+// // Search icon
+// .fa-magnifying-glass{
+//   color: #8b8c8d;
+//   font-size: 1.5em;
+// }
+
+// // Clear playlist icon
+// .fa-heart-circle-xmark{
+//   color: #8b8c8d;
+//   font-size: 1.5em;
+// }
+
+// // Media control Pause icon
+// .fa-circle-pause{
+//   color: #8b8c8d;
+//   font-size: 1.5em;
+// }
+
+// // Media control Forward or Next track icon
+// .fa-forward-step{
+//   color: #8b8c8d;
+//   font-size: 1.5em;
+// }
+// // Logout icon
+// .fa-arrow-right-from-bracket {
+//   color: #e30202;
+//   font-size: 1.5em;
+// }
+
+// // Login Icon
+// .fa-arrow-right-to-bracket {
+//   color: #8b8c8d;
+//   font-size: 2em;
+// }
+
+// .side-nav-bar__search-link{
+//   display: none;
+// }
+
+
+// // =============
+
+// @media (max-width: 900px) {
+//   .side-nav-bar__logo,
+//   .fa-champagne-glasses,
+//   .fa-house,
+//   .fa-user-plus,
+//   .fa-magnifying-glass,
+//   .fa-circle-pause,
+//   .fa-heart-circle-xmark,
+//   .fa-forward-step,
+//   .fa-arrow-right-from-bracket,
+//   .fa-arrow-right-to-bracket {
+//     font-size: 1.5em;
+//   }
+// }
+
+
+// /* Media query for mobile devices */
+// @media (max-width: 510px) {
+//   /* Hide all the icons by default */
+//   .side-nav-bar,
+//   .side-nav-bar__icon,
+//   .side-nav-bar__admin-control,
+//   .side-nav-bar__media-control,
+//   .side-nav-bar__logout,
+//   .side-nav-bar__login {
+//     display: none;
+//   }
+
+//   /* Show the search icon link */
+//   .side-nav-bar__search-link {
+//     display: flex;
+//     flex-direction: column;
+//     position: absolute;
+//     font-size: 1em;
+//     color: #8b8c8d;
+//     cursor: pointer;
+//     padding: 8px;
+//     top: 0px
+//   }
+
+//   .side-nav-bar__search-link:hover {
+//     text-shadow: 0 0 10px #EED559;
+//   }
+// }
+
+// // /* Toggle icons visibility when search link is clicked */
+// // .side-nav-bar__search-link.active + .side-nav-bar__icon,
+// // .side-nav-bar__search-link.active + .side-nav-bar__admin-control,
+// // .side-nav-bar__search-link.active + .side-nav-bar__media-control,
+// // .side-nav-bar__search-link.active + .side-nav-bar__logout,
+// // .side-nav-bar__search-link.active + .side-nav-bar__login {
+// //   display: block;
+// // }
+
+/* Style for the overall side navigation */
 .side-nav-bar {
-  background-color: #171616;
   display: flex;
   flex-direction: column;
-  justify-content:space-evenly;
+  justify-content: space-evenly;
   padding: 8px;
+  backdrop-filter: blur(10.2px);
   -webkit-box-shadow: 0 4px 6px -6px #222;
   -moz-box-shadow: 0 4px 6px -6px #222;
   box-shadow: 0 0px 8px -5px #222;
   min-height: 100vh;
-}
-.side-nav-bar__logo {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 0px
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 85px;
+  transform: translateX(-100%); /* Initially hide the side nav */
+  transition: transform 0.3s ease; /* Smooth transition when toggling */
 }
 
+/* When the side nav is active, show it */
+.side-nav-bar.active {
+  transform: translateX(0); /* Slide in the nav */
+}
+
+/* Position the logo and ensure it's clickable */
+.side-nav-bar__logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 7px;
+  left: 5px;
+  z-index: 10;
+  cursor: pointer;
+  color: #EED559;
+  font-size: 1.5em;
+}
+
+/* Icons inside the navigation */
 .side-nav-bar__icon {
   display: flex;
   flex-direction: column;
@@ -23,26 +239,25 @@
   padding: 8px;
 }
 
-.side-nav-bar__admin-control{
+/* Admin control icons */
+.side-nav-bar__admin-control {
   display: flex;
   flex-direction: column;
-  justify-content:space-between;
+  justify-content: space-between;
   cursor: pointer;
   padding: 8px;
 }
 
-i {
-  padding: 0.5em;
-}
-
+/* Media control icons */
 .side-nav-bar__media-control {
   display: flex;
   flex-direction: column;
-  justify-content:space-evenly;
+  justify-content: space-evenly;
   cursor: pointer;
   padding: 8px;
 }
 
+/* Logout button */
 .side-nav-bar__logout {
   display: flex;
   flex-direction: column;
@@ -50,21 +265,15 @@ i {
   cursor: pointer;
   padding: 8px;
   position: absolute;
-  bottom: 0px;
+  bottom: 2em;
 }
 
-.side-nav-bar__login{
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
-  padding: 8px;
-  position: absolute;
-  margin-top: 200px;
-  transform: rotate(180deg)
+/* Icon hover effects */
+i {
+  padding: 0.5em;
 }
 
-.fa-champagne-glasses:hover,
+.fa-sliders:hover,
 .fa-house:hover,
 .fa-user-plus:hover,
 .fa-magnifying-glass:hover,
@@ -72,74 +281,31 @@ i {
 .fa-heart-circle-xmark:hover,
 .fa-forward-step:hover,
 .fa-arrow-right-from-bracket:hover,
-.fa-arrow-right-to-bracket:hover
-{
+.fa-arrow-right-to-bracket:hover {
   text-shadow: 0 0 10px #EED559;
 }
 
-// Logo Icon
-.fa-champagne-glasses {
+/* Icon sizes */
+.fa-sliders {
   color: #EED559;
-  font-size: 3em;
+  font-size: 1.5em;
 }
 
-// Home icon
-.fa-house{
+/* Default icon sizes for control icons */
+.fa-house, .fa-user-plus, .fa-magnifying-glass, .fa-heart-circle-xmark,
+.fa-circle-pause, .fa-forward-step, .fa-arrow-right-from-bracket {
   color: #8b8c8d;
-  font-size: 2em;
+  font-size: 1.5em;
 }
 
-// Add admin user icon
-.fa-user-plus{
-  color: #8b8c8d;
-  font-size: 2em;
-}
-
-// Search icon
-.fa-magnifying-glass{
-  color: #8b8c8d;
-  font-size: 2em;
-}
-
-// Clear playlist icon
-.fa-heart-circle-xmark{
-  color: #8b8c8d;
-  font-size: 2em;
-}
-
-// Media control Pause icon
-.fa-circle-pause{
-  color: #8b8c8d;
-  font-size: 2em;
-}
-
-// Media control Forward or Next track icon
-.fa-forward-step{
-  color: #8b8c8d;
-  font-size: 2em;
-}
-// Logout icon
-.fa-arrow-right-from-bracket {
-  color: #e30202;
-  font-size: 2em;
-}
-
-// Login Icon
-.fa-arrow-right-to-bracket {
-  color: #8b8c8d;
-  font-size: 2em;
-}
-
-.side-nav-bar__search-link{
+.side-nav-bar__search-link {
   display: none;
 }
 
-
-// =============
-
+/* Media query for smaller screens */
 @media (max-width: 900px) {
   .side-nav-bar__logo,
-  .fa-champagne-glasses,
+  .fa-sliders,
   .fa-house,
   .fa-user-plus,
   .fa-magnifying-glass,
@@ -152,41 +318,36 @@ i {
   }
 }
 
+.side-nav-bar__search-link {
+  display: none;
+}
 
-/* Media query for mobile devices */
+/* Mobile View */
 @media (max-width: 510px) {
-  /* Hide all the icons by default */
+  /* Initially hide the side nav and all icons */
   .side-nav-bar,
+  .side-nav-bar__logo,
   .side-nav-bar__icon,
   .side-nav-bar__admin-control,
   .side-nav-bar__media-control,
-  .side-nav-bar__logout,
-  .side-nav-bar__login {
+  .side-nav-bar__logout {
     display: none;
   }
 
-  /* Show the search icon link */
+  /* The search link will be visible on small screens */
   .side-nav-bar__search-link {
     display: flex;
     flex-direction: column;
-    position: absolute;
+    position: fixed;
     font-size: 1em;
     color: #8b8c8d;
     cursor: pointer;
     padding: 8px;
-    top: 0px
+    top: 25px;
+    left: 5px;
   }
 
   .side-nav-bar__search-link:hover {
     text-shadow: 0 0 10px #EED559;
   }
 }
-
-// /* Toggle icons visibility when search link is clicked */
-// .side-nav-bar__search-link.active + .side-nav-bar__icon,
-// .side-nav-bar__search-link.active + .side-nav-bar__admin-control,
-// .side-nav-bar__search-link.active + .side-nav-bar__media-control,
-// .side-nav-bar__search-link.active + .side-nav-bar__logout,
-// .side-nav-bar__search-link.active + .side-nav-bar__login {
-//   display: block;
-// }
