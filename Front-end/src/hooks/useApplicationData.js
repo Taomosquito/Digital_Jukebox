@@ -42,10 +42,10 @@ export const useApplication = () => {
         setIsMenuActive(!isMenuActive);
     };
     const handleSearchClick = () => {
-        setIsModalOpen(true); // Open the modal
+        setIsModalOpen(true);
     };
     const handleCloseSideNav = () => {
-        setIsMenuActive(false); // Close the side navigation
+        setIsMenuActive(false);
     };
     // Scroll control functions
     const handleScrollDown = () => {
