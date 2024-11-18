@@ -1,51 +1,51 @@
-import { useState } from "react";
-import SearchModal from "./SearchSong";
+// import { useState } from "react";
+// import SearchModal from "./SearchSong";
 
-const Playlist = () => {
+// const Playlist = () => {
 
-  const [isLike, setIsLike] = useState(false);
+//   const [isLike, setIsLike] = useState(false);
 
-  // Format the song duration into a readable time format
-  const formatDuration = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-  };
+//   // Format the song duration into a readable time format
+//   const formatDuration = (seconds: number): string => {
+//     const minutes = Math.floor(seconds / 60);
+//     const remainingSeconds = seconds % 60;
+//     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+//   };
 
-  // const handleLikes = {
-  //   setIsLike(true);
-  // }
+//   // const handleLikes = {
+//   //   setIsLike(true);
+//   // }
 
-  return (
-    <div className="playlist">
+//   return (
+//     <div className="playlist">
 
-      <table>
-        <thead>
-          <tr>
-            <th>Track</th>
-            <th>Artist</th>
-            <th>Time</th>
-            <th>Album</th>
-            <th>Likes</th>
-          </tr>
-        </thead>
+//       <table>
+//         <thead>
+//           <tr>
+//             <th>Track</th>
+//             <th>Artist</th>
+//             <th>Time</th>
+//             <th>Album</th>
+//             <th>Likes</th>
+//           </tr>
+//         </thead>
 
-        <tbody>
-          {/* {"".map((song) => ( */}
-            <tr key={song.id}>
-              <td>{song.title}</td>
-              <td>{song.artist.name}</td>
-              <td>{formatDuration(song.duration)}</td>
-              <td>{song.album.title}</td>
-              <td><i className="fa-regular fa-thumbs-up"></i></td>
-            </tr>
-          {/* ))} */}
-        </tbody>
+//         <tbody>
+//           {/* {"".map((song) => ( */}
+//             <tr key={song.id}>
+//               <td>{song.title}</td>
+//               <td>{song.artist.name}</td>
+//               <td>{formatDuration(song.duration)}</td>
+//               <td>{song.album.title}</td>
+//               <td><i className="fa-regular fa-thumbs-up"></i></td>
+//             </tr>
+//           {/* ))} */}
+//         </tbody>
      
-      </table>
+//       </table>
 
-    </div>
-  )
-};
+//     </div>
+//   )
+// };
 
-export default Playlist;
+// export default Playlist;

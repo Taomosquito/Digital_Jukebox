@@ -1,8 +1,8 @@
 import React from 'react';
 import '../styles/SearchSong.scss';
-import ClientPlayer from './ClientPlayer';
+import TrackListManager from './TrackListManager';
 import useMusicApi from '../hooks/useMusicApi';
-import { useApplication } from '../hooks/useApplicationData'; // Import the new custom hook
+import { useApplication } from '../hooks/useApplicationData';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -17,16 +17,15 @@ const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
     handleChange,
     handleSubmit,
     handleCloseModal,
-    handleSelectedSongsChange,
     selectedSongs,
     handleAddToPlaylist,
     handleScrollDown,
     handleScrollUp,
     handleScrollLeft,
-    handleScrollRight
-  } = useApplication(); // Use the custom hook
+    handleScrollRight,
+    handleSelectedSongsChange // Access this from useApplication hook
+  } = useApplication();
 
-  // Use the submittedSearchTerm for the API call
   const { data, loading, error } = useMusicApi(submittedSearchTerm);
 
   if (!isOpen) return null;
@@ -54,7 +53,7 @@ const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
           {error && <p>Error fetching data</p>}
           {data && data.data && data.data.length > 0 && (
             <>
-              <ClientPlayer
+              <TrackListManager
                 rawResults={data.data}
                 onSelectedSongsChange={handleSelectedSongsChange}
               />
@@ -62,6 +61,7 @@ const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
           )}
         </div>
 
+        {/* Scroll buttons */}
         <div className="scroll-buttons">
           {data?.data && data.data.length > 0 && (
             <>
@@ -82,6 +82,7 @@ const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
           )}
         </div>
 
+        {/* Bottom buttons */}
         <div className="bottom-buttons">
           {selectedSongs.length > 0 && (
             <button
