@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useApplication } from '../hooks/useApplicationData';
 
 interface TrackListManagerProps {
   rawResults: any[];
@@ -21,7 +22,8 @@ const TrackListManager = ({ rawResults, onSelectedSongsChange }: TrackListManage
     });
   };
 
-  // Optionally, you can use useEffect to ensure selected songs are synchronized properly
+  const { audioRefs, playingSong, handlePlayClick, formatDuration } = useApplication();
+
   useEffect(() => {
     // Send the current selected songs list to the parent component
     onSelectedSongsChange(selectedSongs);
@@ -56,7 +58,15 @@ const TrackListManager = ({ rawResults, onSelectedSongsChange }: TrackListManage
                 </td>
                 <td>{song.title}</td>
                 <td>{song.artist.name}</td>
-                <td>{song.duration}</td>
+                <td>{formatDuration(song.duration)}</td>
+                <td> <i
+                        className={`fa-solid ${playingSong === song.id ? 'fa-pause' : 'fa-play'}`}
+                        onClick={() => handlePlayClick(song)}
+                      ></i>
+                      <audio ref={(el) => { audioRefs.current[song.id] = el }} hidden>
+                        <source src={song.preview} type="audio/mp3" />
+                      </audio>
+                </td>
                 <td>
                   <input
                     type="checkbox"
