@@ -13,7 +13,8 @@
     "Back-end/*.ts",
     "Front-end/src/**/*.tsx",
     "Back-end/*.tsx",
-    "./vite-env.d.ts"
+    "./vite-env.d.ts",
+    "./"
   ],
   "exclude": ["node_modules", "build", "dist", "public"]
 }
