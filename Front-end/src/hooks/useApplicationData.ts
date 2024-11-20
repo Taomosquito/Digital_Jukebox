@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import axios from 'axios';
 
 export const useApplication = () => {
   // State for search and selected songs
@@ -12,10 +13,10 @@ export const useApplication = () => {
   const [isMenuActive, setIsMenuActive] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Organize the raw results (e.g., sorting by song title)
-  const organizeResults = (results: any[]) => {
-    return results.sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
-  };
+  // // Organize the raw results (e.g., sorting by song title)
+  // const organizeResults = (results: any[]) => {
+  //   return results.sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
+  // };
 
   // Format the song duration into a readable time format
   const formatDuration = (seconds: number): string => {
@@ -67,9 +68,10 @@ export const useApplication = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (searchTerm.trim() === '') {
-      setSearchTerm('a'); // Default value
+      setSubmittedSearchTerm('');
+    } else {
+      setSubmittedSearchTerm(searchTerm.trim());
     }
-    setSubmittedSearchTerm(searchTerm);
   };
 
   // Reset everything when the modal is closed
@@ -81,10 +83,25 @@ export const useApplication = () => {
     onClose(); // Callback to close the modal from the parent
   };
 
-  // Handle the add to playlist action
-  const handleAddToPlaylist = () => {
+  // *********************** .  Handle the add to playlist action
+  const handleAddToPlaylist = async () => {
     console.log('Songs added to playlist:', selectedSongs);
     setSelectedSongs([]); // Clear selected songs after adding
+
+    try {
+      const response = await axios.post<any>('http://localhost:3000/addSongs', selectedSongs, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+        console.log(response.data);
+        //window.location.href = "playlist" //to check display playlist
+        return response.data;  // Return the response data to the caller
+      } catch (error: any) {
+        console.error('Error adding songs:', error);
+        throw new Error('Failed to add songs');
+    }
+
   };
 
   // Side navigation and modal toggle functions
@@ -139,7 +156,7 @@ export const useApplication = () => {
     selectedSongs,
     playingSong,
     audioRefs,
-    organizeResults,
+    //organizeResults,
     formatDuration,
     handleCheckboxChange,
     handlePlayClick,

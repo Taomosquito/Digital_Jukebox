@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import axios from 'axios';
 export const useApplication = () => {
     // State for search and selected songs
     const [searchTerm, setSearchTerm] = useState('');
@@ -9,10 +10,10 @@ export const useApplication = () => {
     // State for side navigation and modal visibility
     const [isMenuActive, setIsMenuActive] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    // Organize the raw results (e.g., sorting by song title)
-    const organizeResults = (results) => {
-        return results.sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
-    };
+    // // Organize the raw results (e.g., sorting by song title)
+    // const organizeResults = (results: any[]) => {
+    //   return results.sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
+    // };
     // Format the song duration into a readable time format
     const formatDuration = (seconds) => {
         const minutes = Math.floor(seconds / 60);
@@ -59,9 +60,11 @@ export const useApplication = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         if (searchTerm.trim() === '') {
-            setSearchTerm('a'); // Default value
+            setSubmittedSearchTerm('');
         }
-        setSubmittedSearchTerm(searchTerm);
+        else {
+            setSubmittedSearchTerm(searchTerm.trim());
+        }
     };
     // Reset everything when the modal is closed
     const handleCloseModal = (onClose) => {
@@ -71,10 +74,24 @@ export const useApplication = () => {
         setIsModalOpen(false); // Close the modal
         onClose(); // Callback to close the modal from the parent
     };
-    // Handle the add to playlist action
-    const handleAddToPlaylist = () => {
+    // *********************** .  Handle the add to playlist action
+    const handleAddToPlaylist = async () => {
         console.log('Songs added to playlist:', selectedSongs);
         setSelectedSongs([]); // Clear selected songs after adding
+        try {
+            const response = await axios.post('http://localhost:3000/addSongs', selectedSongs, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            console.log(response.data);
+            //window.location.href = "playlist" //to check display playlist
+            return response.data; // Return the response data to the caller
+        }
+        catch (error) {
+            console.error('Error adding songs:', error);
+            throw new Error('Failed to add songs');
+        }
     };
     // Side navigation and modal toggle functions
     const handleToggleMenu = () => {
@@ -121,7 +138,7 @@ export const useApplication = () => {
         selectedSongs,
         playingSong,
         audioRefs,
-        organizeResults,
+        //organizeResults,
         formatDuration,
         handleCheckboxChange,
         handlePlayClick,
