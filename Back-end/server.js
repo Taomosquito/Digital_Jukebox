@@ -57,10 +57,12 @@ const insertSongIntoDatabase = async (songApiId) => {
     }
 };
 // Catch-all route to serve the React app for any other requests
-app.get("*", (req, res) => {
-    console.log('GETTTT - server running');
-    res.sendFile(path.resolve(buildPath, "index.html"));
-});
+// Temporary disabled to get all the songs from database.
+//
+// app.get("*", (req, res) => {
+//   console.log('GETTTT - server running');
+//   res.sendFile(path.resolve(buildPath, "index.html"));
+// });
 app.post('/addSongs', async (req, res) => {
     console.log('Received a request to add songs');
     const songs = req.body; // [{}]
