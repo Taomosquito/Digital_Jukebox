@@ -13,9 +13,9 @@ function App() {
 
   return (
     <Router>
-          <div className='App'>
-      <SideNavigationBar />
-    </div>
+      <div className='App'>
+        <SideNavigationBar />
+      </div>
     </Router>
   )
 

@@ -44,9 +44,8 @@ const insertSongIntoDatabase = async (songApiId) => {
     try {
         // Insert song into the database
         const query = `
-      INSERT INTO songs (song_api_id, likes, created_at, updated_at)
-      VALUES ($1, 0, NOW(), NOW())
-      ON CONFLICT (song_api_id) DO NOTHING
+      INSERT INTO songs (song_api_id)
+      VALUES ($1)
     `;
         // Use the songApiId as a parameter to prevent SQL injection
         await pool.query(query, [songApiId]);
