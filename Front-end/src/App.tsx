@@ -15,6 +15,10 @@ function App() {
     <Router>
       <div className='App'>
         <SideNavigationBar />
+        <Routes>
+          <Route path="/" element={<SideNavigationBar />} />
+          <Route path="/playlist" element={<Playlist />} />
+        </Routes>
       </div>
     </Router>
   )

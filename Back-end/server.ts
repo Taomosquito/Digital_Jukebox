@@ -104,6 +104,8 @@ app.get('/songs', async (req, res) => {
     const result = await pool.query('SELECT * FROM songs');
     const songs = result.rows;
 
+    console.log("FETCHED SONGS FROM DBASE: ", songs);
+
     // Fetch song details from Deezer API for each song
     const songDetailsPromises = songs.map(async (song) => {
       const response = await axios.get(`https://deezerdevs-deezer.p.rapidapi.com/track/${song.song_api_id}`, {
@@ -116,7 +118,7 @@ app.get('/songs', async (req, res) => {
 
     const songDetails = await Promise.all(songDetailsPromises);
 
-    res.json(songDetails); // Return the song details including title, artist, duration, and preview
+    res.json(songDetails); // Return the song details including title, artist, duration, and preview, and ...
   } catch (error) {
     console.error('Error fetching songs:', error);
     res.status(500).json({ message: 'Failed to fetch songs' });
