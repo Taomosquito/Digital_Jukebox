@@ -1,42 +1,37 @@
-"use strict";
-// import { useState } from "react";
-// import SearchModal from "./SearchSong";
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+// import React from "react";
 // const Playlist = () => {
-//   const [isLike, setIsLike] = useState(false);
-//   // Format the song duration into a readable time format
-//   const formatDuration = (seconds: number): string => {
-//     const minutes = Math.floor(seconds / 60);
-//     const remainingSeconds = seconds % 60;
-//     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-//   };
-//   // const handleLikes = {
-//   //   setIsLike(true);
-//   // }
 //   return (
-//     <div className="playlist">
-//       <table>
-//         <thead>
-//           <tr>
-//             <th>Track</th>
-//             <th>Artist</th>
-//             <th>Time</th>
-//             <th>Album</th>
-//             <th>Likes</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {/* {"".map((song) => ( */}
-//             <tr key={song.id}>
-//               <td>{song.title}</td>
-//               <td>{song.artist.name}</td>
-//               <td>{formatDuration(song.duration)}</td>
-//               <td>{song.album.title}</td>
-//               <td><i className="fa-regular fa-thumbs-up"></i></td>
-//             </tr>
-//           {/* ))} */}
-//         </tbody>
-//       </table>
+//     <div>
+//       <p>In Progress ... </p>
 //     </div>
-//   )
-// };
-// export default Playlist;
+//   );
+// }
+// export default Playlist;import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+const Playlist = () => {
+    const [songs, setSongs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    useEffect(() => {
+        // Fetch the songs from your backend
+        axios.get('/songs')
+            .then((response) => {
+            setSongs(response.data); // Set the song details
+            setLoading(false); // Set loading to false once data is fetched
+        })
+            .catch((err) => {
+            setError('Failed to load songs');
+            setLoading(false);
+        });
+    }, []);
+    if (loading) {
+        return _jsx("div", { children: "Loading..." });
+    }
+    if (error) {
+        return _jsx("div", { children: error });
+    }
+    return (_jsxs("div", { className: "playlist", children: [_jsx("h2", { children: "Your Playlist" }), _jsx("div", { className: "song-list", children: songs.map((song, index) => (_jsxs("div", { className: "song-item", children: [_jsx("img", { src: song.album.cover_small, alt: song.title }), _jsx("h3", { children: song.title }), _jsx("p", { children: song.artist.name }), _jsxs("audio", { controls: true, children: [_jsx("source", { src: song.preview, type: "audio/mp3" }), "Your browser does not support the audio element."] })] }, index))) })] }));
+};
+export default Playlist;
