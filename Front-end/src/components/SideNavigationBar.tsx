@@ -2,6 +2,7 @@ import React from 'react';
 import '../styles/SideNavigation.scss';
 import SearchModal from './SearchSong';
 import { useApplication } from '../hooks/useApplicationData';
+import { Link } from 'react-router-dom';
 
 const SideNavigation = () => {
   const {
@@ -46,6 +47,10 @@ const SideNavigation = () => {
               }}
             ></i>
             <i className="fas fa-heart-circle-xmark"></i>
+            <Link to="/playlist">
+              <i className="fas fa-music"></i>
+            </Link>
+
           </div>
 
           <br />

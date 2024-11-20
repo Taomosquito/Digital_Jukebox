@@ -83,6 +83,7 @@ i {
 .fa-house:hover,
 .fa-user-plus:hover,
 .fa-magnifying-glass:hover,
+.fa-music:hover,
 .fa-circle-pause:hover,
 .fa-heart-circle-xmark:hover,
 .fa-forward-step:hover,
@@ -99,7 +100,7 @@ i {
 
 /* Default icon sizes for control icons */
 .fa-house, .fa-user-plus, .fa-magnifying-glass, .fa-heart-circle-xmark,
-.fa-circle-pause, .fa-forward-step, .fa-arrow-right-from-bracket {
+.fa-circle-pause, .fa-forward-step, .fa-arrow-right-from-bracket, .fa-music {
   color: #8b8c8d;
   font-size: 1.5em;
 }
@@ -115,6 +116,7 @@ i {
   .fa-house,
   .fa-user-plus,
   .fa-magnifying-glass,
+  .fa-music,
   .fa-circle-pause,
   .fa-heart-circle-xmark,
   .fa-forward-step,
