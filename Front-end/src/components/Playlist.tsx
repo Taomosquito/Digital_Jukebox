@@ -27,31 +27,35 @@ interface Song {
   };
 }
 
-const Playlist: React.FC = () => {
+const Playlist = () => {
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  console.log("Playlist here");
+
   useEffect(() => {
-    // Fetch the songs from your backend
-    axios.get('/songs')
-      .then((response) => {
-        setSongs(response.data);  // Set the song details
-        setLoading(false);         // Set loading to false once data is fetched
-      })
-      .catch((err) => {
-        setError('Failed to load songs');
-        setLoading(false);
-      });
+    const fetchSongs = async () => {
+      try {
+        // Use axios to fetch data from your backend
+        const response = await axios.get('http://localhost:3000/songs');
+        
+        // Axios automatically parses the response data, so no need for .json()
+        const data = response.data;
+
+        // Check if the data is an array before setting the state
+        if (Array.isArray(data)) {
+          setSongs(data);
+        } else {
+          console.error("Expected an array of songs but got:", data);
+        }
+      } catch (error) {
+        console.error('Error fetching songs:', error);
+      }
+    };
+
+    fetchSongs();
   }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   return (
     <div className="playlist">
