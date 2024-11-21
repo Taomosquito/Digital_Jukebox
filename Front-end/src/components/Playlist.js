@@ -9,11 +9,14 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 // }
 // export default Playlist;import React, { useEffect, useState } from 'react';
 import { useEffect, useState } from 'react';
+import { useApplication } from '../hooks/useApplicationData';
 import axios from 'axios';
-const Playlist = () => {
+import '../styles/Playlist.scss';
+const PlayList = ({ isOpen, onClose }) => {
     const [songs, setSongs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { audioRefs, playingSong, handlePlayClick, formatDuration } = useApplication();
     console.log("Playlist here");
     useEffect(() => {
         const fetchSongs = async () => {
@@ -36,6 +39,6 @@ const Playlist = () => {
         };
         fetchSongs();
     }, []);
-    return (_jsxs("div", { className: "playlist", children: [_jsx("h2", { children: "Your Playlist" }), _jsx("div", { className: "song-list", children: songs.map((song, index) => (_jsxs("div", { className: "song-item", children: [_jsx("img", { src: song.album.cover_small, alt: song.title }), _jsx("h3", { children: song.title }), _jsx("p", { children: song.artist.name }), _jsxs("audio", { controls: true, children: [_jsx("source", { src: song.preview, type: "audio/mp3" }), "Your browser does not support the audio element."] })] }, index))) })] }));
+    return (_jsx("div", { className: "playlist__modal-overlay", children: _jsxs("div", { className: "playlist__modal-content", onClick: (e) => e.stopPropagation(), children: [_jsx("h3", { children: "Playlist" }), _jsx("div", { className: "search-results", children: _jsx("div", { className: 'track_list_mgr', children: _jsxs("table", { children: [_jsx("thead", { children: _jsxs("tr", { children: [_jsx("th", { children: "Track" }), _jsx("th", { children: "Artist" }), _jsx("th", { children: "Time" }), _jsx("th", { children: "Album" }), _jsx("th", { children: "Likes" })] }) }), _jsx("tbody", { children: songs.map((song, index) => (_jsxs("tr", { children: [_jsx("td", { className: 'track-list-mgr__title', children: song.title }), _jsx("td", { className: 'track-list-mgr__artist', children: song.artist.name }), _jsx("td", { children: formatDuration(song.duration) }), _jsx("td", { children: song.album.title }), _jsx("td", { children: _jsx("i", { className: "fa-regular fa-thumbs-up" }) })] }, index))) })] }) }) })] }) }));
 };
-export default Playlist;
+export default PlayList;
