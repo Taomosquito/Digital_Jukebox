@@ -84,3 +84,13 @@ td {
 .playlist__list-mgr__title {
   text-align: left !important;
 }
+
+/* Like: Default. */
+.fa-thumbs-up {
+  color: #888;
+}
+
+/* Liked Songs */
+.fa-thumbs-up.liked {
+  color: goldenrod;
+}
