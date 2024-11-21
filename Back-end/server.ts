@@ -126,6 +126,36 @@ app.get('/songs', async (req, res) => {
   
 });
 
+//Routes that partially update the resource
+app.patch('/songs/:id/like', async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+  console.log("id is: ", id)
+
+  try {
+    // const songId = parseInt(id, 10);
+    // Increment the likes for the song by 1
+    const result = await pool.query(
+      `UPDATE songs SET likes = likes + 1, updated_at = NOW() WHERE song_api_id = $1 RETURNING *`,
+      [id]
+    );
+
+    // If the song with the given id does not exist, return an error
+    if (result.rows.length === 0) {
+      res.status(404).json({ message: "Song not found" });
+      return;
+    }
+
+    // Send back the updated song object
+    const updatedSong = result.rows[0];
+    console.log('server. UpdatedSong: ', updatedSong)
+    res.status(200).json(updatedSong);
+  } catch (error) {
+    console.error('Error updating likes:', error);
+    res.status(500).json({ message: 'Failed to update likes' });
+  }
+});
+
+
 
 // Start the server
 app.listen(PORT, async () => {
