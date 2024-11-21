@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import TrackListManager from "./components/TrackListManager";
 import SideNavigationBar from './components/SideNavigationBar'
 import SearchSong from './components/SearchSong'
-import Playlist from "./components/Playlist";
+import PlayList from "./components/Playlist";
 
 
 function App() {
@@ -17,7 +17,9 @@ function App() {
         <SideNavigationBar />
         <Routes>
           <Route path="/" element={<SideNavigationBar />} />
-          <Route path="/playlist" element={<Playlist />} />
+          <Route path="/playlist" element={<PlayList isOpen={false} onClose={function (): void {
+            throw new Error("Function not implemented.");
+          } } />} />
         </Routes>
       </div>
     </Router>
