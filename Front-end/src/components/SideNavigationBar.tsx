@@ -37,7 +37,10 @@ const SideNavigation = () => {
         <div className="side-nav-bar__icon">
           {/* Admin control icons */}
           <div className="side-nav-bar__admin-control">
-            <i className="fas fa-house"></i>
+            <Link to="/">
+              <i className="fas fa-house"></i>
+            </Link>
+            
             <i className="fas fa-user-plus"></i>
             <i
               className="fas fa-magnifying-glass"
