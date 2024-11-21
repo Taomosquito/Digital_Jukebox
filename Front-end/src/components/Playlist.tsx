@@ -49,21 +49,44 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
 
     fetchSongs();
   }, []);
-
+  
   // Helper Function that handle the thumb icon, likes.
   const handleLikeClick = async (songId: number) => {
     try {
       const response = await axios.patch(`http://localhost:3000/songs/${songId}/like`);
       console.log("PLAYLIST handleLikeClick: ", response);
       const updatedSong = response.data;
-      console.log("PLAYLIST. updatedSong: ", updatedSong);
+      
+      console.log("PLAYLIST. updatedSong new LIKES: ", updatedSong.likes);
+      
       setSongs((prevSongs) => prevSongs.map((song) => song.id === updatedSong.id ? {...song, likes: updatedSong.likes } : song )
       );
+      console.log("PLAYLIST :", setSongs)
+
+      getLike(updatedSong.likes, songId);
     }
     catch(error) {
       console.log("Playlist, Error updating likes: ", error);
     }
   };
+  
+
+  //Testing the likes
+  const getLike = (likes: number, songId: number) => {
+    // connect to backend songs database
+    // get the number of likes
+    // display the number of likes
+    // the number of likes will the reference to update the likes icon color
+    // Update the song's likes and change the icon color accordingly
+    setSongs((prevSongs) =>
+      prevSongs.map((song) =>
+        song.id === songId
+          ? { ...song, likes } // Update the likes count
+          : song
+      )
+    );
+  };
+  
 
   return (
     <>
@@ -81,6 +104,7 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
                   <th>Time</th>
                   <th>Album</th>
                   <th>Likes</th>
+                  <th># of Likes</th>
                 </tr>
               </thead>
               <tbody>
@@ -91,11 +115,13 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
                     <td>{formatDuration(song.duration)}</td>
                     <td>{song.album.title}</td>
                     <td>
-                      <i
-                        className={`fa-regular fa-thumbs-up ${song.likes > 0 ? 'liked' : ''}`}
-                        onClick={() => handleLikeClick(song.id)}
-                      ></i>
+                    <i
+                          className={`fa-regular fa-thumbs-up ${song.likes > 0 ? 'liked' : ''}`}
+                          onClick={() => handleLikeClick(song.id)}
+                        ></i>
+                        <span>{song.likes}</span>
                     </td>
+                    
                   </tr>
                 ))}
               </tbody>
