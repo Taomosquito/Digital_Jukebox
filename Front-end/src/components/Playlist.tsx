@@ -45,10 +45,8 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
   useEffect(() => {
     const fetchSongs = async () => {
       try {
-        // Use axios to fetch data from your backend
+        // fetch data from backend
         const response = await axios.get('http://localhost:3000/songs');
-        
-        // Axios automatically parses the response data, so no need for .json()
         const data = response.data;
 
         // Check if the data is an array before setting the state
@@ -66,11 +64,13 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
   }, []);
 
   return (
-    <div className="playlist__modal-overlay">
-      <div className="playlist__modal-content" onClick={(e) => e.stopPropagation()}>
-        <h3>Playlist</h3>  
-        <div className="search-results">
-        <div className='track_list_mgr'>
+    <>
+      {/* <h3>Playlist</h3>   */}
+      
+      <div className="playlist__modal-overlay">
+        <div className="playlist__modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="playlist__results">
+          <div className='playlist__list-mgr'>
             <table>
               <thead>
                 <tr>
@@ -84,8 +84,8 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
               <tbody>
                 {songs.map((song, index) => (
                   <tr key={index}>
-                    <td className='track-list-mgr__title'>{song.title}</td>
-                    <td className='track-list-mgr__artist'>{song.artist.name}</td>
+                    <td className='playlist__list-mgr__title'>{song.title}</td>
+                    <td className='playlist__list-mgr__artist'>{song.artist.name}</td>
                     <td>{formatDuration(song.duration)}</td>
                     <td>{song.album.title}</td>
                     <td><i className="fa-regular fa-thumbs-up"></i></td>
@@ -93,29 +93,11 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
                 ))}
               </tbody>
             </table>
+          </div>
+          </div>
         </div>
-
-
-
-        
-        </div>
-          {/* <div className="song-list">
-            {songs.map((song, index) => (
-              <div key={index} className="song-item">
-                <img src={song.album.cover_small} alt={song.title} />
-                <h3>{song.title}</h3>
-                <p>{song.artist.name}</p>
-                <audio controls>
-                  <source src={song.preview} type="audio/mp3" />
-                  Your browser does not support the audio element.
-                </audio>
-              </div>
-            ))}
-          </div> */}
-        
       </div>
-
-    </div>
+    </>
   );
 };
 
