@@ -81,7 +81,7 @@ app.get('/songs', async (req, res) => {
     console.log("GETTTT - All Songs");
     try {
         // Fetch the song details from the database
-        const result = await pool.query('SELECT * FROM songs');
+        const result = await pool.query('SELECT * FROM songs ORDER BY likes DESC, created_at DESC;');
         const songs = result.rows;
         console.log("FETCHED SONGS FROM DBASE: ", songs);
         // Fetch song details from Deezer API for each song
