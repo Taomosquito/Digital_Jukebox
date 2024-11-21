@@ -18,6 +18,7 @@ import axios from 'axios';
 import '../styles/Playlist.scss'
 
 interface Song {
+  id: number;
   title: string;
   duration: number;
   artist: {
@@ -27,6 +28,7 @@ interface Song {
   album: {
     title: string;
   };
+  likes: number;
 }
 
 interface PlayListProps {
@@ -36,8 +38,8 @@ interface PlayListProps {
 
 const PlayList = ({ isOpen, onClose }: PlayListProps) => {
   const [songs, setSongs] = useState<Song[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // const [error, setError] = useState<string | null>(null);
   const { audioRefs, playingSong, handlePlayClick, formatDuration } = useApplication();
 
   console.log("Playlist here");
@@ -62,6 +64,20 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
 
     fetchSongs();
   }, []);
+
+  // Helper Function that handle the thumb icon, likes.
+  const handleLikeClick = async (songId: number) => {
+    try {
+      const response = await axios.patch(`http://localhost:3000/songs/${songId}/like`);
+
+      const updatedSong = response.data;
+      setSongs((prevSongs) => prevSongs.map((song) => song.id === updatedSong.id ? {...song, likes: updatedSong.likes } : song )
+      );
+    }
+    catch(error) {
+      console.log("Playlist, Error updating likes: ", error);
+    }
+  };
 
   return (
     <>
@@ -88,7 +104,11 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
                     <td className='playlist__list-mgr__artist'>{song.artist.name}</td>
                     <td>{formatDuration(song.duration)}</td>
                     <td>{song.album.title}</td>
-                    <td><i className="fa-regular fa-thumbs-up"></i></td>
+                    <td>
+                      <i className="fa-regular fa-thumbs-up" onClick={() => handleLikeClick(song.id)}>
+                      </i>
+                      <span>{song.likes}</span> {/*Display current number of likes*/}
+                    </td>
                   </tr>
                 ))}
               </tbody>
