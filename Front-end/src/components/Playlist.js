@@ -28,6 +28,10 @@ const PlayList = ({ isOpen, onClose }) => {
         };
         fetchSongs();
     }, []);
+    // Helper function to sort songs by likes (highest to lowest)
+    const sortSongsByLikes = (songs) => {
+        return [...songs].sort((a, b) => b.likes - a.likes); // Sort by likes in descending order
+    };
     // Helper Function that handle the thumb icon, likes.
     const handleLikeClick = async (songId) => {
         try {
