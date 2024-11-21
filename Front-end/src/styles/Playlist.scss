@@ -64,7 +64,7 @@ th {
   border-spacing: 1em;
   border-color:  rgba(255, 255, 255, 0.052);
   text-align: center;
-  color: white;
+  // color: white;
   table-layout: fixed;
   width: 200px;
   padding: 8px;
@@ -92,5 +92,5 @@ td {
 
 /* Liked Songs */
 .fa-thumbs-up.liked {
-  color: goldenrod;
+  color: goldenrod !important;
 }
