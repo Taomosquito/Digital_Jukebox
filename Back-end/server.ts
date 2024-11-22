@@ -101,7 +101,7 @@ app.get('/songs', async (req, res) => {
   
   try {
     // Fetch the song details from the database, order by likes and created at.
-    const result = await pool.query('SELECT * FROM songs ORDER BY likes DESC, created_at DESC;');
+    const result = await pool.query('SELECT * FROM songs ORDER BY likes DESC, created_at ASC;');
     const songs = result.rows;
 
     console.log("FETCHED SONGS FROM DBASE: ", songs);
