@@ -1,8 +1,8 @@
-import React from 'react';
+import {useEffect} from 'react';
 import '../styles/SideNavigation.scss';
 import SearchModal from './SearchSong';
 import { useApplication } from '../hooks/useApplicationData';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const SideNavigation = () => {
   const {
@@ -18,6 +18,16 @@ const SideNavigation = () => {
   } = useApplication();
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Open the modal when the route is /search
+  useEffect(() => {
+    if (location.pathname === '/search') {
+      handleSearchClick(); // Open the modal when /search is visited
+    } else {
+      handleCloseModal(); // Close the modal if we are not on /search
+    }
+  }, [location.pathname, handleSearchClick, handleCloseModal]);
 
   //Handle home page, close other modals and sideNavigationBar
   const handleHomeNavigation = () => {
@@ -35,7 +45,7 @@ const SideNavigation = () => {
   };
 
   const handleSearchNavigation = () => {
-    handleCloseModal();
+    // handleCloseModal(); //Testing, causes issue to click twice
     handleSearchClick();  // Open the Search Modal
     handleCloseSideNav();
     navigate('/search'); 
