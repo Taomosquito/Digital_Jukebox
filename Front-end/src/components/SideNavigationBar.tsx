@@ -1,7 +1,7 @@
-import React from 'react';
-import '../styles/SideNavigation.scss';
-import SearchModal from './SearchSong';
-import { useApplication } from '../hooks/useApplicationData';
+import React from "react";
+import "../styles/SideNavigation.scss";
+import SearchModal from "./SearchSong";
+import { useApplication } from "../hooks/useApplicationData";
 
 const SideNavigation = () => {
   const {
@@ -10,18 +10,23 @@ const SideNavigation = () => {
     handleToggleMenu,
     handleSearchClick,
     handleCloseModal,
-    handleCloseSideNav
+    handleCloseSideNav,
   } = useApplication(); // Use the custom hook for state and functions
 
   return (
     <>
       {/* Clickable Logo that toggles the side navigation */}
-      <div className="side-nav-bar__logo" onClick={handleToggleMenu}>
+      <div
+        className="side-nav-bar__logo"
+        data-testid="nav-button"
+        onClick={handleToggleMenu}
+      >
         <i className="fas fa-sliders"></i>
       </div>
 
       {/* Mobile search toggle link */}
       <div
+        data-testid="search-button"
         className="side-nav-bar__search-link"
         onClick={() => {
           handleSearchClick(); // Open the search modal
@@ -32,10 +37,16 @@ const SideNavigation = () => {
       </div>
 
       {/* Side Navigation - this will show/hide based on isMenuActive */}
-      <div className={`side-nav-bar ${isMenuActive ? 'active' : 'hidden'}`}>
+      <div
+        className={`side-nav-bar ${isMenuActive ? "active" : "hidden"}`}
+        data-testid="user-button-parent"
+      >
         <div className="side-nav-bar__icon">
           {/* Admin control icons */}
-          <div className="side-nav-bar__admin-control">
+          <div
+            className="side-nav-bar__admin-control"
+            data-testid="user-button"
+          >
             <i className="fas fa-house"></i>
             <i className="fas fa-user-plus"></i>
             <i
@@ -64,7 +75,10 @@ const SideNavigation = () => {
       </div>
 
       {/* Search Modal */}
-      <SearchModal isOpen={isModalOpen} onClose={() => handleCloseModal(() => {})} />
+      <SearchModal
+        isOpen={isModalOpen}
+        onClose={() => handleCloseModal(() => {})}
+      />
     </>
   );
 };
