@@ -99,6 +99,10 @@ export const useApplication = () => {
     const handleToggleMenu = () => {
         setIsMenuActive(!isMenuActive);
     };
+    const handleHomeClick = () => {
+        setIsModalOpen(false); //Ensure search modal is closed.
+        setIsPlaylistOpen(false); // ensure the playlist modal is closed.
+    };
     const handleSearchClick = () => {
         setIsModalOpen(true);
         setIsPlaylistOpen(false); // Ensure playlist modal is closed
@@ -157,6 +161,7 @@ export const useApplication = () => {
         handleCloseModal,
         handleAddToPlaylist,
         handleToggleMenu,
+        handleHomeClick,
         handleSearchClick,
         handlePlaylistClick,
         handleCloseSideNav,
