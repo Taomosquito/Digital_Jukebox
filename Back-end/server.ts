@@ -108,6 +108,7 @@ app.get('/songs', async (req, res) => {
 
     // Fetch song details from Deezer API for each song
     const songDetailsPromises = songs.map(async (song) => {
+      // const response = await axios.get(`https://api.deezer.com/track/${song.song_api_id}`);
       const response = await axios.get(`https://deezerdevs-deezer.p.rapidapi.com/track/${song.song_api_id}`, {
         headers: {
           'x-rapidapi-key': process.env.VITE_DEEZER_API_KEY,
@@ -127,35 +128,130 @@ app.get('/songs', async (req, res) => {
 });
 
 //Routes that partially update the resource
-app.patch('/songs/:id/like', async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
-  console.log("id is: ", id)
+// app.patch('/songs/:id/like', async (req: Request, res: Response): Promise<void> => {
+//   const { id } = req.params;
+//   console.log("id is: ", id)
+
+//   try {
+//     // const songId = parseInt(id, 10);
+//     // Increment the likes for the song by 1
+//     const result = await pool.query(
+//       `UPDATE songs SET likes = likes + 1, updated_at = NOW() WHERE song_api_id = $1 RETURNING *`,
+//       [id]
+//     );
+
+//     // If the song with the given id does not exist, return an error
+//     if (result.rows.length === 0) {
+//       res.status(404).json({ message: "Song not found" });
+//       return;
+//     }
+
+//     // Send back the updated song object
+//     const updatedSong = result.rows[0];
+//     console.log('server. UpdatedSong: ', updatedSong)
+//     res.status(200).json(updatedSong);
+//   } catch (error) {
+//     console.error('Error updating likes:', error);
+//     res.status(500).json({ message: 'Failed to update likes' });
+//   }
+// });
+
+
+//Testing: Likes and TO get the likes
+
+// app.patch('/songs/:id/like', async (req, res) => {
+//   const { id } = req.params;
+//   console.log("Received id: ", id);
+//   try {
+//       // Increment the likes for the song by 1 in your local database
+//       const result = await pool.query(`UPDATE songs SET likes = likes + 1, updated_at = NOW() WHERE song_api_id = $1 RETURNING *`, [id]);
+
+//       if (result.rows.length === 0) {
+//           res.status(404).json({ message: "Song not found" });
+//           return;
+//       }
+
+//       // Get the updated song
+//       const updatedSong = result.rows[0]; // Get the updated song details
+
+//       // Fetch the Deezer data for the updated song (only if needed)
+//       // const response = await axios.get(`https://api.deezer.com/track/${updatedSong.song_api_id}`);
+
+//       const response = await axios.get(`https://deezerdevs-deezer.p.rapidapi.com/track/${updatedSong.song_api_id}`, {
+//           headers: {
+//               'x-rapidapi-key': process.env.VITE_DEEZER_API_KEY,
+//           },
+//       });
+
+//       // Combine the Deezer data with the updated song data (likes are already updated)
+//       const songWithDeezerData = {
+//           ...updatedSong,
+//           title: response.data.title,
+//           artist: response.data.artist,
+//           album: response.data.album,
+//           duration: response.data.duration,
+//           preview: response.data.preview,
+//       };
+
+//       // Return the updated song with likes and Deezer details
+//       res.json(songWithDeezerData);
+//   }
+//   catch (error) {
+//       console.error('Error updating likes:', error);
+//       res.status(500).json({ message: 'Failed to update likes' });
+//   }
+// });
+
+app.patch('/songs/:song_api_id/like', async (req: Request<{ song_api_id: string }>, res: Response) => {
+  const { song_api_id } = req.params;
+  console.log("Received song API ID:", song_api_id);
 
   try {
-    // const songId = parseInt(id, 10);
-    // Increment the likes for the song by 1
+    // Increment the likes for the song using the `song_api_id`
     const result = await pool.query(
       `UPDATE songs SET likes = likes + 1, updated_at = NOW() WHERE song_api_id = $1 RETURNING *`,
-      [id]
+      [song_api_id]  // Use the `song_api_id` to update the song
     );
 
-    // If the song with the given id does not exist, return an error
+    // If no song was found with that `song_api_id`, return a 404 error.
     if (result.rows.length === 0) {
       res.status(404).json({ message: "Song not found" });
       return;
     }
 
-    // Send back the updated song object
+    // Get the updated song from the result
     const updatedSong = result.rows[0];
-    console.log('server. UpdatedSong: ', updatedSong)
-    res.status(200).json(updatedSong);
+
+    // Fetch Deezer data for the updated song using the `song_api_id`
+    const response = await axios.get(
+      `https://deezerdevs-deezer.p.rapidapi.com/track/${updatedSong.song_api_id}`,
+      {
+        headers: {
+          'x-rapidapi-key': process.env.VITE_DEEZER_API_KEY, // Deezer API key
+        },
+      }
+    );
+
+    // Combine the Deezer data with the updated song data
+    const songWithDeezerData = {
+      ...updatedSong,
+      title: response.data.title,
+      artist: response.data.artist,
+      album: response.data.album,
+      duration: response.data.duration,
+      preview: response.data.preview,
+    };
+
+    // Return the updated song with likes and Deezer details
+    res.json(songWithDeezerData);
+    return;
+
   } catch (error) {
     console.error('Error updating likes:', error);
     res.status(500).json({ message: 'Failed to update likes' });
+    return
   }
 });
-
-
 
 // Start the server
 app.listen(PORT, async () => {
