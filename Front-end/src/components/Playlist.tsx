@@ -226,7 +226,12 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
 
   // Loading indicator for when songs are being fetched
   if (songs.length === 0) {
-    return <div>Loading...</div>;
+    return (
+      <div className="playlist__empty-alert">
+        <h2>No songs have been selected for playback.</h2>
+        <h4>Please navigate to the search section to browse, select, and add songs to our playlist </h4>
+      </div>
+    );
   }
 
   return (
@@ -247,6 +252,10 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
                   </tr>
                 </thead>
                 <tbody>
+                  {/* If songs.length === 0 {
+                          <h2> No selected songs to play
+                              Go to search, select, and add songs </h2>
+                  } else { */}
                   {songs.map((song) => {
                     // Ensure no extra whitespace or newline characters inside the <tr>
                     return (

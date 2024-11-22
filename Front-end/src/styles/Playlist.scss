@@ -1,3 +1,17 @@
+.playlist__empty-alert {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: whitesmoke;
+  margin: auto;
+  background-color: rgba(81, 129, 189, 0.1);
+  backdrop-filter: blur(10.2px);
+  border: 1px solid rgba(81, 129, 189, 0.24);
+  padding: 25px
+}
+
 .playlist__modal-overlay {
   position: fixed;
   top: 0;
