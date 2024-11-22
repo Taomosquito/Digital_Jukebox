@@ -6,6 +6,7 @@
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "strict": true,
+    "lib": ["es2020", "dom"],
     "typeRoots": ["node_modules/@types"]
   },
   "include": [
@@ -16,15 +17,12 @@
     "./vite-env.d.ts",
     "./"
   ],
-  "exclude": ["node_modules", "build", "dist", "public"]
-}
-/*
-ORIGINAL DOCUMENT
-{
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+  "exclude": [
+    "node_modules",
+    "build",
+    "dist",
+    "public",
+    "cypress.config.ts",
+    "cypress"
   ]
 }
-*/
