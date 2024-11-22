@@ -2,6 +2,7 @@ import '../styles/SearchSong.scss';
 import TrackListManager from './TrackListManager';
 import useMusicApi from '../hooks/useMusicApi';
 import { useApplication } from '../hooks/useApplicationData';
+import { useNavigate } from 'react-router-dom';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -25,7 +26,13 @@ const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
     handleSelectedSongsChange // Access this from useApplication hook
   } = useApplication();
 
+  const navigate = useNavigate();
   const { data, loading, error } = useMusicApi(submittedSearchTerm);
+
+  const handleCloseAndRedirect = () => {
+    handleCloseModal(onClose);
+    navigate('/playlist');
+  }
 
   if (!isOpen) return null;
 
@@ -91,7 +98,8 @@ const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
             </button>
           )}
 
-          <button className="close-modal" onClick={() => handleCloseModal(onClose)}>
+          {/* <button className="close-modal" onClick={() => handleCloseModal(onClose)}> */}
+          <button className="close-modal" onClick={handleCloseAndRedirect}>
             Close
           </button>
         </div>
