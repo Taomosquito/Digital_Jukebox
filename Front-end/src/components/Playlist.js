@@ -176,7 +176,7 @@ const PlayList = ({ isOpen, onClose }) => {
     console.log("Songs array:", songs);
     // Loading indicator for when songs are being fetched
     if (songs.length === 0) {
-        return _jsx("div", { children: "Loading..." });
+        return (_jsxs("div", { className: "playlist__empty-alert", children: [_jsx("h2", { children: "No songs have been selected for playback." }), _jsx("h4", { children: "Please navigate to the search section to browse, select, and add songs to our playlist " })] }));
     }
     return (_jsx(_Fragment, { children: _jsx("div", { className: "playlist__modal-overlay", onClick: onClose, children: _jsx("div", { className: "playlist__modal-content", onClick: (e) => e.stopPropagation(), children: _jsx("div", { className: "playlist__results", children: _jsx("div", { className: "playlist__list-mgr", children: _jsxs("table", { children: [_jsx("thead", { children: _jsxs("tr", { children: [_jsx("th", { children: "Song API id" }), _jsx("th", { children: "Track" }), _jsx("th", { children: "Artist" }), _jsx("th", { children: "Time" }), _jsx("th", { children: "Album" }), _jsx("th", { children: "Likes" })] }) }), _jsx("tbody", { children: songs.map((song) => {
                                         // Ensure no extra whitespace or newline characters inside the <tr>
