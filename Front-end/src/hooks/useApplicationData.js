@@ -10,6 +10,7 @@ export const useApplication = () => {
     // State for side navigation and modal visibility
     const [isMenuActive, setIsMenuActive] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isPlaylistOpen, setIsPlaylistOpen] = useState(false); //Manage Playlist()
     // // Organize the raw results (e.g., sorting by song title)
     // const organizeResults = (results: any[]) => {
     //   return results.sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
@@ -67,14 +68,15 @@ export const useApplication = () => {
         }
     };
     // Reset everything when the modal is closed
-    const handleCloseModal = (onClose) => {
+    // const handleCloseModal = (onClose: () => void) => {
+    const handleCloseModal = (onClose = () => { }) => {
         setSearchTerm('');
         setSubmittedSearchTerm('');
         setSelectedSongs([]);
         setIsModalOpen(false); // Close the modal
         onClose(); // Callback to close the modal from the parent
     };
-    // *********************** .  Handle the add to playlist action
+    // Handle the add to playlist action
     const handleAddToPlaylist = async () => {
         console.log('Songs added to playlist:', selectedSongs);
         setSelectedSongs([]); // Clear selected songs after adding
@@ -99,6 +101,12 @@ export const useApplication = () => {
     };
     const handleSearchClick = () => {
         setIsModalOpen(true);
+        setIsPlaylistOpen(false); // Ensure playlist modal is closed
+    };
+    // Open the playlist modal
+    const handlePlaylistClick = () => {
+        setIsPlaylistOpen(true); // Open playlist modal
+        setIsModalOpen(false); // Ensure search modal is closed
     };
     const handleCloseSideNav = () => {
         setIsMenuActive(false);
@@ -135,6 +143,7 @@ export const useApplication = () => {
         setSubmittedSearchTerm,
         isMenuActive,
         isModalOpen,
+        isPlaylistOpen,
         selectedSongs,
         playingSong,
         audioRefs,
@@ -149,6 +158,7 @@ export const useApplication = () => {
         handleAddToPlaylist,
         handleToggleMenu,
         handleSearchClick,
+        handlePlaylistClick,
         handleCloseSideNav,
         handleScrollDown,
         handleScrollUp,
