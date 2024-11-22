@@ -1,11 +1,22 @@
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
+import { useEffect } from 'react';
 import '../styles/SideNavigation.scss';
 import SearchModal from './SearchSong';
 import { useApplication } from '../hooks/useApplicationData';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 const SideNavigation = () => {
     const { isMenuActive, isModalOpen, isPlaylistOpen, handleToggleMenu, handleSearchClick, handlePlaylistClick, handleHomeClick, handleCloseModal, handleCloseSideNav } = useApplication();
     const navigate = useNavigate();
+    const location = useLocation();
+    // Open the modal when the route is /search
+    useEffect(() => {
+        if (location.pathname === '/search') {
+            handleSearchClick(); // Open the modal when /search is visited
+        }
+        else {
+            handleCloseModal(); // Close the modal if we are not on /search
+        }
+    }, [location.pathname, handleSearchClick, handleCloseModal]);
     //Handle home page, close other modals and sideNavigationBar
     const handleHomeNavigation = () => {
         handleCloseModal(); // Close any open modal
@@ -20,7 +31,7 @@ const SideNavigation = () => {
         navigate('/playlist'); // Navigate to playlist route
     };
     const handleSearchNavigation = () => {
-        handleCloseModal();
+        // handleCloseModal(); //Testing, causes issue to click twice
         handleSearchClick(); // Open the Search Modal
         handleCloseSideNav();
         navigate('/search');
