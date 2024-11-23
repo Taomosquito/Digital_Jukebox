@@ -59,9 +59,8 @@ const insertSongIntoDatabase = async (songApiId: string) => {
   try {
     // Insert song into the database
     const query = `
-      INSERT INTO songs (song_api_id, likes, created_at, updated_at)
-      VALUES ($1, 0, NOW(), NOW())
-      ON CONFLICT (song_api_id) DO NOTHING
+      INSERT INTO songs (song_api_id)
+      VALUES ($1)
     `;
 
     // Use the songApiId as a parameter to prevent SQL injection
@@ -74,10 +73,12 @@ const insertSongIntoDatabase = async (songApiId: string) => {
 };
 
 // Catch-all route to serve the React app for any other requests
-app.get("*", (req, res) => {
-  console.log('GETTTT - server running');
-  res.sendFile(path.resolve(buildPath, "index.html"));
-});
+// Temporary disabled to get all the songs from database.
+//
+// app.get("*", (req, res) => {
+//   console.log('GETTTT - server running');
+//   res.sendFile(path.resolve(buildPath, "index.html"));
+// });
 
 
 app.post('/addSongs', async (req: Request, res: Response) => {
@@ -97,14 +98,17 @@ app.post('/addSongs', async (req: Request, res: Response) => {
 });
 
 app.get('/songs', async (req, res) => {
-  console.log("GETTTT - All Songs")
+  
   try {
-    // Fetch the song details from the database
-    const result = await pool.query('SELECT * FROM songs');
+    // Fetch the song details from the database, order by likes and created at.
+    const result = await pool.query('SELECT * FROM songs ORDER BY likes DESC, created_at ASC;');
     const songs = result.rows;
+
+    console.log("FETCHED SONGS FROM DBASE: ", songs);
 
     // Fetch song details from Deezer API for each song
     const songDetailsPromises = songs.map(async (song) => {
+      // const response = await axios.get(`https://api.deezer.com/track/${song.song_api_id}`);
       const response = await axios.get(`https://deezerdevs-deezer.p.rapidapi.com/track/${song.song_api_id}`, {
         headers: {
           'x-rapidapi-key': process.env.VITE_DEEZER_API_KEY,
@@ -115,7 +119,7 @@ app.get('/songs', async (req, res) => {
 
     const songDetails = await Promise.all(songDetailsPromises);
 
-    res.json(songDetails); // Return the song details including title, artist, duration, and preview
+    res.json(songDetails); // Return the song details including title, artist, duration, and preview, and ...
   } catch (error) {
     console.error('Error fetching songs:', error);
     res.status(500).json({ message: 'Failed to fetch songs' });
@@ -123,6 +127,73 @@ app.get('/songs', async (req, res) => {
   
 });
 
+//Routes that partially update the resource
+app.patch('/songs/:song_api_id/like', async (req: Request<{ song_api_id: string }>, res: Response) => {
+  const { song_api_id } = req.params;
+  console.log("Received song API ID:", song_api_id);
+
+  try {
+    // Increment the likes for the song using the `song_api_id`
+    const result = await pool.query(
+      `UPDATE songs SET likes = likes + 1, updated_at = NOW() WHERE song_api_id = $1 RETURNING *`,
+      [song_api_id]  // Use the `song_api_id` to update the song
+    );
+
+    // If no song was found with that `song_api_id`, return a 404 error.
+    if (result.rows.length === 0) {
+      res.status(404).json({ message: "Song not found" });
+      return;
+    }
+
+    // Get the updated song from the result
+    const updatedSong = result.rows[0];
+
+    // Fetch Deezer data for the updated song using the `song_api_id`
+    const response = await axios.get(
+      `https://deezerdevs-deezer.p.rapidapi.com/track/${updatedSong.song_api_id}`,
+      {
+        headers: {
+          'x-rapidapi-key': process.env.VITE_DEEZER_API_KEY, // Deezer API key
+        },
+      }
+    );
+
+    // Combine the Deezer data with the updated song data
+    const songWithDeezerData = {
+      ...updatedSong,
+      title: response.data.title,
+      artist: response.data.artist,
+      album: response.data.album,
+      duration: response.data.duration,
+      preview: response.data.preview,
+    };
+
+    // Return the updated song with likes and Deezer details
+    res.json(songWithDeezerData);
+    return;
+
+  } catch (error) {
+    console.error('Error updating likes:', error);
+    res.status(500).json({ message: 'Failed to update likes' });
+    return
+  }
+});
+
+//Route: Delete all songs
+app.delete('/songs', async (req: Request, res: Response) => {
+  try {
+    const client = await pool.connect();
+    const queryString = 'TRUNCATE TABLE songs RESTART IDENTITY'
+    await client.query(queryString);
+    client.release(); //back to pool
+    res.status(200).json({message: 'All songs are now deleted and ID reset'});
+    
+  }
+  catch(error) {
+    console.log('Error deleting the all the songs: ', error);
+    res.status(500).json({ message: 'Failed to delete songs' });
+  }
+});
 
 // Start the server
 app.listen(PORT, async () => {

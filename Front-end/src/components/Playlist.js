@@ -1,37 +1,52 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-// import React from "react";
-// const Playlist = () => {
-//   return (
-//     <div>
-//       <p>In Progress ... </p>
-//     </div>
-//   );
-// }
-// export default Playlist;import React, { useEffect, useState } from 'react';
+import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import { useEffect, useState } from 'react';
+import { useApplication } from '../hooks/useApplicationData';
 import axios from 'axios';
-const Playlist = () => {
+import '../styles/Playlist.scss';
+const PlayList = ({ isOpen, onClose }) => {
     const [songs, setSongs] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const { formatDuration } = useApplication();
+    // Fetch songs from backend
     useEffect(() => {
-        // Fetch the songs from your backend
-        axios.get('/songs')
-            .then((response) => {
-            setSongs(response.data); // Set the song details
-            setLoading(false); // Set loading to false once data is fetched
-        })
-            .catch((err) => {
-            setError('Failed to load songs');
-            setLoading(false);
-        });
+        const fetchSongs = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/songs');
+                const data = response.data;
+                console.log("Playlist fetchSongs - data: ", data);
+                if (Array.isArray(data)) {
+                    setSongs(data); // Update the state with the song data
+                }
+                else {
+                    console.error("Expected an array of songs but got:", data);
+                }
+            }
+            catch (error) {
+                console.error('Error fetching songs:', error);
+            }
+        };
+        fetchSongs();
     }, []);
-    if (loading) {
-        return _jsx("div", { children: "Loading..." });
+    const handleLikeClick = async (songApiId) => {
+        try {
+            const response = await axios.patch(`http://localhost:3000/songs/${songApiId}/like`);
+            const updatedSong = response.data;
+            console.log("Playlist updatedSong: ", updatedSong);
+            // Update the song list with the updated song's data
+            setSongs((prevSongs) => prevSongs.map((song) => song.song_api_id === updatedSong.song_api_id ? { ...song, likes: updatedSong.likes, ...updatedSong } : song));
+            window.location.reload(); //Testing: to reload the page
+        }
+        catch (error) {
+            console.error("Error updating likes:", error);
+        }
+    };
+    // Debugging: Songs data
+    console.log("Songs array:", songs);
+    //Loading indicator for when songs are being fetched or if database is empty
+    if (songs.length === 0) {
+        return (_jsx("div", { className: "playlist__empty-alert", children: _jsx("h2", { children: "Loading..." }) }));
     }
-    if (error) {
-        return _jsx("div", { children: error });
-    }
-    return (_jsxs("div", { className: "playlist", children: [_jsx("h2", { children: "Your Playlist" }), _jsx("div", { className: "song-list", children: songs.map((song, index) => (_jsxs("div", { className: "song-item", children: [_jsx("img", { src: song.album.cover_small, alt: song.title }), _jsx("h3", { children: song.title }), _jsx("p", { children: song.artist.name }), _jsxs("audio", { controls: true, children: [_jsx("source", { src: song.preview, type: "audio/mp3" }), "Your browser does not support the audio element."] })] }, index))) })] }));
+    return (_jsx(_Fragment, { children: _jsx("div", { className: "playlist__modal-overlay", onClick: onClose, children: _jsx("div", { className: "playlist__modal-content", onClick: (e) => e.stopPropagation(), children: _jsx("div", { className: "playlist__results", children: _jsx("div", { className: "playlist__list-mgr", children: _jsxs("table", { children: [_jsx("thead", { children: _jsxs("tr", { children: [_jsx("th", { children: "Track" }), _jsx("th", { children: "Artist" }), _jsx("th", { children: "Time" }), _jsx("th", { children: "Album" }), _jsx("th", { children: "Likes" })] }) }), _jsx("tbody", { children: songs.map((song) => {
+                                        return (_jsxs("tr", { children: [_jsx("td", { className: "playlist__list-mgr__title", children: song.title }), _jsx("td", { className: "playlist__list-mgr__artist", children: song.artist?.name }), _jsx("td", { children: formatDuration(song.duration) }), _jsx("td", { children: song.album?.title }), _jsxs("td", { children: [_jsx("i", { className: `fa-regular fa-thumbs-up ${song.likes > 0 ? 'liked' : ''}`, onClick: () => handleLikeClick(song.id) }), _jsx("span", { children: song.likes })] })] }, song.id));
+                                    }) })] }) }) }) }) }) }));
 };
-export default Playlist;
+export default PlayList;
