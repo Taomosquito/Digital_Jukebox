@@ -1,76 +1,127 @@
-// import React from "react";
-
-// const Playlist = () => {
-  
-//   return (
-//     <div>
-//       <p>In Progress ... </p>
-//     </div>
-//   );
-// }
-
-// export default Playlist;import React, { useEffect, useState } from 'react';
-
-
 import React, { useEffect, useState } from 'react';
+import { useApplication } from '../hooks/useApplicationData';
 import axios from 'axios';
+import '../styles/Playlist.scss';
 
 interface Song {
+  id: number;
+  song_api_id: string;
   title: string;
-  preview: string;
+  duration: number;
   artist: {
     name: string;
     picture_small: string;
   };
   album: {
-    cover_small: string;
+    title: string;
   };
+  likes: number;
+  created_at: string;
 }
 
-const Playlist: React.FC = () => {
-  const [songs, setSongs] = useState<Song[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+interface PlayListProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
+const PlayList = ({ isOpen, onClose }: PlayListProps) => {
+  const [songs, setSongs] = useState<Song[]>([]);
+  const { formatDuration } = useApplication();
+
+  // Fetch songs from backend
   useEffect(() => {
-    // Fetch the songs from your backend
-    axios.get('/songs')
-      .then((response) => {
-        setSongs(response.data);  // Set the song details
-        setLoading(false);         // Set loading to false once data is fetched
-      })
-      .catch((err) => {
-        setError('Failed to load songs');
-        setLoading(false);
-      });
+    const fetchSongs = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/songs');
+        const data = response.data;
+        console.log("Playlist fetchSongs - data: ", data)
+        if (Array.isArray(data)) {
+          setSongs(data); // Update the state with the song data
+        } else {
+          console.error("Expected an array of songs but got:", data);
+        }
+      } catch (error) {
+        console.error('Error fetching songs:', error);
+      }
+    };
+
+    fetchSongs();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleLikeClick = async (songApiId: number) => {
+    try {
+      const response = await axios.patch(`http://localhost:3000/songs/${songApiId}/like`);
+      const updatedSong = response.data;
 
-  if (error) {
-    return <div>{error}</div>;
+      console.log("Playlist updatedSong: ", updatedSong);
+  
+      // Update the song list with the updated song's data
+      setSongs((prevSongs) =>
+        prevSongs.map((song) =>
+          song.song_api_id === updatedSong.song_api_id ? { ...song, likes: updatedSong.likes, ...updatedSong } : song
+        )
+      );
+      window.location.reload(); //Testing: to reload the page
+    } catch (error) {
+      console.error("Error updating likes:", error);
+    }
+  };
+
+  // Debugging: Songs data
+  console.log("Songs array:", songs);
+
+  //Loading indicator for when songs are being fetched or if database is empty
+  if (songs.length === 0) {
+    return (
+      <div className="playlist__empty-alert">
+        <h2>Loading...</h2>
+      </div>
+    );
   }
 
   return (
-    <div className="playlist">
-      <h2>Your Playlist</h2>
-      <div className="song-list">
-        {songs.map((song, index) => (
-          <div key={index} className="song-item">
-            <img src={song.album.cover_small} alt={song.title} />
-            <h3>{song.title}</h3>
-            <p>{song.artist.name}</p>
-            <audio controls>
-              <source src={song.preview} type="audio/mp3" />
-              Your browser does not support the audio element.
-            </audio>
+    <>
+      <div className="playlist__modal-overlay" onClick={onClose}>
+        <div className="playlist__modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="playlist__results">
+            <div className="playlist__list-mgr">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Track</th>
+                    <th>Artist</th>
+                    <th>Time</th>
+                    <th>Album</th>
+                    <th>Likes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {songs.map((song) => {
+                    return (
+                      <tr key={song.id}>
+                        <td className="playlist__list-mgr__title">{song.title}</td>
+                        <td className="playlist__list-mgr__artist">{song.artist?.name}</td>
+                        <td>{formatDuration(song.duration)}</td>
+                        <td>{song.album?.title}</td>
+                        <td>
+                          <i
+                            className={`fa-regular fa-thumbs-up ${song.likes > 0 ? 'liked' : ''}`}
+                            onClick={() => handleLikeClick(song.id)} // Pass song_api_id for backend interaction
+                          ></i>
+                          <span>{song.likes}</span>
+                        </td>
+                      </tr>
+                    );
+                    })
+                  }
+                </tbody>
+              </table>
+            </div>
           </div>
-        ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default Playlist;
+export default PlayList;

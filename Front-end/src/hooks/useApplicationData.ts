@@ -12,6 +12,9 @@ export const useApplication = () => {
   // State for side navigation and modal visibility
   const [isMenuActive, setIsMenuActive] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);//Manage Playlist()
+
+  const [message, setMessage] = useState<string>('');
 
   // // Organize the raw results (e.g., sorting by song title)
   // const organizeResults = (results: any[]) => {
@@ -75,7 +78,8 @@ export const useApplication = () => {
   };
 
   // Reset everything when the modal is closed
-  const handleCloseModal = (onClose: () => void) => {
+  // const handleCloseModal = (onClose: () => void) => {
+  const handleCloseModal = (onClose: () => void = () => {}) => {
     setSearchTerm('');
     setSubmittedSearchTerm('');
     setSelectedSongs([]);
@@ -83,7 +87,7 @@ export const useApplication = () => {
     onClose(); // Callback to close the modal from the parent
   };
 
-  // *********************** .  Handle the add to playlist action
+  // Handle the add to playlist action
   const handleAddToPlaylist = async () => {
     console.log('Songs added to playlist:', selectedSongs);
     setSelectedSongs([]); // Clear selected songs after adding
@@ -104,13 +108,46 @@ export const useApplication = () => {
 
   };
 
+  //To Delete all songs
+  const handleDeleteAllSongs = async () => {
+    const confirmDelete = window.confirm('Are you sure you want to delete all songs?');
+    
+    if (!confirmDelete) return;
+
+    try {
+      const response = await axios.delete('http://localhost:3000/songs');
+      if (response.status === 200) {
+        setMessage('All songs deleted successfully.');
+      } else {
+        setMessage('Failed to delete songs. Please try again later.');
+      }
+    }
+    catch(error: any) {
+      console.error('Error deleting songs:', error);
+      setMessage('Failed to delete songs. Please try again later.');
+    }
+  };
+
+
   // Side navigation and modal toggle functions
   const handleToggleMenu = () => {
     setIsMenuActive(!isMenuActive);
   };
 
+  const handleHomeClick = () => {
+    setIsModalOpen(false); //Ensure search modal is closed.
+    setIsPlaylistOpen(false); // ensure the playlist modal is closed.
+  }
+
   const handleSearchClick = () => {
     setIsModalOpen(true);
+    setIsPlaylistOpen(false);  // Ensure playlist modal is closed
+  };
+
+   // Open the playlist modal
+   const handlePlaylistClick = () => {
+    setIsPlaylistOpen(true);  // Open playlist modal
+    setIsModalOpen(false);  // Ensure search modal is closed
   };
 
   const handleCloseSideNav = () => {
@@ -153,6 +190,7 @@ export const useApplication = () => {
     setSubmittedSearchTerm,
     isMenuActive,
     isModalOpen,
+    isPlaylistOpen,
     selectedSongs,
     playingSong,
     audioRefs,
@@ -165,8 +203,11 @@ export const useApplication = () => {
     handleSubmit,
     handleCloseModal,
     handleAddToPlaylist,
+    handleDeleteAllSongs,
     handleToggleMenu,
+    handleHomeClick,
     handleSearchClick,
+    handlePlaylistClick,
     handleCloseSideNav,
     handleScrollDown,
     handleScrollUp,

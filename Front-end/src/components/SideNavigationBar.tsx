@@ -1,17 +1,62 @@
-import React from 'react';
+import {useState, useEffect} from 'react';
 import '../styles/SideNavigation.scss';
 import SearchModal from './SearchSong';
 import { useApplication } from '../hooks/useApplicationData';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const SideNavigation = () => {
   const {
     isMenuActive,
     isModalOpen,
+    isPlaylistOpen,
     handleToggleMenu,
     handleSearchClick,
+    handlePlaylistClick,
+    handleDeleteAllSongs,
+    handleHomeClick,
     handleCloseModal,
     handleCloseSideNav
-  } = useApplication(); // Use the custom hook for state and functions
+  } = useApplication();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Open the modal when the route is /search
+  useEffect(() => {
+    if (location.pathname === '/search') {
+      handleSearchClick(); // Open the modal when /search is visited
+    } else {
+      handleCloseModal(); // Close the modal if we are not on /search
+    }
+  }, [location.pathname, handleSearchClick, handleCloseModal]);
+
+  //Handle home page, close other modals and sideNavigationBar
+  const handleHomeNavigation = () => {
+    handleCloseModal(); // Close any open modal
+    handleHomeClick(); //Open the Home Page
+    handleCloseSideNav(); //Close the side navigation
+    navigate('/'); // Navigate to Home route
+  };
+
+  const handlePlaylistNavigation = () => {
+    handleCloseModal();
+    handlePlaylistClick(); // Open the Playlist Modal
+    handleCloseSideNav();
+    navigate('/playlist'); // Navigate to playlist route
+  };
+
+  const handleSearchNavigation = () => {
+    handleSearchClick();  // Open the Search Modal
+    handleCloseSideNav();
+    navigate('/search'); 
+  };
+
+  const handleDeleteAllSongsNavigation = () =>{
+    handleCloseModal();
+    handleDeleteAllSongs();
+    navigate('/');
+  };
+
 
   return (
     <>
@@ -21,14 +66,10 @@ const SideNavigation = () => {
       </div>
 
       {/* Mobile search toggle link */}
-      <div
-        className="side-nav-bar__search-link"
-        onClick={() => {
-          handleSearchClick(); // Open the search modal
-          handleCloseSideNav(); // and close the side navigation
-        }}
-      >
-        <i className="fas fa-magnifying-glass"></i>
+      <div className="side-nav-bar__search-link">
+        <i className="fas fa-magnifying-glass"
+          onClick={handleSearchNavigation}>
+        </i>
       </div>
 
       {/* Side Navigation - this will show/hide based on isMenuActive */}
@@ -36,16 +77,16 @@ const SideNavigation = () => {
         <div className="side-nav-bar__icon">
           {/* Admin control icons */}
           <div className="side-nav-bar__admin-control">
-            <i className="fas fa-house"></i>
+            <i className="fas fa-house" onClick={handleHomeNavigation}></i>
             <i className="fas fa-user-plus"></i>
-            <i
-              className="fas fa-magnifying-glass"
-              onClick={() => {
-                handleSearchClick();
-                handleCloseSideNav(); // Close the menu when the search is triggered
-              }}
+            <i className="fas fa-magnifying-glass"
+              onClick={handleSearchNavigation}></i>
+            <i className="fas fa-heart-circle-xmark"
+              onClick={handleDeleteAllSongsNavigation}
+              title="Delete All Songs"
             ></i>
-            <i className="fas fa-heart-circle-xmark"></i>
+            <i className="fas fa-music"
+              onClick={handlePlaylistNavigation}></i>
           </div>
 
           <br />
@@ -64,7 +105,8 @@ const SideNavigation = () => {
       </div>
 
       {/* Search Modal */}
-      <SearchModal isOpen={isModalOpen} onClose={() => handleCloseModal(() => {})} />
+      {/* <SearchModal isOpen={isModalOpen} onClose={() => handleCloseModal(() => {})} /> */}
+      <SearchModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </>
   );
 };

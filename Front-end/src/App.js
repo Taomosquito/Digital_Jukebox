@@ -1,10 +1,12 @@
-import { jsx as _jsx } from "react/jsx-runtime";
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SideNavigationBar from './components/SideNavigationBar';
+import PlayList from "./components/Playlist";
 function App() {
     // const [count, setCount] = useState(0)
-    return (_jsx("div", { className: 'App', children: _jsx(SideNavigationBar, {}) }));
+    return (_jsx(Router, { children: _jsxs("div", { className: 'App', children: [_jsx(SideNavigationBar, {}), _jsxs(Routes, { children: [_jsx(Route, { path: "/", element: _jsx(SideNavigationBar, {}) }), _jsx(Route, { path: "/playlist", element: _jsx(PlayList, { isOpen: false, onClose: function () {
+                                    throw new Error("Function not implemented.");
+                                } }) })] })] }) }));
 }
 export default App;
