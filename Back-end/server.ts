@@ -179,6 +179,22 @@ app.patch('/songs/:song_api_id/like', async (req: Request<{ song_api_id: string 
   }
 });
 
+//Route: Delete all songs
+app.delete('/songs', async (req: Request, res: Response) => {
+  try {
+    const client = await pool.connect();
+    const queryString = 'TRUNCATE TABLE songs RESTART IDENTITY'
+    await client.query(queryString);
+    client.release(); //back to pool
+    res.status(200).json({message: 'All songs are now deleted and ID reset'});
+    
+  }
+  catch(error) {
+    console.log('Error deleting the all the songs: ', error);
+    res.status(500).json({ message: 'Failed to delete songs' });
+  }
+});
+
 // Start the server
 app.listen(PORT, async () => {
   console.log(`Server is running on port: ${PORT}`);
