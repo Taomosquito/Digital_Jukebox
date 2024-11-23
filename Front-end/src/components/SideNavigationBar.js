@@ -31,11 +31,15 @@ const SideNavigation = () => {
         navigate('/playlist'); // Navigate to playlist route
     };
     const handleSearchNavigation = () => {
-        // handleCloseModal(); //Testing, causes issue to click twice
         handleSearchClick(); // Open the Search Modal
         handleCloseSideNav();
         navigate('/search');
     };
-    return (_jsxs(_Fragment, { children: [_jsx("div", { className: "side-nav-bar__logo", onClick: handleToggleMenu, children: _jsx("i", { className: "fas fa-sliders" }) }), _jsx("div", { className: "side-nav-bar__search-link", children: _jsx("i", { className: "fas fa-magnifying-glass", onClick: handleSearchNavigation }) }), _jsx("div", { className: `side-nav-bar ${isMenuActive ? 'active' : 'hidden'}`, children: _jsxs("div", { className: "side-nav-bar__icon", children: [_jsxs("div", { className: "side-nav-bar__admin-control", children: [_jsx("i", { className: "fas fa-house", onClick: handleHomeNavigation }), _jsx("i", { className: "fas fa-user-plus" }), _jsx("i", { className: "fas fa-magnifying-glass", onClick: handleSearchNavigation }), _jsx("i", { className: "fas fa-heart-circle-xmark", onClick: handleDeleteAllSongs, title: "Delete All Songs" }), _jsx("i", { className: "fas fa-music", onClick: handlePlaylistNavigation })] }), _jsx("br", {}), _jsxs("div", { className: "side-nav-bar__media-control", children: [_jsx("i", { className: "fas fa-circle-pause" }), _jsx("i", { className: "fas fa-forward-step" })] }), _jsx("span", { className: "side-nav-bar__logout", children: _jsx("i", { className: "fas fa-arrow-right-from-bracket" }) })] }) }), _jsx(SearchModal, { isOpen: isModalOpen, onClose: handleCloseModal })] }));
+    const handleDeleteAllSongsNavigation = () => {
+        handleCloseModal();
+        handleDeleteAllSongs();
+        navigate('/');
+    };
+    return (_jsxs(_Fragment, { children: [_jsx("div", { className: "side-nav-bar__logo", onClick: handleToggleMenu, children: _jsx("i", { className: "fas fa-sliders" }) }), _jsx("div", { className: "side-nav-bar__search-link", children: _jsx("i", { className: "fas fa-magnifying-glass", onClick: handleSearchNavigation }) }), _jsx("div", { className: `side-nav-bar ${isMenuActive ? 'active' : 'hidden'}`, children: _jsxs("div", { className: "side-nav-bar__icon", children: [_jsxs("div", { className: "side-nav-bar__admin-control", children: [_jsx("i", { className: "fas fa-house", onClick: handleHomeNavigation }), _jsx("i", { className: "fas fa-user-plus" }), _jsx("i", { className: "fas fa-magnifying-glass", onClick: handleSearchNavigation }), _jsx("i", { className: "fas fa-heart-circle-xmark", onClick: handleDeleteAllSongsNavigation, title: "Delete All Songs" }), _jsx("i", { className: "fas fa-music", onClick: handlePlaylistNavigation })] }), _jsx("br", {}), _jsxs("div", { className: "side-nav-bar__media-control", children: [_jsx("i", { className: "fas fa-circle-pause" }), _jsx("i", { className: "fas fa-forward-step" })] }), _jsx("span", { className: "side-nav-bar__logout", children: _jsx("i", { className: "fas fa-arrow-right-from-bracket" }) })] }) }), _jsx(SearchModal, { isOpen: isModalOpen, onClose: handleCloseModal })] }));
 };
 export default SideNavigation;
