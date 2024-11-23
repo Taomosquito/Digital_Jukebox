@@ -88,7 +88,6 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
               <table>
                 <thead>
                   <tr>
-                    <th>Song API id</th>
                     <th>Track</th>
                     <th>Artist</th>
                     <th>Time</th>
@@ -100,7 +99,6 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
                   {songs.map((song) => {
                     return (
                       <tr key={song.id}>
-                        <td>{song.id}</td>
                         <td className="playlist__list-mgr__title">{song.title}</td>
                         <td className="playlist__list-mgr__artist">{song.artist?.name}</td>
                         <td>{formatDuration(song.duration)}</td>
