@@ -11,6 +11,7 @@ export const useApplication = () => {
     const [isMenuActive, setIsMenuActive] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isPlaylistOpen, setIsPlaylistOpen] = useState(false); //Manage Playlist()
+    const [message, setMessage] = useState('');
     // // Organize the raw results (e.g., sorting by song title)
     // const organizeResults = (results: any[]) => {
     //   return results.sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
@@ -95,6 +96,25 @@ export const useApplication = () => {
             throw new Error('Failed to add songs');
         }
     };
+    //To Delete all songs
+    const handleDeleteAllSongs = async () => {
+        const confirmDelete = window.confirm('Are you sure you want to delete all songs?');
+        if (!confirmDelete)
+            return;
+        try {
+            const response = await axios.delete('http://localhost:3000/songs');
+            if (response.status === 200) {
+                setMessage('All songs deleted successfully.');
+            }
+            else {
+                setMessage('Failed to delete songs. Please try again later.');
+            }
+        }
+        catch (error) {
+            console.error('Error deleting songs:', error);
+            setMessage('Failed to delete songs. Please try again later.');
+        }
+    };
     // Side navigation and modal toggle functions
     const handleToggleMenu = () => {
         setIsMenuActive(!isMenuActive);
@@ -160,6 +180,7 @@ export const useApplication = () => {
         handleSubmit,
         handleCloseModal,
         handleAddToPlaylist,
+        handleDeleteAllSongs,
         handleToggleMenu,
         handleHomeClick,
         handleSearchClick,
