@@ -46,10 +46,15 @@ const SideNavigation = () => {
   };
 
   const handleSearchNavigation = () => {
-    // handleCloseModal(); //Testing, causes issue to click twice
     handleSearchClick();  // Open the Search Modal
     handleCloseSideNav();
     navigate('/search'); 
+  };
+
+  const handleDeleteAllSongsNavigation = () =>{
+    handleCloseModal();
+    handleDeleteAllSongs();
+    navigate('/');
   };
 
 
@@ -77,7 +82,7 @@ const SideNavigation = () => {
             <i className="fas fa-magnifying-glass"
               onClick={handleSearchNavigation}></i>
             <i className="fas fa-heart-circle-xmark"
-              onClick={handleDeleteAllSongs}
+              onClick={handleDeleteAllSongsNavigation}
               title="Delete All Songs"
             ></i>
             <i className="fas fa-music"
