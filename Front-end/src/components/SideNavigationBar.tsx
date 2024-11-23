@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useState, useEffect} from 'react';
 import '../styles/SideNavigation.scss';
 import SearchModal from './SearchSong';
 import { useApplication } from '../hooks/useApplicationData';
@@ -12,6 +12,7 @@ const SideNavigation = () => {
     handleToggleMenu,
     handleSearchClick,
     handlePlaylistClick,
+    handleDeleteAllSongs,
     handleHomeClick,
     handleCloseModal,
     handleCloseSideNav
@@ -51,6 +52,7 @@ const SideNavigation = () => {
     navigate('/search'); 
   };
 
+
   return (
     <>
       {/* Clickable Logo that toggles the side navigation */}
@@ -74,7 +76,10 @@ const SideNavigation = () => {
             <i className="fas fa-user-plus"></i>
             <i className="fas fa-magnifying-glass"
               onClick={handleSearchNavigation}></i>
-            <i className="fas fa-heart-circle-xmark"></i>
+            <i className="fas fa-heart-circle-xmark"
+              onClick={handleDeleteAllSongs}
+              title="Delete All Songs"
+            ></i>
             <i className="fas fa-music"
               onClick={handlePlaylistNavigation}></i>
           </div>
