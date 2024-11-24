@@ -95,6 +95,11 @@ app.post("/addSongs", async (req, res) => {
         for (const song of songs) {
             await insertSongIntoDatabase(song.id);
         }
+        const queryString = 'SELECT * FROM songs ORDER BY likes DESC, created_at ASC;';
+        const result = await pool.query(queryString);
+        const updatedSongs = result.rows;
+        // Emit the event to notify clients of new songs added to list.
+        io.emit("newSongsAdded", updatedSongs);
         res
             .status(200)
             .json({ message: "Songs added successfully to our Database!" });
