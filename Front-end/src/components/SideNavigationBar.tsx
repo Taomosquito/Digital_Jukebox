@@ -53,7 +53,7 @@ const SideNavigation = () => {
     navigate("/admin-auth");
   };
 
-  const currentUser = true; //TODO: removed when session is implemented
+  const currentUser = false; //TODO: removed when session is implemented
 
   return (
     <>
@@ -73,24 +73,31 @@ const SideNavigation = () => {
       {/* Side Navigation - this will show/hide based on isMenuActive */}
       <div className={`side-nav-bar ${isMenuActive ? "active" : "hidden"}`}>
         <div className="side-nav-bar__icon">
-          <i className="fas fa-house" onClick={handleHomeNavigation}></i>
-          
-          {/* Admin control icons */}
+
           {/* TODO: declared currentUser variable (above) to be removed, once session is implemented  */}
+
           {!currentUser ? (
+            /* Admin control icons */
             <div>
+              {/* Home */}
+              <i className="fas fa-house" onClick={handleHomeNavigation}></i>
+              {/* Search */}
               <i
               className="fas fa-magnifying-glass"
               onClick={handleSearchNavigation}
               ></i>
-              <i className="fas fa-arrow-right-from-bracket" onClick={handleLoginOrAddAdmin}>{/* TODO: Modify the onclick accordingly */}</i>
-              <br />
+              {/* Login */}
+              <span className="side-nav-bar__login">
+                <i className="fas fa-arrow-right-from-bracket" onClick={handleLoginOrAddAdmin}>{/* TODO: Modify the onclick accordingly */}</i>
+              </span>
             </div>
 
           ) : (
 
             <div>
               <div className="side-nav-bar__admin-control">
+                {/* Admin control icons */}
+              <i className="fas fa-house" onClick={handleHomeNavigation}></i>
                 <i className="fas fa-user-plus" onClick={handleLoginOrAddAdmin}></i>
                 <i
                   className="fas fa-magnifying-glass"
