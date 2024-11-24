@@ -2,11 +2,13 @@ import express, { Request, Response } from "express";
 import path from "path";
 import dotenv from "dotenv";
 import pkg from "pg";
-const { Pool } = pkg;
 import axios from "axios";
 import cors from "cors";
 import bcrypt from "bcrypt";
+import { Server as SocketIOServer } from "socket.io";
+import http from "http";
 
+const { Pool } = pkg;
 // Use import.meta.url to resolve the path in ES Modules
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
@@ -28,13 +30,10 @@ app.use(
     origin: "http://localhost:5173",
   })
 );
-
 // Add middleware to parse JSON request bodies
 app.use(express.json()); // Crucial. Parse JSON.
-
 // Path to the build folder
 const buildPath = path.resolve(__dirname, "../"); // Adjust this path as needed
-
 // Serve static files from the React build directory
 app.use(express.static(buildPath));
 
@@ -53,6 +52,14 @@ pool
   .catch((err: string) =>
     console.error("Error connecting to PostgreSQL database: ", err)
   );
+
+const server = http.createServer(app);
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+  },
+});
 
 // DB query
 const insertSongIntoDatabase = async (songApiId: string) => {
@@ -231,6 +238,9 @@ app.patch(
         duration: response.data.duration,
         preview: response.data.preview,
       };
+
+      //This emit to all clients with the updated song data
+      io.emit("songLiked", songWithDeezerData);
 
       // Return the updated song with likes and Deezer details
       res.json(songWithDeezerData);
