@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
-import axios from 'axios';
+import { useState, useRef } from "react";
+import axios from "axios";
 
 export const useApplication = () => {
   // State for search and selected songs
-  const [searchTerm, setSearchTerm] = useState('');
-  const [submittedSearchTerm, setSubmittedSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [submittedSearchTerm, setSubmittedSearchTerm] = useState("");
   const [selectedSongs, setSelectedSongs] = useState<any[]>([]);
   const [playingSong, setPlayingSong] = useState<string | null>(null); // Track play state
   const audioRefs = useRef<{ [key: string]: HTMLAudioElement | null }>({}); // Store refs for each audio element
@@ -12,9 +12,9 @@ export const useApplication = () => {
   // State for side navigation and modal visibility
   const [isMenuActive, setIsMenuActive] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);//Manage Playlist()
+  const [isPlaylistOpen, setIsPlaylistOpen] = useState(false); //Manage Playlist()
 
-  const [message, setMessage] = useState<string>('');
+  const [message, setMessage] = useState<string>("");
 
   // // Organize the raw results (e.g., sorting by song title)
   // const organizeResults = (results: any[]) => {
@@ -25,15 +25,15 @@ export const useApplication = () => {
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
   // Handle checkbox change: add or remove songs from the selected list
   const handleCheckboxChange = (song: any, isChecked: boolean) => {
     setSelectedSongs((prev) => {
       const updatedSelection = isChecked
-        ? [...prev, song]  // Add song if checked
-        : prev.filter((s) => s.id !== song.id);  // Remove song if unchecked
+        ? [...prev, song] // Add song if checked
+        : prev.filter((s) => s.id !== song.id); // Remove song if unchecked
       return updatedSelection;
     });
   };
@@ -70,8 +70,8 @@ export const useApplication = () => {
   // Handle form submission for search
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (searchTerm.trim() === '') {
-      setSubmittedSearchTerm('');
+    if (searchTerm.trim() === "") {
+      setSubmittedSearchTerm("");
     } else {
       setSubmittedSearchTerm(searchTerm.trim());
     }
@@ -80,8 +80,8 @@ export const useApplication = () => {
   // Reset everything when the modal is closed
   // const handleCloseModal = (onClose: () => void) => {
   const handleCloseModal = (onClose: () => void = () => {}) => {
-    setSearchTerm('');
-    setSubmittedSearchTerm('');
+    setSearchTerm("");
+    setSubmittedSearchTerm("");
     setSelectedSongs([]);
     setIsModalOpen(false); // Close the modal
     onClose(); // Callback to close the modal from the parent
@@ -89,45 +89,48 @@ export const useApplication = () => {
 
   // Handle the add to playlist action
   const handleAddToPlaylist = async () => {
-    console.log('Songs added to playlist:', selectedSongs);
+    console.log("Songs added to playlist:", selectedSongs);
     setSelectedSongs([]); // Clear selected songs after adding
 
     try {
-      const response = await axios.post<any>('http://localhost:3000/addSongs', selectedSongs, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-        console.log(response.data);
-        //window.location.href = "playlist" //to check display playlist
-        return response.data;  // Return the response data to the caller
-      } catch (error: any) {
-        console.error('Error adding songs:', error);
-        throw new Error('Failed to add songs');
+      const response = await axios.post<any>(
+        "http://localhost:3000/addSongs",
+        selectedSongs,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response.data);
+      //window.location.href = "playlist" //to check display playlist
+      return response.data; // Return the response data to the caller
+    } catch (error: any) {
+      console.error("Error adding songs:", error);
+      throw new Error("Failed to add songs");
     }
-
   };
 
   //To Delete all songs
   const handleDeleteAllSongs = async () => {
-    const confirmDelete = window.confirm('Are you sure you want to delete all songs?');
-    
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete all songs?"
+    );
+
     if (!confirmDelete) return;
 
     try {
-      const response = await axios.delete('http://localhost:3000/songs');
+      const response = await axios.delete("http://localhost:3000/songs");
       if (response.status === 200) {
-        setMessage('All songs deleted successfully.');
+        setMessage("All songs deleted successfully.");
       } else {
-        setMessage('Failed to delete songs. Please try again later.');
+        setMessage("Failed to delete songs. Please try again later.");
       }
-    }
-    catch(error: any) {
-      console.error('Error deleting songs:', error);
-      setMessage('Failed to delete songs. Please try again later.');
+    } catch (error: any) {
+      console.error("Error deleting songs:", error);
+      setMessage("Failed to delete songs. Please try again later.");
     }
   };
-
 
   // Side navigation and modal toggle functions
   const handleToggleMenu = () => {
@@ -137,17 +140,17 @@ export const useApplication = () => {
   const handleHomeClick = () => {
     setIsModalOpen(false); //Ensure search modal is closed.
     setIsPlaylistOpen(false); // ensure the playlist modal is closed.
-  }
+  };
 
   const handleSearchClick = () => {
     setIsModalOpen(true);
-    setIsPlaylistOpen(false);  // Ensure playlist modal is closed
+    setIsPlaylistOpen(false); // Ensure playlist modal is closed
   };
 
-   // Open the playlist modal
-   const handlePlaylistClick = () => {
-    setIsPlaylistOpen(true);  // Open playlist modal
-    setIsModalOpen(false);  // Ensure search modal is closed
+  // Open the playlist modal
+  const handlePlaylistClick = () => {
+    setIsPlaylistOpen(true); // Open playlist modal
+    setIsModalOpen(false); // Ensure search modal is closed
   };
 
   const handleCloseSideNav = () => {
@@ -156,28 +159,28 @@ export const useApplication = () => {
 
   // Scroll control functions
   const handleScrollDown = () => {
-    const searchResults = document.querySelector('.search-results');
+    const searchResults = document.querySelector(".search-results");
     if (searchResults) {
       searchResults.scrollBy(0, 100);
     }
   };
 
   const handleScrollRight = () => {
-    const searchResults = document.querySelector('.search-results');
+    const searchResults = document.querySelector(".search-results");
     if (searchResults) {
       searchResults.scrollBy(100, 0);
     }
   };
 
   const handleScrollUp = () => {
-    const searchResults = document.querySelector('.search-results');
+    const searchResults = document.querySelector(".search-results");
     if (searchResults) {
       searchResults.scrollBy(0, -100);
     }
   };
 
   const handleScrollLeft = () => {
-    const searchResults = document.querySelector('.search-results');
+    const searchResults = document.querySelector(".search-results");
     if (searchResults) {
       searchResults.scrollBy(-100, 0);
     }
@@ -212,6 +215,6 @@ export const useApplication = () => {
     handleScrollDown,
     handleScrollUp,
     handleScrollLeft,
-    handleScrollRight
+    handleScrollRight,
   };
 };
