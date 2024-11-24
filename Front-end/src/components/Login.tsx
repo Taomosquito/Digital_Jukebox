@@ -1,39 +1,50 @@
+import React from "react";
 import { useLoginData } from "../hooks/useLoginData";
 
-function Login() {
+const Login: React.FC = () => {
   const {
     adminLoginUsername,
     adminLoginPassword,
     adminHandleUser,
     adminHandlePass,
     handleSubmit,
+    error,
+    message,
   } = useLoginData();
-  console.log("Login component is rendering");
+
   return (
     <div>
-      <form className="login-form" onSubmit={handleSubmit}>
-        <label htmlFor="admin_username">Admin Username</label>
-        <input
-          className="admin_username"
-          type="text"
-          placeholder="Type here..."
-          value={adminLoginUsername}
-          onChange={adminHandleUser}
-        />
-        <label htmlFor="admin_password">Admin Password</label>
-        <input
-          className="admin_password"
-          type="password"
-          placeholder="Type here..."
-          value={adminLoginPassword}
-          onChange={adminHandlePass}
-        />
-        <button type="submit" className="login-button">
-          Add Admin
-        </button>
+      <h2>Login</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="username">Username</label>
+          <input
+            id="username"
+            type="text"
+            value={adminLoginUsername}
+            onChange={adminHandleUser}
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            value={adminLoginPassword}
+            onChange={adminHandlePass}
+            required
+          />
+        </div>
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {message && <p style={{ color: "green" }}>{message}</p>}
+
+        <button type="submit">Login</button>
       </form>
     </div>
   );
-}
+};
 
 export default Login;

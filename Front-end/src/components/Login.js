@@ -1,8 +1,7 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useLoginData } from "../hooks/useLoginData";
-function Login() {
-    const { adminLoginUsername, adminLoginPassword, adminHandleUser, adminHandlePass, handleSubmit, } = useLoginData();
-    console.log("Login component is rendering");
-    return (_jsx("div", { children: _jsxs("form", { className: "login-form", onSubmit: handleSubmit, children: [_jsx("label", { htmlFor: "admin_username", children: "Admin Username" }), _jsx("input", { className: "admin_username", type: "text", placeholder: "Type here...", value: adminLoginUsername, onChange: adminHandleUser }), _jsx("label", { htmlFor: "admin_password", children: "Admin Password" }), _jsx("input", { className: "admin_password", type: "password", placeholder: "Type here...", value: adminLoginPassword, onChange: adminHandlePass }), _jsx("button", { type: "submit", className: "login-button", children: "Add Admin" })] }) }));
-}
+const Login = () => {
+    const { adminLoginUsername, adminLoginPassword, adminHandleUser, adminHandlePass, handleSubmit, error, message, } = useLoginData();
+    return (_jsxs("div", { children: [_jsx("h2", { children: "Login" }), _jsxs("form", { onSubmit: handleSubmit, children: [_jsxs("div", { children: [_jsx("label", { htmlFor: "username", children: "Username" }), _jsx("input", { id: "username", type: "text", value: adminLoginUsername, onChange: adminHandleUser, required: true })] }), _jsxs("div", { children: [_jsx("label", { htmlFor: "password", children: "Password" }), _jsx("input", { id: "password", type: "password", value: adminLoginPassword, onChange: adminHandlePass, required: true })] }), error && _jsx("p", { style: { color: "red" }, children: error }), message && _jsx("p", { style: { color: "green" }, children: message }), _jsx("button", { type: "submit", children: "Login" })] })] }));
+};
 export default Login;

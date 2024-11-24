@@ -3,9 +3,10 @@ import axios from "axios";
 export const useLoginData = () => {
     const [adminLoginUsername, setAdminLoginUsername] = useState("");
     const [adminLoginPassword, setAdminLoginPassword] = useState("");
+    const [error, setError] = useState(null);
+    const [message, setMessage] = useState(null);
     // Handle input change for admin username
     const adminHandleUser = (event) => {
-        console.log("event", event);
         setAdminLoginUsername(event.target.value);
     };
     // Handle input change for admin password
@@ -38,5 +39,7 @@ export const useLoginData = () => {
         adminHandleUser,
         adminHandlePass,
         handleSubmit,
+        error,
+        message,
     };
 };
