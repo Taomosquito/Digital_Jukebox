@@ -2,10 +2,12 @@ import express from "express";
 import path from "path";
 import dotenv from "dotenv";
 import pkg from "pg";
-const { Pool } = pkg;
 import axios from "axios";
 import cors from "cors";
 import bcrypt from "bcrypt";
+import { Server as SocketIOServer } from "socket.io";
+import http from "http";
+const { Pool } = pkg;
 // Use import.meta.url to resolve the path in ES Modules
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 // handles dotenv for databasing
@@ -39,6 +41,13 @@ pool
     .connect()
     .then(() => console.log("Connected to PostgreSQL database"))
     .catch((err) => console.error("Error connecting to PostgreSQL database: ", err));
+const server = http.createServer(app);
+const io = new SocketIOServer(server, {
+    cors: {
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST"],
+    },
+});
 // DB query
 const insertSongIntoDatabase = async (songApiId) => {
     console.log("Attempting to insert song with ID:", songApiId);
@@ -179,6 +188,8 @@ app.patch("/songs/:song_api_id/like", async (req, res) => {
             duration: response.data.duration,
             preview: response.data.preview,
         };
+        //This emit to all clients with the updated song data
+        io.emit("songLiked", songWithDeezerData);
         // Return the updated song with likes and Deezer details
         res.json(songWithDeezerData);
         return;
