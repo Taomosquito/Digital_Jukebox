@@ -52,7 +52,7 @@
   justify-content: space-between;
   cursor: pointer;
   padding: 8px;
-}
+};
 
 /* Media control icons */
 .side-nav-bar__media-control {
@@ -61,6 +61,17 @@
   justify-content: space-evenly;
   cursor: pointer;
   padding: 8px;
+};
+
+/* Login button */
+.side-nav-bar__login {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 8px;
+  position: absolute;
+  bottom: 2em;
 }
 
 /* Logout button */
@@ -138,7 +149,8 @@ i {
   .side-nav-bar__icon,
   .side-nav-bar__admin-control,
   .side-nav-bar__media-control,
-  .side-nav-bar__logout {
+  .side-nav-bar__logout,
+  .side-nav-bar__login {
     display: none;
   }
 
