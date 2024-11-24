@@ -3,6 +3,7 @@ import "../styles/SideNavigation.scss";
 import SearchModal from "./SearchSong";
 import { useApplication } from "../hooks/useApplicationData";
 import { useNavigate, useLocation } from "react-router-dom";
+import AdminAuthentication from "./AdminAuthentication";
 
 const SideNavigation = () => {
   const {
@@ -59,6 +60,10 @@ const SideNavigation = () => {
     navigate("/");
   };
 
+  const handleLoginOrAddAdmin = () => {
+    navigate("/admin-auth");
+  };
+
   return (
     <>
       {/* Clickable Logo that toggles the side navigation */}
@@ -80,7 +85,7 @@ const SideNavigation = () => {
           {/* Admin control icons */}
           <div className="side-nav-bar__admin-control">
             <i className="fas fa-house" onClick={handleHomeNavigation}></i>
-            <i className="fas fa-user-plus"></i>
+            <i className="fas fa-user-plus" onClick={handleLoginOrAddAdmin}></i>
             <i
               className="fas fa-magnifying-glass"
               onClick={handleSearchNavigation}

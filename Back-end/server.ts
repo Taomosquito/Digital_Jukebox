@@ -74,6 +74,8 @@ const insertSongIntoDatabase = async (songApiId: string) => {
   }
 };
 
+// add admins to database
+// event listener
 app.post("/admins", async (req: Request, res: Response): Promise<any> => {
   console.log("Attempting to insert admin into database");
   const { username, password } = req.body;
@@ -111,6 +113,46 @@ app.post("/addSongs", async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error adding songs:", error);
     res.status(500).json({ message: "Failed to add songs" });
+  }
+});
+
+// login route event listener
+app.post("/login", async (req: Request, res: Response): Promise<any> => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res
+      .status(400)
+      .send({ message: "Username and password are required" });
+  }
+
+  try {
+    // Retrieve the user from the database
+    const query = `SELECT * FROM administrators WHERE username = $1`;
+    const result = await pool.query(query, [username]);
+
+    if (result.rows.length === 0) {
+      return res.status(401).send({ message: "Invalid username or password" });
+    }
+
+    const admin = result.rows[0];
+
+    // Compare the provided password with the stored hashed password
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      admin.password_digest
+    );
+
+    if (!isPasswordValid) {
+      return res.status(401).send({ message: "Invalid username or password" });
+    }
+
+    return res.status(200).send({
+      message: "Login successful",
+    });
+  } catch (error) {
+    console.error("Error during login:", error);
+    return res.status(500).send({ message: "Internal server error" });
   }
 });
 

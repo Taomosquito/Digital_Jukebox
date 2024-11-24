@@ -4,10 +4,11 @@ import axios from "axios";
 export const useLoginData = () => {
   const [adminLoginUsername, setAdminLoginUsername] = useState<string>("");
   const [adminLoginPassword, setAdminLoginPassword] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
 
   // Handle input change for admin username
   const adminHandleUser = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("event", event);
     setAdminLoginUsername(event.target.value);
   };
   // Handle input change for admin password
@@ -45,5 +46,7 @@ export const useLoginData = () => {
     adminHandleUser,
     adminHandlePass,
     handleSubmit,
+    error,
+    message,
   };
 };
