@@ -61,6 +61,7 @@ const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
           {data && data.data && data.data.length > 0 && (
             <TrackListManager
               rawResults={data.data}
+              selectedSongs={selectedSongs}
               onSelectedSongsChange={handleSelectedSongsChange}
             />
           )}
