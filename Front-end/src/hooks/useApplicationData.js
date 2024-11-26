@@ -91,7 +91,7 @@ export const useApplication = () => {
             console.log(response.data);
             // *Emit the event via WebSocket to notify other clients about the new songs
             if (socket) {
-                socket.emit("songsAdded", selectedSongs);
+                socket.emit("songAdded", selectedSongs);
             }
             setSelectedSongs([]); // Clear selected songs after adding
             return response.data; // Return the response data to the caller
