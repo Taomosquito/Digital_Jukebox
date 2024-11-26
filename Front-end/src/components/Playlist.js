@@ -58,11 +58,17 @@ const PlayList = ({ isOpen, onClose }) => {
             return (a.created_at || '').localeCompare(b.created_at || '');
         });
     };
+    // Check if a song is liked
+    const isSongLiked = (songId) => likedSongs.has(songId);
     // Handles the Like icon
     const handleLikeClick = async (id) => {
         try {
+            // *Check if the song is currently liked or not
+            const isLiked = isSongLiked(id);
             // Send the like to the backend via PATCH request
-            const response = await axios.patch(`http://localhost:3000/songs/${id}/like`);
+            const response = await axios.patch(`http://localhost:3000/songs/${id}/like`, {
+                action: isLiked ? 'unlike' : 'like', //*Send 'unlike' if already liked, 'like' if not liked
+            });
             const updatedSong = response.data;
             console.log("Playlist handleLikeClick - updatedSong: ", updatedSong);
             if (!updatedSong || updatedSong.likes === undefined) {
@@ -70,6 +76,17 @@ const PlayList = ({ isOpen, onClose }) => {
                 return;
             }
             console.log("Song liked successfully: ", updatedSong);
+            // Update the likedSongs state to toggle the song's liked status
+            setLikedSongs((prevLikedSongs) => {
+                const newLikedSongs = new Set(prevLikedSongs);
+                if (isLiked) {
+                    newLikedSongs.delete(id); // Remove the song ID if unliked
+                }
+                else {
+                    newLikedSongs.add(id); // Add the song ID if liked
+                }
+                return newLikedSongs;
+            });
             // Update the playlist state by modifying the specific song's like count
             setSongs((prevSongs) => {
                 // Map over the previous songs, updating the like count for the liked song
@@ -87,12 +104,10 @@ const PlayList = ({ isOpen, onClose }) => {
             console.error('Error updating likes:', error);
         }
     };
-    // Check if a song is liked
-    const isSongLiked = (songId) => likedSongs.has(songId);
     // Loading state if songs are being fetched or if the playlist is empty
     if (songs.length === 0) {
         return (_jsx("div", { className: "playlist__empty-alert", children: _jsx("h2", { children: "Loading..." }) }));
     }
-    return (_jsx(_Fragment, { children: _jsx("div", { className: "playlist__modal-overlay", onClick: onClose, children: _jsx("div", { className: "playlist__modal-content", onClick: (e) => e.stopPropagation(), children: _jsx("div", { className: "playlist__results", children: _jsx("div", { className: "playlist__list-mgr", children: _jsxs("table", { children: [_jsx("thead", { children: _jsxs("tr", { children: [_jsx("th", { children: "Song id" }), _jsx("th", { children: "Track" }), _jsx("th", { children: "Artist" }), _jsx("th", { children: "Time" }), _jsx("th", { children: "Album" }), _jsx("th", { children: "Likes" })] }) }), _jsx("tbody", { children: songs.map((song) => (_jsxs("tr", { children: [_jsx("td", { children: song.id }), _jsx("td", { className: "playlist__list-mgr__title", children: song.title }), _jsx("td", { className: "playlist__list-mgr__artist", children: song.artist.name }), _jsx("td", { children: formatDuration(song.duration) }), _jsx("td", { children: song.album.title }), _jsxs("td", { children: [_jsx("i", { className: `fa-regular fa-thumbs-up ${isSongLiked(song.id) ? 'liked' : ''}`, onClick: () => handleLikeClick(song.id) }), _jsx("span", { children: song.likes })] })] }, song.id))) })] }) }) }) }) }) }));
+    return (_jsx(_Fragment, { children: _jsx("div", { className: "playlist__modal-overlay", onClick: onClose, children: _jsx("div", { className: "playlist__modal-content", onClick: (e) => e.stopPropagation(), children: _jsx("div", { className: "playlist__results", children: _jsx("div", { className: "playlist__list-mgr", children: _jsxs("table", { children: [_jsx("thead", { children: _jsxs("tr", { children: [_jsx("th", { children: "Song id" }), _jsx("th", { children: "Track" }), _jsx("th", { children: "Artist" }), _jsx("th", { children: "Time" }), _jsx("th", { children: "Album" }), _jsx("th", { children: "Likes" })] }) }), _jsx("tbody", { children: songs.map((song) => (_jsxs("tr", { children: [_jsx("td", { children: song.id }), _jsx("td", { className: "playlist__list-mgr__title", children: song.title }), _jsx("td", { className: "playlist__list-mgr__artist", children: song.artist?.name }), _jsx("td", { children: formatDuration(song.duration) }), _jsx("td", { children: song.album?.title }), _jsxs("td", { children: [_jsx("i", { className: `fa-regular fa-thumbs-up ${isSongLiked(song.id) ? 'liked' : ''}`, onClick: () => handleLikeClick(song.id) }), _jsx("span", { children: song.likes })] })] }, song.id))) })] }) }) }) }) }) }));
 };
 export default PlayList;
