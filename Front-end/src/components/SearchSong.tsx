@@ -23,21 +23,22 @@ const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
     handleScrollUp,
     handleScrollLeft,
     handleScrollRight,
-    handleSelectedSongsChange // Access this from useApplication hook
+    handleSelectedSongsChange, // Access this from useApplication hook
   } = useApplication();
 
   const navigate = useNavigate();
   const { data, loading, error } = useMusicApi(submittedSearchTerm);
 
-  const handleCloseAndRedirect = () => {
-    handleCloseModal(onClose);
-    navigate('/playlist');
+  const handleCloseAndRedirect = async () => {
+    await handleAddToPlaylist(); // Ensure songs are added before redirect
+    handleCloseModal(onClose);  // Close the modal
+    navigate('/playlist');  // Redirect to playlist
   }
 
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={() => handleCloseModal(onClose)}>
+    <div className="modal-overlay">
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         {/* Form for the search */}
         <form className="search-form" onSubmit={handleSubmit}>
@@ -98,7 +99,6 @@ const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
             </button>
           )}
 
-          {/* <button className="close-modal" onClick={() => handleCloseModal(onClose)}> */}
           <button className="close-modal" onClick={handleCloseAndRedirect}>
             Close
           </button>
