@@ -91,7 +91,7 @@ export const useApplication = () => {
 
   // Handle the add to playlist action
   const handleAddToPlaylist = async () => {
-    console.log("Songs added to playlist:", selectedSongs);
+    console.log("Selected songs to be added:", selectedSongs);
     
     try {
       const response = await axios.post<any>(
@@ -103,12 +103,12 @@ export const useApplication = () => {
           },
         }
       );
-      console.log(response.data);
+      console.log("Handle Add to Playlist Response: ", response);
 
       // *Emit the event via WebSocket to notify other clients about the new songs
-      if (socket) {
-        socket.emit("songAdded", selectedSongs);
-      }
+      // if (socket) {
+      //   socket.emit("songAdded", selectedSongs);
+      // }
 
       setSelectedSongs([]); // Clear selected songs after adding
 

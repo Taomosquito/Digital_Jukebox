@@ -68,6 +68,7 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
       });
 
       socket.on('songAdded', (addedSong: Song) => {
+        console.log("PLAYLIST socket.on: The addedSong data: ", addedSong);
         setSongs((existingSongs) => [...existingSongs, addedSong])
       })
     }
@@ -160,7 +161,7 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
                       <td>
                         <i
                           className={`fa-regular fa-thumbs-up ${isSongLiked(song.id) ? 'liked' : ''}`}
-                          onClick={() => handleLikeClick(song.id)} // Pass song_api_id for backend interaction
+                          onClick={() => handleLikeClick(song.song_api_id)} // Pass song_api_id for backend interaction
                         ></i>
                         <span>{song.likes}</span>
                       </td>
