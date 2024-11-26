@@ -1,7 +1,9 @@
 import { useState, useRef } from "react";
+import { useWebSocket } from "../context/WebSocketContext";
 import axios from "axios";
 
 export const useApplication = () => {
+  const socket = useWebSocket();
   // State for search and selected songs
   const [searchTerm, setSearchTerm] = useState("");
   const [submittedSearchTerm, setSubmittedSearchTerm] = useState("");
@@ -90,8 +92,7 @@ export const useApplication = () => {
   // Handle the add to playlist action
   const handleAddToPlaylist = async () => {
     console.log("Songs added to playlist:", selectedSongs);
-    setSelectedSongs([]); // Clear selected songs after adding
-
+    
     try {
       const response = await axios.post<any>(
         "http://localhost:3000/addSongs",
@@ -103,7 +104,14 @@ export const useApplication = () => {
         }
       );
       console.log(response.data);
-      //window.location.href = "playlist" //to check display playlist
+
+      // *Emit the event via WebSocket to notify other clients about the new songs
+      if (socket) {
+        socket.emit("songsAdded", selectedSongs);
+      }
+
+      setSelectedSongs([]); // Clear selected songs after adding
+
       return response.data; // Return the response data to the caller
     } catch (error: any) {
       console.error("Error adding songs:", error);
