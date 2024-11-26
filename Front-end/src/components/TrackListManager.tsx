@@ -131,6 +131,7 @@ const TrackListManager: React.FC<TrackListManagerProps> = ({ rawResults, selecte
           <thead>
             <tr>
               <th>Album</th>
+              <th>Album Title</th>
               <th>Track</th>
               <th>Artist</th>
               <th>Time</th>
@@ -144,6 +145,7 @@ const TrackListManager: React.FC<TrackListManagerProps> = ({ rawResults, selecte
                 <td>
                   <img src={song.album.cover} alt={song.title} width="50" height="50" />
                 </td>
+                <td className='track-list-mgr__album-title'>{song.album.title}</td>
                 <td className="track-list-mgr__title">{song.title}</td>
                 <td className="track-list-mgr__artist">{song.artist.name}</td>
                 <td>{formatDuration(song.duration)}</td>
