@@ -85,12 +85,21 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
       return (a.created_at || '').localeCompare(b.created_at || '');
     });
   };
+    
+  // Check if a song is liked
+  const isSongLiked = (songId: number) => likedSongs.has(songId);
   
   // Handles the Like icon
   const handleLikeClick = async (id: number) => {
     try {
+
+      // *Check if the song is currently liked or not
+      const isLiked = isSongLiked(id);
+
       // Send the like to the backend via PATCH request
-      const response = await axios.patch(`http://localhost:3000/songs/${id}/like`);
+      const response = await axios.patch(`http://localhost:3000/songs/${id}/like`, {
+        action: isLiked ? 'unlike' : 'like', //*Send 'unlike' if already liked, 'like' if not liked
+      });
       const updatedSong = response.data;
 
       console.log("Playlist handleLikeClick - updatedSong: ", updatedSong);
@@ -101,6 +110,18 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
       }
   
       console.log("Song liked successfully: ", updatedSong);
+
+      // Update the likedSongs state to toggle the song's liked status
+      setLikedSongs((prevLikedSongs) => {
+        const newLikedSongs = new Set(prevLikedSongs);
+        if (isLiked) {
+          newLikedSongs.delete(id); // Remove the song ID if unliked
+        } else {
+          newLikedSongs.add(id); // Add the song ID if liked
+        }
+        return newLikedSongs;
+      });
+
   
       // Update the playlist state by modifying the specific song's like count
       setSongs((prevSongs) => {
@@ -123,9 +144,7 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
       console.error('Error updating likes:', error);
     }
   };
-  
-  // Check if a song is liked
-  const isSongLiked = (songId: number) => likedSongs.has(songId);
+
 
   // Loading state if songs are being fetched or if the playlist is empty
   if (songs.length === 0) {
@@ -158,9 +177,9 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
                     <tr key={song.id}>
                       <td>{song.id}</td>
                       <td className="playlist__list-mgr__title">{song.title}</td>
-                      <td className="playlist__list-mgr__artist">{song.artist.name}</td>
+                      <td className="playlist__list-mgr__artist">{song.artist?.name}</td>
                       <td>{formatDuration(song.duration)}</td>
-                      <td>{song.album.title}</td>
+                      <td>{song.album?.title}</td>
                       <td>
                         <i
                           className={`fa-regular fa-thumbs-up ${isSongLiked(song.id) ? 'liked' : ''}`}
