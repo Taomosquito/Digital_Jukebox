@@ -153,9 +153,17 @@ app.post("/addSongs", async (req: Request, res: Response) => {
       // );
 
       const playlistSong = {
-        ...deezerSong,
-        ...song
-      }
+        ...song,
+        title: deezerSong.title,
+        artist: deezerSong.artist.name,
+        duration: deezerSong.duration,
+        preview: deezerSong.preview,
+        album_title: deezerSong.album.title,
+        album_cover: deezerSong.album.cover,
+        album_cover_medium: deezerSong.album.cover_medium,
+        image: deezerSong.md5_image,
+      };
+
       console.log("===== addSong requested SONG: ")
       console.log(song); /** {
                               song_api_id: '4688887',
@@ -165,20 +173,10 @@ app.post("/addSongs", async (req: Request, res: Response) => {
                               updated_at: 2024-11-26T17:11:00.786Z
                             }
                             */
-      console.log("====addSong DEEZER: ", deezerSong);
-      /** {
-            id: 4688887,
-            readable: true,
-            title: 'What a Fool Believes',
-            title_short: 'What a Fool Believes',
-            title_version: '',
-            link: 'https://www.deezer.com/track/4688887',
-            duration: 219,
-            rank: 631184,
-          , ...} */
 
       // Emit the event to notify clients of new songs added to list.
       io.emit("songAdded", playlistSong);
+      console.log("Emit the songs added: ", playlistSong);
     }
 
     res
@@ -253,10 +251,21 @@ app.get("/songs", async (req, res) => {
 
       const playlistSong = {
         ...song,
-        ...response.data
+        title: response.data.title,
+        artist: response.data.artist, //name
+        album: response.data.album,
+        duration: response.data.duration,
+        preview: response.data.preview,
+        album_title: response.data.album.title,
+        album_cover: response.data.album.cover,
+        album_cover_medium: response.data.album.cover_medium,
+        image: response.data.md5_image,
       }
+   
+      console.log("Server Fetch Songs: ", song);
+      console.log("Server fetch Songs with Deezer: ", playlistSong);
 
-      // io.emit('songAdded', playlistSong)
+      //io.emit('songAdded', playlistSong)
 
       return playlistSong;
     });
@@ -272,20 +281,20 @@ app.get("/songs", async (req, res) => {
 
 //Routes that partially update the resource
 app.patch(
-  "/songs/:song_api_id/like",
-  async (req: Request<{ song_api_id: number }>, res: Response) => {
-    const { song_api_id } = req.params;
-    console.log("Received song API ID:", song_api_id);
-    console.log("Typeof; ", typeof(song_api_id))
+  "/songs/:id/like",
+  async (req: Request<{ id: number }>, res: Response) => {
+    const { id } = req.params;
+    console.log("Received song API ID:", id);
+    console.log("Typeof; ", typeof(id))
 
     try {
-      // Increment the likes for the song using the `song_api_id`
+      // Increment the likes for the song using the `id`
       const result = await pool.query(
-        `UPDATE songs SET likes = likes + 1, updated_at = NOW() WHERE song_api_id = $1 RETURNING *`,
-        [song_api_id] // Use the `song_api_id` to update the song
+        `UPDATE songs SET likes = likes + 1, updated_at = NOW() WHERE id = $1 RETURNING *`,
+        [id] // Use the `id` to update the song
       );
 
-      // If no song was found with that `song_api_id`, return a 404 error.
+      // If no song was found with that `id`, return a 404 error.
       if (result.rows.length === 0) {
         res.status(404).json({ message: "Song not found" });
         return;
@@ -293,6 +302,7 @@ app.patch(
 
       // Get the updated song from the result
       const updatedSong = result.rows[0];
+      console.log("Server updatedSong : ", updatedSong);
 
       // Fetch Deezer data for the updated song using the `song_api_id`
       const response = await axios.get(
@@ -308,10 +318,15 @@ app.patch(
       const songWithDeezerData = {
         ...updatedSong,
         title: response.data.title,
-        artist: response.data.artist,
+        artist: response.data.artist.name,
         album: response.data.album,
         duration: response.data.duration,
         preview: response.data.preview,
+       
+        album_title: response.data.album.title,
+        album_cover: response.data.album.cover,
+        album_cover_medium: response.data.album.cover_medium,
+        image: response.data.md5_image,
       };
 
       //This emit to all clients with the updated song data

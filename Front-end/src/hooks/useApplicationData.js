@@ -14,10 +14,6 @@ export const useApplication = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isPlaylistOpen, setIsPlaylistOpen] = useState(false); //Manage Playlist()
     const [message, setMessage] = useState("");
-    // // Organize the raw results (e.g., sorting by song title)
-    // const organizeResults = (results: any[]) => {
-    //   return results.sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
-    // };
     // Format the song duration into a readable time format
     const formatDuration = (seconds) => {
         const minutes = Math.floor(seconds / 60);
@@ -88,13 +84,8 @@ export const useApplication = () => {
                     "Content-Type": "application/json",
                 },
             });
-            console.log("Handle Add to Playlist Response: ", response);
-            // *Emit the event via WebSocket to notify other clients about the new songs
-            // if (socket) {
-            //   socket.emit("songAdded", selectedSongs);
-            // }
             setSelectedSongs([]); // Clear selected songs after adding
-            return response.data; // Return the response data to the caller
+            return response.data; // Return the response data to the caller,see server
         }
         catch (error) {
             console.error("Error adding songs:", error);
@@ -176,7 +167,6 @@ export const useApplication = () => {
         selectedSongs,
         playingSong,
         audioRefs,
-        //organizeResults,
         formatDuration,
         handleCheckboxChange,
         handlePlayClick,

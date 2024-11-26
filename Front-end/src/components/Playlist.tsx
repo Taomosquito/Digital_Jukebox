@@ -36,6 +36,7 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
     try {
       const response = await axios.get('http://localhost:3000/songs');
       const data = response.data;
+      console.log("Playlist fetch songs: ", data)
       if (Array.isArray(data)) {
         setSongs(sortSongsByLikes(data)); // Update the state with the song data sorted by likes
       } else {
@@ -84,47 +85,47 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
       return (a.created_at || '').localeCompare(b.created_at || '');
     });
   };
-
-  const handleLikeClick = async (songApiId: number) => {
+  
+  // Handles the Like icon
+  const handleLikeClick = async (id: number) => {
     try {
       // Send the like to the backend via PATCH request
-      const response = await axios.patch(`http://localhost:3000/songs/${songApiId}/like`);
+      const response = await axios.patch(`http://localhost:3000/songs/${id}/like`);
       const updatedSong = response.data;
 
-      // Ensure the backend has successfully updated the song's like count before reflecting the change
-      
-      if (updatedSong.likes !== undefined) {
-        // Update the liked songs state
-        setLikedSongs((prev) => {
-          const newLikedSongs = new Set(prev);
-          newLikedSongs.add(songApiId);
-          return newLikedSongs;
-        });
-
-        // Locally update the playlist state and sort it by likes
-        setSongs((prevSongs) => {
-          const updatedSongs = prevSongs.map((song) =>
-            song.song_api_id === updatedSong.song_api_id
-              ? { ...song, likes: updatedSong.likes }
-              : song
-          );
-          return sortSongsByLikes(updatedSongs); // Re-sort the list after updating
-        });
-
-        // Emit the updated song to the WebSocket server to notify other clients
-        if (socket) {
-          socket.emit('songLiked', updatedSong);
-        }
-      } else {
+      console.log("Playlist handleLikeClick - updatedSong: ", updatedSong);
+  
+      if (!updatedSong || updatedSong.likes === undefined) {
         console.error("Failed to update song like count on the backend");
+        return;
       }
+  
+      console.log("Song liked successfully: ", updatedSong);
+  
+      // Update the playlist state by modifying the specific song's like count
+      setSongs((prevSongs) => {
+        // Map over the previous songs, updating the like count for the liked song
+        const updatedSongs = prevSongs.map((song) =>
+          song.song_api_id === updatedSong.song_api_id
+            ? { ...song, likes: updatedSong.likes }
+            : song
+        );
+
+        return sortSongsByLikes(updatedSongs);
+      });
+  
+      // Optionally, emit the updated song to notify other clients
+      if (socket) {
+        socket.emit('songLiked', updatedSong);
+      }
+  
     } catch (error) {
       console.error('Error updating likes:', error);
     }
   };
-
+  
   // Check if a song is liked
-  const isSongLiked = (songApiId: number) => likedSongs.has(songApiId);
+  const isSongLiked = (songId: number) => likedSongs.has(songId);
 
   // Loading state if songs are being fetched or if the playlist is empty
   if (songs.length === 0) {
@@ -144,6 +145,7 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
               <table>
                 <thead>
                   <tr>
+                    <th>Song id</th>
                     <th>Track</th>
                     <th>Artist</th>
                     <th>Time</th>
@@ -154,14 +156,15 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
                 <tbody>
                   {songs.map((song) => (
                     <tr key={song.id}>
+                      <td>{song.id}</td>
                       <td className="playlist__list-mgr__title">{song.title}</td>
-                      <td className="playlist__list-mgr__artist">{song.artist?.name}</td>
+                      <td className="playlist__list-mgr__artist">{song.artist.name}</td>
                       <td>{formatDuration(song.duration)}</td>
-                      <td>{song.album?.title}</td>
+                      <td>{song.album.title}</td>
                       <td>
                         <i
                           className={`fa-regular fa-thumbs-up ${isSongLiked(song.id) ? 'liked' : ''}`}
-                          onClick={() => handleLikeClick(song.song_api_id)} // Pass song_api_id for backend interaction
+                          onClick={() => handleLikeClick(song.id)}
                         ></i>
                         <span>{song.likes}</span>
                       </td>
