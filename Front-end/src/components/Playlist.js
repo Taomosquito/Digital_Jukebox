@@ -14,6 +14,7 @@ const PlayList = ({ isOpen, onClose }) => {
         try {
             const response = await axios.get('http://localhost:3000/songs');
             const data = response.data;
+            console.log("Playlist fetch songs: ", data);
             if (Array.isArray(data)) {
                 setSongs(sortSongsByLikes(data)); // Update the state with the song data sorted by likes
             }
@@ -57,33 +58,29 @@ const PlayList = ({ isOpen, onClose }) => {
             return (a.created_at || '').localeCompare(b.created_at || '');
         });
     };
-    const handleLikeClick = async (songApiId) => {
+    // Handles the Like icon
+    const handleLikeClick = async (id) => {
         try {
             // Send the like to the backend via PATCH request
-            const response = await axios.patch(`http://localhost:3000/songs/${songApiId}/like`);
+            const response = await axios.patch(`http://localhost:3000/songs/${id}/like`);
             const updatedSong = response.data;
-            // Ensure the backend has successfully updated the song's like count before reflecting the change
-            if (updatedSong.likes !== undefined) {
-                // Update the liked songs state
-                setLikedSongs((prev) => {
-                    const newLikedSongs = new Set(prev);
-                    newLikedSongs.add(songApiId);
-                    return newLikedSongs;
-                });
-                // Locally update the playlist state and sort it by likes
-                setSongs((prevSongs) => {
-                    const updatedSongs = prevSongs.map((song) => song.song_api_id === updatedSong.song_api_id
-                        ? { ...song, likes: updatedSong.likes }
-                        : song);
-                    return sortSongsByLikes(updatedSongs); // Re-sort the list after updating
-                });
-                // Emit the updated song to the WebSocket server to notify other clients
-                if (socket) {
-                    socket.emit('songLiked', updatedSong);
-                }
-            }
-            else {
+            console.log("Playlist handleLikeClick - updatedSong: ", updatedSong);
+            if (!updatedSong || updatedSong.likes === undefined) {
                 console.error("Failed to update song like count on the backend");
+                return;
+            }
+            console.log("Song liked successfully: ", updatedSong);
+            // Update the playlist state by modifying the specific song's like count
+            setSongs((prevSongs) => {
+                // Map over the previous songs, updating the like count for the liked song
+                const updatedSongs = prevSongs.map((song) => song.song_api_id === updatedSong.song_api_id
+                    ? { ...song, likes: updatedSong.likes }
+                    : song);
+                return sortSongsByLikes(updatedSongs);
+            });
+            // Optionally, emit the updated song to notify other clients
+            if (socket) {
+                socket.emit('songLiked', updatedSong);
             }
         }
         catch (error) {
@@ -91,11 +88,11 @@ const PlayList = ({ isOpen, onClose }) => {
         }
     };
     // Check if a song is liked
-    const isSongLiked = (songApiId) => likedSongs.has(songApiId);
+    const isSongLiked = (songId) => likedSongs.has(songId);
     // Loading state if songs are being fetched or if the playlist is empty
     if (songs.length === 0) {
         return (_jsx("div", { className: "playlist__empty-alert", children: _jsx("h2", { children: "Loading..." }) }));
     }
-    return (_jsx(_Fragment, { children: _jsx("div", { className: "playlist__modal-overlay", onClick: onClose, children: _jsx("div", { className: "playlist__modal-content", onClick: (e) => e.stopPropagation(), children: _jsx("div", { className: "playlist__results", children: _jsx("div", { className: "playlist__list-mgr", children: _jsxs("table", { children: [_jsx("thead", { children: _jsxs("tr", { children: [_jsx("th", { children: "Track" }), _jsx("th", { children: "Artist" }), _jsx("th", { children: "Time" }), _jsx("th", { children: "Album" }), _jsx("th", { children: "Likes" })] }) }), _jsx("tbody", { children: songs.map((song) => (_jsxs("tr", { children: [_jsx("td", { className: "playlist__list-mgr__title", children: song.title }), _jsx("td", { className: "playlist__list-mgr__artist", children: song.artist?.name }), _jsx("td", { children: formatDuration(song.duration) }), _jsx("td", { children: song.album?.title }), _jsxs("td", { children: [_jsx("i", { className: `fa-regular fa-thumbs-up ${isSongLiked(song.id) ? 'liked' : ''}`, onClick: () => handleLikeClick(song.song_api_id) }), _jsx("span", { children: song.likes })] })] }, song.id))) })] }) }) }) }) }) }));
+    return (_jsx(_Fragment, { children: _jsx("div", { className: "playlist__modal-overlay", onClick: onClose, children: _jsx("div", { className: "playlist__modal-content", onClick: (e) => e.stopPropagation(), children: _jsx("div", { className: "playlist__results", children: _jsx("div", { className: "playlist__list-mgr", children: _jsxs("table", { children: [_jsx("thead", { children: _jsxs("tr", { children: [_jsx("th", { children: "Song id" }), _jsx("th", { children: "Track" }), _jsx("th", { children: "Artist" }), _jsx("th", { children: "Time" }), _jsx("th", { children: "Album" }), _jsx("th", { children: "Likes" })] }) }), _jsx("tbody", { children: songs.map((song) => (_jsxs("tr", { children: [_jsx("td", { children: song.id }), _jsx("td", { className: "playlist__list-mgr__title", children: song.title }), _jsx("td", { className: "playlist__list-mgr__artist", children: song.artist.name }), _jsx("td", { children: formatDuration(song.duration) }), _jsx("td", { children: song.album.title }), _jsxs("td", { children: [_jsx("i", { className: `fa-regular fa-thumbs-up ${isSongLiked(song.id) ? 'liked' : ''}`, onClick: () => handleLikeClick(song.id) }), _jsx("span", { children: song.likes })] })] }, song.id))) })] }) }) }) }) }) }));
 };
 export default PlayList;
