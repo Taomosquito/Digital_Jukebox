@@ -71,7 +71,20 @@ const insertSongIntoDatabase = async (songApiId) => {
     `;
         // Use the songApiId as a parameter to prevent SQL injection
         const { rows } = await pool.query(query, [songApiId]);
-        return { song_api_id: songApiId, ...rows[0] };
+        /** [ {id: , song_api_id: , likes: 0, created_at: , updated_at: } ] */
+        console.log("new songs added to dbase, AddSong: ", rows[0]);
+        /**  {id: , song_api_id: , likes: 0, created_at: , updated_at: }  */
+        const newSongAdded = { song_api_id: songApiId, ...rows[0] };
+        console.log("New song object: ", newSongAdded);
+        /**{
+              song_api_id: '4688887',
+              id: 6,
+              likes: 0,
+              created_at: 2024-11-26T17:11:00.786Z,
+              updated_at: 2024-11-26T17:11:00.786Z
+            }
+     */
+        return newSongAdded;
     }
     catch (error) {
         console.error("Sorry, Error inserting:", error);
@@ -115,8 +128,26 @@ app.post("/addSongs", async (req, res) => {
                 ...deezerSong,
                 ...song
             };
-            console.log("PLAYLIST");
-            console.log(song);
+            console.log("===== addSong requested SONG: ");
+            console.log(song); /** {
+                                    song_api_id: '4688887',
+                                    id: 6,
+                                    likes: 0,
+                                    created_at: 2024-11-26T17:11:00.786Z,
+                                    updated_at: 2024-11-26T17:11:00.786Z
+                                  }
+                                  */
+            console.log("====addSong DEEZER: ", deezerSong);
+            /** {
+                  id: 4688887,
+                  readable: true,
+                  title: 'What a Fool Believes',
+                  title_short: 'What a Fool Believes',
+                  title_version: '',
+                  link: 'https://www.deezer.com/track/4688887',
+                  duration: 219,
+                  rank: 631184,
+                , ...} */
             // Emit the event to notify clients of new songs added to list.
             io.emit("songAdded", playlistSong);
         }
@@ -212,7 +243,6 @@ app.patch("/songs/:song_api_id/like", async (req, res) => {
         // Combine the Deezer data with the updated song data
         const songWithDeezerData = {
             ...updatedSong,
-            // likes: updatedSong.likes, // Ensure likes are included
             title: response.data.title,
             artist: response.data.artist,
             album: response.data.album,
