@@ -1,32 +1,40 @@
 import { jsx as _jsx } from "react/jsx-runtime";
-// Maintain the websocket connection
 import { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-// Create the WebSocket context with the type for the socket
 const WebSocketContext = createContext(null);
-// Custom hook to use the WebSocket context
 export const useWebSocket = () => {
     return useContext(WebSocketContext);
 };
-// WebSocketProvider component to manage the socket connection
 export const WebSocketProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
+    const [isSessionActive, setIsSessionActive] = useState(false);
     useEffect(() => {
-        if (!socket) {
-            console.warn("Socket connection is not ready yet.");
+        const existingSocketId = localStorage.getItem("socketId");
+        if (existingSocketId) {
+            alert("You already have an active session in another tab.");
+            setIsSessionActive(true);
+            return;
         }
-    }, [socket]);
-    useEffect(() => {
-        // Create the socket connection
         const socketConnection = io("http://localhost:3000", {
             transports: ["websocket", "polling"],
             reconnection: true,
             reconnectionAttempts: 5,
             timeout: 5000,
         });
-        // Handle successful connection
+        // Store the socket ID in localStorage when the connection is established
         socketConnection.on('connect', () => {
-            console.log('Socket connected:', socketConnection.id); // Log the socket ID
+            if (socketConnection.id) {
+                console.log('Socket connected:', socketConnection.id);
+                localStorage.setItem("socketId", socketConnection.id);
+            }
+            else {
+                console.error('Socket ID is undefined.');
+            }
+        });
+        socketConnection.on('disconnect', () => {
+            console.log('Socket disconnected');
+            localStorage.removeItem("socketId");
+            setIsSessionActive(false);
         });
         // Handle connection error
         socketConnection.on('connect_error', (error) => {
@@ -43,7 +51,8 @@ export const WebSocketProvider = ({ children }) => {
             console.log("Cleaning up WebSocket connection...");
             socketConnection.removeAllListeners();
             socketConnection.disconnect();
+            localStorage.removeItem("socketId");
         };
     }, []);
-    return (_jsx(WebSocketContext.Provider, { value: socket, children: children }));
+    return (_jsx(WebSocketContext.Provider, { value: socket, children: isSessionActive ? ( /**TODO: For testing purpose, we can keep it (if True)create css styling separately, (else) or create other strategy */_jsx("div", { style: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000, display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white' }, children: _jsx("h2", { children: "You already have an active session. Please check your other tabs." }) })) : (children) }));
 };
