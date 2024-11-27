@@ -7,15 +7,15 @@ const Login: React.FC = () => {
     adminLoginPassword,
     adminHandleUser,
     adminHandlePass,
-    handleSubmit,
     error,
     message,
+    handleLoginSubmit,
   } = useLoginData();
 
   return (
     <div>
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleLoginSubmit}>
         <div>
           <label htmlFor="username">Username</label>
           <input

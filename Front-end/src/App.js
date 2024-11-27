@@ -15,6 +15,5 @@ function App() {
                                         throw new Error("Function not implemented.");
                                     } }) }), _jsx(Route, { path: "/playlist", element: _jsx(PlayList, { isOpen: false, onClose: function () {
                                         throw new Error("Function not implemented.");
-                                    } }) }), _jsx(Route, { path: "/QrCode", element: _jsx(QRCodeGenerator, {}) })] })] }) }) }));
 }
 export default App;
