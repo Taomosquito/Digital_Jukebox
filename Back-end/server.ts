@@ -3,11 +3,13 @@ import session from "express-session";
 import path from "path";
 import dotenv from "dotenv";
 import pkg from "pg";
-const { Pool } = pkg;
 import axios from "axios";
 import cors from "cors";
 import bcrypt from "bcrypt";
+import { Server as SocketIOServer } from "socket.io";
+import { createServer } from 'http';
 
+const { Pool } = pkg;
 // Use import.meta.url to resolve the path in ES Modules
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
@@ -41,6 +43,9 @@ app.use(
     },
   })
 );
+//Middleware to parse JSON and URL-encoded data
+app.use(express.json()); // Parse JSON.
+app.use(express.urlencoded({ extended: true }));
 
 // Path to the build folder
 const buildPath = path.resolve(__dirname, "../"); // Adjust this path as needed
@@ -64,6 +69,28 @@ pool
     console.error("Error connecting to PostgreSQL database: ", err)
   );
 
+// Create an HTTP server and attach the Express app to it
+const server = createServer(app);
+
+//Create Socket.IO instance attached to the HTTP server
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: process.env.CLIENT_URL || "http://localhost:5173", // Dynamic origin for development and deployment. 
+    //.env will be CLIENT_URL=https://your-heroku-app-name.herokuapp.com
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    credentials: true, //Allow cookies
+  },
+  transports: ["websocket", "polling"],
+});
+
+io.on("connection", (socket) => {
+  console.log(`New client connected: ${socket.id}`);
+
+  socket.on("disconnect", () => {
+    console.log(`Client disconnected: ${socket.id}`);
+  });
+});
+
 // DB query
 const insertSongIntoDatabase = async (songApiId: string) => {
   console.log("Attempting to insert song with ID:", songApiId);
@@ -73,12 +100,28 @@ const insertSongIntoDatabase = async (songApiId: string) => {
     const query = `
       INSERT INTO songs (song_api_id)
       VALUES ($1)
+      RETURNING *
     `;
 
     // Use the songApiId as a parameter to prevent SQL injection
-    await pool.query(query, [songApiId]);
+    const { rows } = await pool.query(query, [songApiId]);
+    /** [ {id: , song_api_id: , likes: 0, created_at: , updated_at: } ] */
 
-    console.log(`Successfully inserted. The ID: ${songApiId}`);
+    console.log("new songs added to dbase, AddSong: ", rows[0]);
+    /**  {id: , song_api_id: , likes: 0, created_at: , updated_at: }  */
+
+    const newSongAdded = { song_api_id: songApiId, ...rows[0] }
+
+    console.log("New song object: ", newSongAdded);
+    /**{
+          song_api_id: '4688887',
+          id: 6,
+          likes: 0,
+          created_at: 2024-11-26T17:11:00.786Z,
+          updated_at: 2024-11-26T17:11:00.786Z
+        }
+ */
+    return newSongAdded;
   } catch (error) {
     console.error("Sorry, Error inserting:", error);
   }
@@ -109,14 +152,38 @@ app.post("/admins", async (req: Request, res: Response): Promise<any> => {
 });
 
 app.post("/addSongs", async (req: Request, res: Response) => {
-  console.log("Received a request to add songs");
-  const songs = req.body; // [{}]
-  console.log("Received songs:", songs);
 
   try {
-    for (const song of songs) {
-      await insertSongIntoDatabase(song.id);
-    }
+    for (const deezerSong of req.body) {
+      const song = await insertSongIntoDatabase(deezerSong.id);
+
+      const playlistSong = {
+        ...song,
+        title: deezerSong.title,
+        artist: deezerSong.artist,
+        duration: deezerSong.duration,
+        album: deezerSong.album,
+        preview: deezerSong.preview,
+        album_title: deezerSong.album.title,
+        album_cover: deezerSong.album.cover,
+        album_cover_medium: deezerSong.album.cover_medium,
+        image: deezerSong.md5_image,
+      };
+
+      // Emit the event to notify clients of new songs added to list.
+      io.emit("songAdded", playlistSong);
+      console.log("Emit the songs added: ", playlistSong);
+      /** {
+            song_api_id: '4688887',
+            id: 6,
+            likes: 0,
+            created_at: 2024-11-26T17:11:00.786Z,
+            updated_at: 2024-11-26T17:11:00.786Z,
+            ....
+          }
+          */
+}
+
     res
       .status(200)
       .json({ message: "Songs added successfully to our Database!" });
@@ -190,13 +257,11 @@ app.get("/songs", async (req, res) => {
     const result = await pool.query(
       "SELECT * FROM songs ORDER BY likes DESC, created_at ASC;"
     );
+
     const songs = result.rows;
-
-    console.log("FETCHED SONGS FROM DBASE: ", songs);
-
+    
     // Fetch song details from Deezer API for each song
     const songDetailsPromises = songs.map(async (song) => {
-      // const response = await axios.get(`https://api.deezer.com/track/${song.song_api_id}`);
       const response = await axios.get(
         `https://deezerdevs-deezer.p.rapidapi.com/track/${song.song_api_id}`,
         {
@@ -205,7 +270,24 @@ app.get("/songs", async (req, res) => {
           },
         }
       );
-      return response.data;
+
+      const playlistSong = {
+        ...song,
+        title: response.data.title,
+        artist: response.data.artist, //name
+        album: response.data.album,
+        duration: response.data.duration,
+        preview: response.data.preview,
+        album_title: response.data.album.title,
+        album_cover: response.data.album.cover,
+        album_cover_medium: response.data.album.cover_medium,
+        image: response.data.md5_image,
+      }
+   
+      console.log("Server Fetch Songs: ", song);
+      console.log("Server fetch Songs with Deezer: ", playlistSong);
+
+      return playlistSong;
     });
 
     const songDetails = await Promise.all(songDetailsPromises);
@@ -217,59 +299,82 @@ app.get("/songs", async (req, res) => {
   }
 });
 
-//Routes that partially update the resource
-app.patch(
-  "/songs/:song_api_id/like",
-  async (req: Request<{ song_api_id: string }>, res: Response) => {
-    const { song_api_id } = req.params;
-    console.log("Received song API ID:", song_api_id);
+// Routes that partially update the resource
+// TypeScript interface for the request body
+interface LikeRequestBody {
+  action: 'like' | 'unlike';
+}
 
-    try {
-      // Increment the likes for the song using the `song_api_id`
-      const result = await pool.query(
-        `UPDATE songs SET likes = likes + 1, updated_at = NOW() WHERE song_api_id = $1 RETURNING *`,
-        [song_api_id] // Use the `song_api_id` to update the song
-      );
+app.patch('/songs/:id/like', async (req: Request<{ id: string }, any, LikeRequestBody>, res: Response) => {
+  const { id } = req.params;
+  const { action } = req.body;
 
-      // If no song was found with that `song_api_id`, return a 404 error.
-      if (result.rows.length === 0) {
-        res.status(404).json({ message: "Song not found" });
-        return;
+//  // Validate that the `action` is either 'like' or 'unlike'
+//  if (!action || (action !== 'like' && action !== 'unlike')) {
+//   return res.status(400).json({
+//     message: "Invalid action. Must be 'like' or 'unlike'.",
+//   });
+// }
+  console.log("Received song API ID:", id);
+  console.log("Action:", action);
+
+  try {
+    // Set the increment/decrement value based on the action
+    const likeChange = action === 'like' ? 1 : -1;
+
+    // Query to update the likes count based on the action
+    const result = await pool.query(
+      `UPDATE songs SET likes = likes + $1, updated_at = NOW() WHERE id = $2 RETURNING *`,
+      [likeChange, id] // Increase or decrease likes by 1 based on the action
+    );
+
+    // // If no song was found with that `id`, return a 404 error.
+    // if (result.rows.length === 0) {
+    //   return res.status(404).json({ message: "Song not found" });
+    // }
+
+    // Get the updated song from the result
+    const updatedSong = result.rows[0];
+    console.log("Server updatedSong: ", updatedSong);
+
+    // Fetch Deezer data for the updated song using the `song_api_id`
+    const response = await axios.get(
+      `https://deezerdevs-deezer.p.rapidapi.com/track/${updatedSong.song_api_id}`,
+      {
+        headers: {
+          "x-rapidapi-key": process.env.VITE_DEEZER_API_KEY, // Deezer API key
+        },
       }
+    );
 
-      // Get the updated song from the result
-      const updatedSong = result.rows[0];
+    // Combine the Deezer data with the updated song data
+    const songWithDeezerData = {
+      ...updatedSong,
+      title: response.data.title,
+      artist: response.data.artist,
+      album: response.data.album,
+      duration: response.data.duration,
+      preview: response.data.preview,
+      album_title: response.data.album.title,
+      album_cover: response.data.album.cover,
+      album_cover_medium: response.data.album.cover_medium,
+      image: response.data.md5_image,
+    };
 
-      // Fetch Deezer data for the updated song using the `song_api_id`
-      const response = await axios.get(
-        `https://deezerdevs-deezer.p.rapidapi.com/track/${updatedSong.song_api_id}`,
-        {
-          headers: {
-            "x-rapidapi-key": process.env.VITE_DEEZER_API_KEY, // Deezer API key
-          },
-        }
-      );
+    // Emit the updated song to all clients
+    console.log("Emitting songLiked event:", songWithDeezerData);
+    io.emit("songLiked", songWithDeezerData);
 
-      // Combine the Deezer data with the updated song data
-      const songWithDeezerData = {
-        ...updatedSong,
-        title: response.data.title,
-        artist: response.data.artist,
-        album: response.data.album,
-        duration: response.data.duration,
-        preview: response.data.preview,
-      };
-
-      // Return the updated song with likes and Deezer details
-      res.json(songWithDeezerData);
-      return;
-    } catch (error) {
-      console.error("Error updating likes:", error);
-      res.status(500).json({ message: "Failed to update likes" });
-      return;
-    }
+    // Return the updated song with likes and Deezer details
+    res.json(songWithDeezerData);
+    return;
+  } catch (error) {
+    console.error("Error updating likes:", error);
+    res.status(500).json({ message: "Failed to update likes" });
+    return;
   }
-);
+});
+
 
 //Route: Delete all songs
 app.delete("/songs", async (req: Request, res: Response) => {
@@ -286,6 +391,6 @@ app.delete("/songs", async (req: Request, res: Response) => {
 });
 
 // Start the server
-app.listen(PORT, async () => {
+server.listen(PORT, async () => {
   console.log(`Server is running on port: ${PORT}`);
 });

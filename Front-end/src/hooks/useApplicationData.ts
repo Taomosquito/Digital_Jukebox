@@ -1,7 +1,9 @@
 import { useState, useRef } from "react";
+import { useWebSocket } from "../context/WebSocketContext";
 import axios from "axios";
 
 export const useApplication = () => {
+  const socket = useWebSocket();
   // State for search and selected songs
   const [searchTerm, setSearchTerm] = useState("");
   const [submittedSearchTerm, setSubmittedSearchTerm] = useState("");
@@ -15,11 +17,6 @@ export const useApplication = () => {
   const [isPlaylistOpen, setIsPlaylistOpen] = useState(false); //Manage Playlist()
 
   const [message, setMessage] = useState<string>("");
-
-  // // Organize the raw results (e.g., sorting by song title)
-  // const organizeResults = (results: any[]) => {
-  //   return results.sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
-  // };
 
   // Format the song duration into a readable time format
   const formatDuration = (seconds: number): string => {
@@ -89,9 +86,8 @@ export const useApplication = () => {
 
   // Handle the add to playlist action
   const handleAddToPlaylist = async () => {
-    console.log("Songs added to playlist:", selectedSongs);
-    setSelectedSongs([]); // Clear selected songs after adding
-
+    console.log("Selected songs to be added:", selectedSongs);
+    
     try {
       const response = await axios.post<any>(
         "http://localhost:3000/addSongs",
@@ -102,9 +98,10 @@ export const useApplication = () => {
           },
         }
       );
-      console.log(response.data);
-      //window.location.href = "playlist" //to check display playlist
-      return response.data; // Return the response data to the caller
+      
+      setSelectedSongs([]); // Clear selected songs after adding
+
+      return response.data; // Return the response data to the caller,see server
     } catch (error: any) {
       console.error("Error adding songs:", error);
       throw new Error("Failed to add songs");
@@ -197,7 +194,6 @@ export const useApplication = () => {
     selectedSongs,
     playingSong,
     audioRefs,
-    //organizeResults,
     formatDuration,
     handleCheckboxChange,
     handlePlayClick,

@@ -8,31 +8,48 @@ import SearchSong from "./components/SearchSong";
 import PlayList from "./components/Playlist";
 import AddAdmin from "./components/AddAdmin";
 import Login from "./components/Login";
+import AdminAuthentication from "./components/AdminAuthentication";
+import SearchModal from "./components/SearchSong";
+
+// Import WebSocketProvider
+import { WebSocketProvider } from './context/WebSocketContext';
 
 function App() {
-  // const [count, setCount] = useState(0)
-
+  
   return (
-    <Router>
-      <div className="App">
-        <SideNavigationBar />
-        <Login />
-        <Routes>
-          <Route
-            path="/playlist"
-            element={
-              <PlayList
-                isOpen={false}
-                onClose={function (): void {
-                  throw new Error("Function not implemented.");
-                }}
-              />
-            }
-          />
-          <Route path="/addAdmin" element={<AddAdmin />} />
-        </Routes>
-      </div>
-    </Router>
+    // Wrap the whole app with WebSocketProvider
+    <WebSocketProvider>
+      <Router>
+        <div className="App">
+          <SideNavigationBar />
+          <Routes>
+            <Route path="/admin-auth" element={<AdminAuthentication />} />
+            <Route 
+              path="/search"
+              element={
+                <SearchModal
+                  isOpen={false}
+                  onClose={function (): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                />
+              }
+            />
+            <Route
+              path="/playlist"
+              element={
+                <PlayList
+                  isOpen={false}
+                  onClose={function (): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                />
+              }
+            />
+          </Routes>
+        </div>
+      </Router>
+    </WebSocketProvider>
   );
 }
 
