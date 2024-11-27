@@ -15,5 +15,6 @@ function App() {
                                     } }) }), _jsx(Route, { path: "/playlist", element: _jsx(PlayList, { isOpen: false, onClose: function () {
                                         throw new Error("Function not implemented.");
                                     } }) })] })] }) }) }));
+
 }
 export default App;
