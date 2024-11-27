@@ -8,7 +8,6 @@ import SearchSong from "./components/SearchSong";
 import PlayList from "./components/Playlist";
 import AddAdmin from "./components/AddAdmin";
 import Login from "./components/Login";
-import AdminAuthentication from "./components/AdminAuthentication";
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -17,6 +16,7 @@ function App() {
     <Router>
       <div className="App">
         <SideNavigationBar />
+        <Login />
         <Routes>
           <Route
             path="/playlist"
@@ -29,7 +29,7 @@ function App() {
               />
             }
           />
-          <Route path="/admin-auth" element={<AdminAuthentication />} />
+          <Route path="/addAdmin" element={<AddAdmin />} />
         </Routes>
       </div>
     </Router>
