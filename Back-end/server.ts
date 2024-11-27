@@ -155,20 +155,19 @@ app.post("/addSongs", async (req: Request, res: Response) => {
         image: deezerSong.md5_image,
       };
 
-      console.log("===== addSong requested SONG: ")
-      console.log(song); /** {
-                              song_api_id: '4688887',
-                              id: 6,
-                              likes: 0,
-                              created_at: 2024-11-26T17:11:00.786Z,
-                              updated_at: 2024-11-26T17:11:00.786Z
-                            }
-                            */
-
       // Emit the event to notify clients of new songs added to list.
       io.emit("songAdded", playlistSong);
       console.log("Emit the songs added: ", playlistSong);
-    }
+      /** {
+            song_api_id: '4688887',
+            id: 6,
+            likes: 0,
+            created_at: 2024-11-26T17:11:00.786Z,
+            updated_at: 2024-11-26T17:11:00.786Z,
+            ....
+          }
+          */
+}
 
     res
       .status(200)
