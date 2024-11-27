@@ -1,6 +1,8 @@
 import { useState, useRef } from "react";
+import { useWebSocket } from "../context/WebSocketContext";
 import axios from "axios";
 export const useApplication = () => {
+    const socket = useWebSocket();
     // State for search and selected songs
     const [searchTerm, setSearchTerm] = useState("");
     const [submittedSearchTerm, setSubmittedSearchTerm] = useState("");
@@ -12,10 +14,6 @@ export const useApplication = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isPlaylistOpen, setIsPlaylistOpen] = useState(false); //Manage Playlist()
     const [message, setMessage] = useState("");
-    // // Organize the raw results (e.g., sorting by song title)
-    // const organizeResults = (results: any[]) => {
-    //   return results.sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
-    // };
     // Format the song duration into a readable time format
     const formatDuration = (seconds) => {
         const minutes = Math.floor(seconds / 60);
@@ -79,17 +77,15 @@ export const useApplication = () => {
     };
     // Handle the add to playlist action
     const handleAddToPlaylist = async () => {
-        console.log("Songs added to playlist:", selectedSongs);
-        setSelectedSongs([]); // Clear selected songs after adding
+        console.log("Selected songs to be added:", selectedSongs);
         try {
             const response = await axios.post("http://localhost:3000/addSongs", selectedSongs, {
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
-            console.log(response.data);
-            //window.location.href = "playlist" //to check display playlist
-            return response.data; // Return the response data to the caller
+            setSelectedSongs([]); // Clear selected songs after adding
+            return response.data; // Return the response data to the caller,see server
         }
         catch (error) {
             console.error("Error adding songs:", error);
@@ -171,7 +167,6 @@ export const useApplication = () => {
         selectedSongs,
         playingSong,
         audioRefs,
-        //organizeResults,
         formatDuration,
         handleCheckboxChange,
         handlePlayClick,

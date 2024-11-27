@@ -53,7 +53,7 @@ const SideNavigation = () => {
     navigate("/admin-auth");
   };
 
-  const currentUser = false; //TODO: removed when session is implemented
+  const currentUser = true; //TODO: removed when session is implemented
 
   return (
     <>
