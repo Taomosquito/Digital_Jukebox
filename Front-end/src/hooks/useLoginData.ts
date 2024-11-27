@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const useLoginData = () => {
   const [adminLoginUsername, setAdminLoginUsername] = useState<string>("");
@@ -19,6 +20,45 @@ export const useLoginData = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     sendToAdminDatabase();
+  };
+
+  const handleLoginSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    await sendToLoginRoute();
+  };
+
+  const sendToLoginRoute = async () => {
+    try {
+      setError(null); // Reset error state
+      setMessage(null); // Reset message state
+
+      const response = await axios.post(
+        "http://localhost:3000/login",
+        { username: adminLoginUsername, password: adminLoginPassword },
+        { withCredentials: true }
+      );
+
+      // await retrieveCookie();
+      console.log(response);
+      setMessage(response.data.message);
+      setError(null);
+    } catch (err: any) {
+      setError(err.response?.data.message || "An error occurred during login");
+      setMessage(null);
+    }
+  };
+
+  const retrieveCookie = async () => {
+    axios.defaults.withCredentials = true;
+
+    axios
+      .get("http://localhost:3000/profile")
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const sendToAdminDatabase = async () => {
@@ -48,5 +88,6 @@ export const useLoginData = () => {
     handleSubmit,
     error,
     message,
+    handleLoginSubmit,
   };
 };
