@@ -8,7 +8,7 @@ import SearchSong from "./components/SearchSong";
 import PlayList from "./components/Playlist";
 import AddAdmin from "./components/AddAdmin";
 import Login from "./components/Login";
-import AdminAuthentication from "./components/AdminAuthentication";
+// import AdminAuthentication from "./components/AdminAuthentication";
 import SearchModal from "./components/SearchSong";
 
 // Import WebSocketProvider
@@ -23,7 +23,7 @@ function App() {
         <div className="App">
           <SideNavigationBar />
           <Routes>
-            <Route path="/admin-auth" element={<AdminAuthentication />} />
+            {/* <Route path="/admin-auth" element={<AdminAuthentication />} /> */}
             <Route 
               path="/search"
               element={
