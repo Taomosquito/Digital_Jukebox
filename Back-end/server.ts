@@ -6,6 +6,7 @@ import axios from "axios";
 import cors from "cors";
 import bcrypt from "bcrypt";
 import { Server as SocketIOServer } from "socket.io";
+import { createServer } from 'http';
 
 const { Pool } = pkg;
 // Use import.meta.url to resolve the path in ES Modules
@@ -29,12 +30,12 @@ app.use(
     origin: "http://localhost:5173",
   })
 );
-// Add middleware to parse JSON request bodies
-app.use(express.json()); // Crucial. Parse JSON.
+//Middleware to parse JSON and URL-encoded data
+app.use(express.json()); // Parse JSON.
 app.use(express.urlencoded({ extended: true }));
-// Path to the build folder
-const buildPath = path.resolve(__dirname, "../"); // Adjust this path as needed
-// Serve static files from the React build directory
+
+// Serve static files from the build directory
+const buildPath = path.resolve(__dirname, "../");
 app.use(express.static(buildPath));
 
 // Setup PostgreSQL client
@@ -53,15 +54,14 @@ pool
     console.error("Error connecting to PostgreSQL database: ", err)
   );
 
-// Create Socket.IO instance attached to the HTTP server
-const server = app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// Create an HTTP server and attach the Express app to it
+const server = createServer(app);
 
-//const server = http.createServer(app);
+//Create Socket.IO instance attached to the HTTP server
 const io = new SocketIOServer(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL || "http://localhost:5173", // Dynamic origin for development and deployment. 
+    //.env will be CLIENT_URL=https://your-heroku-app-name.herokuapp.com
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true, //Allow cookies
   },
@@ -69,7 +69,7 @@ const io = new SocketIOServer(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(`Server New client connected: ${socket.id}`);
+  console.log(`New client connected: ${socket.id}`);
 
   socket.on("disconnect", () => {
     console.log(`Client disconnected: ${socket.id}`);
@@ -359,6 +359,6 @@ app.delete("/songs", async (req: Request, res: Response) => {
 });
 
 // Start the server
-// app.listen(PORT, async () => {
-//   console.log(`Server is running on port: ${PORT}`);
-// });
+server.listen(PORT, async () => {
+  console.log(`Server is running on port: ${PORT}`);
+});
