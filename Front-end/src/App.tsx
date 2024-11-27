@@ -10,6 +10,7 @@ import AddAdmin from "./components/AddAdmin";
 import Login from "./components/Login";
 import AdminAuthentication from "./components/AdminAuthentication";
 import SearchModal from "./components/SearchSong";
+import QRCodeGenerator from "./components/admin/QRCodeGenerator";
 
 // Import WebSocketProvider
 import { WebSocketProvider } from './context/WebSocketContext';
@@ -46,6 +47,7 @@ function App() {
                 />
               }
             />
+            <Route path="/QrCode" element={<QRCodeGenerator />} />
           </Routes>
         </div>
       </Router>
