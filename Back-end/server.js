@@ -39,8 +39,9 @@ app.use(session({
 //Middleware to parse JSON and URL-encoded data
 app.use(express.json()); // Parse JSON.
 app.use(express.urlencoded({ extended: true }));
-// Serve static files from the build directory
-const buildPath = path.resolve(__dirname, "../");
+// Path to the build folder
+const buildPath = path.resolve(__dirname, "../"); // Adjust this path as needed
+// Serve static files from the React build directory
 app.use(express.static(buildPath));
 // Setup PostgreSQL client
 const pool = new Pool({
@@ -72,8 +73,9 @@ io.on("connection", (socket) => {
         console.log(`Client disconnected: ${socket.id}`);
     });
 });
+//Proper closing connections helps prevent memory leaks and resource locking
 process.on("SIGNINT", () => {
-    io.close(() => console.log("Channel is closed"));
+    io.close(() => console.log("Socket.io server is closed"));
     server.close(() => console.log("HTTP server closed"));
 });
 // DB query

@@ -1,32 +1,29 @@
-// Maintain the websocket connection
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-// Create the WebSocket context with the type for the socket
 const WebSocketContext = createContext<Socket | null>(null);
 
-// Custom hook to use the WebSocket context
 export const useWebSocket = () => {
   return useContext(WebSocketContext);
 };
 
-// Define the type for the WebSocket provider props, including children
 interface WebSocketProviderProps {
-  children: React.ReactNode; // The children prop is of type React.ReactNode
+  children: React.ReactNode;
 }
 
-// WebSocketProvider component to manage the socket connection
 export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [isSessionActive, setIsSessionActive] = useState(false);
 
   useEffect(() => {
-    if (!socket) {
-      console.warn("Socket connection is not ready yet.");
+    const existingSocketId = localStorage.getItem("socketId");
+
+    if (existingSocketId) {
+      alert("You already have an active session in another tab.");
+      setIsSessionActive(true);
+      return;
     }
-  }, [socket]);
 
-  useEffect(() => {
-    // Create the socket connection
     const socketConnection = io("http://localhost:3000", {
       transports: ["websocket", "polling"],
       reconnection: true,
@@ -34,9 +31,20 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }
       timeout: 5000,
     });
 
-    // Handle successful connection
+    // Store the socket ID in localStorage when the connection is established
     socketConnection.on('connect', () => {
-      console.log('Socket connected:', socketConnection.id); // Log the socket ID
+      if (socketConnection.id) {
+        console.log('Socket connected:', socketConnection.id);
+        localStorage.setItem("socketId", socketConnection.id);
+      } else {
+        console.error('Socket ID is undefined.');
+      }
+    });
+
+    socketConnection.on('disconnect', () => {
+      console.log('Socket disconnected');
+      localStorage.removeItem("socketId");
+      setIsSessionActive(false);
     });
 
     // Handle connection error
@@ -57,14 +65,19 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }
       console.log("Cleaning up WebSocket connection...");
       socketConnection.removeAllListeners();
       socketConnection.disconnect();
+      localStorage.removeItem("socketId");
     };
   }, []);
 
-  
-
   return (
     <WebSocketContext.Provider value={socket}>
-      {children}
+      {isSessionActive ? ( /**TODO: For testing purpose, we can keep it (if True)create css styling separately, (else) or create other strategy */
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000, display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white' }}>
+          <h2>You already have an active session. Please check your other tabs.</h2>
+        </div>
+      ) : (
+        children
+      )}
     </WebSocketContext.Provider>
   );
 };
