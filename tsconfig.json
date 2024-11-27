@@ -6,14 +6,14 @@
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "strict": true,
-    "typeRoots": ["node_modules/@types"]
+    "typeRoots": ["node_modules/@types", "types"]
   },
   "include": [
     "Front-end/src/**/*.ts",
     "Back-end/*.ts",
     "Front-end/src/**/*.tsx",
     "Back-end/*.tsx",
-    "./vite-env.d.ts",
+    "types",
     "./"
   ],
   "exclude": ["node_modules", "build", "dist", "public"]

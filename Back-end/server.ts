@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import session from "express-session";
 import path from "path";
 import dotenv from "dotenv";
 import pkg from "pg";
@@ -24,18 +25,32 @@ const dbConfig = {
 
 const PORT: number = 3000;
 const app = express();
-
+// Middleware setup
+app.use(express.json());
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(
-  cors({
-    origin: "http://localhost:5173",
+  session({
+    secret:
+      process.env.SESSION_SECRET ||
+      "a1b2c3d4e5f6g7h8i9j10k11l12m13n14o15p16q17r18s19t20u21v22w23x24y25z26", // Secret for signing the session cookie
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production", // Secure only in production
+      httpOnly: true,
+      sameSite: "none",
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    },
   })
 );
 //Middleware to parse JSON and URL-encoded data
 app.use(express.json()); // Parse JSON.
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from the build directory
-const buildPath = path.resolve(__dirname, "../");
+// Path to the build folder
+const buildPath = path.resolve(__dirname, "../"); // Adjust this path as needed
+
+// Serve static files from the React build directory
 app.use(express.static(buildPath));
 
 // Setup PostgreSQL client
@@ -209,6 +224,9 @@ app.post("/login", async (req: Request, res: Response): Promise<any> => {
       return res.status(401).send({ message: "Invalid username or password" });
     }
 
+    req.session.userId = username;
+    console.log(req.session);
+
     return res.status(200).send({
       message: "Login successful",
     });
@@ -216,6 +234,21 @@ app.post("/login", async (req: Request, res: Response): Promise<any> => {
     console.error("Error during login:", error);
     return res.status(500).send({ message: "Internal server error" });
   }
+});
+
+// Protected Route (Profile)
+app.get("/profile", async (req: Request, res: Response): Promise<any> => {
+  if (req.session.userId) {
+    res
+      .status(200)
+      .send({ message: "Welcome to your profile", user: req.session.userId });
+  } else {
+    res.status(401).send({ message: "Please log in first" });
+  }
+});
+
+app.get("/status", async (req, res) => {
+  await res.json({ message: "Success" }); // Awaited
 });
 
 app.get("/songs", async (req, res) => {
