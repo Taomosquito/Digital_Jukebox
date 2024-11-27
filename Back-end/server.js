@@ -56,10 +56,6 @@ pool
     .catch((err) => console.error("Error connecting to PostgreSQL database: ", err));
 // Create an HTTP server and attach the Express app to it
 const server = createServer(app);
-// // Create Socket.IO instance attached to the HTTP server
-// const server = app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
 //Create Socket.IO instance attached to the HTTP server
 const io = new SocketIOServer(server, {
     cors: {
@@ -145,18 +141,18 @@ app.post("/addSongs", async (req, res) => {
                 album_cover_medium: deezerSong.album.cover_medium,
                 image: deezerSong.md5_image,
             };
-            console.log("===== addSong requested SONG: ");
-            console.log(song); /** {
-                                    song_api_id: '4688887',
-                                    id: 6,
-                                    likes: 0,
-                                    created_at: 2024-11-26T17:11:00.786Z,
-                                    updated_at: 2024-11-26T17:11:00.786Z
-                                  }
-                                  */
             // Emit the event to notify clients of new songs added to list.
             io.emit("songAdded", playlistSong);
             console.log("Emit the songs added: ", playlistSong);
+            /** {
+                  song_api_id: '4688887',
+                  id: 6,
+                  likes: 0,
+                  created_at: 2024-11-26T17:11:00.786Z,
+                  updated_at: 2024-11-26T17:11:00.786Z,
+                  ....
+                }
+                */
         }
         res
             .status(200)
