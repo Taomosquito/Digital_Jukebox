@@ -6,7 +6,7 @@ import PlayList from "./components/Playlist";
 import AdminAuthentication from "./components/AdminAuthentication";
 import SearchModal from "./components/SearchSong";
 // Import WebSocketProvider
-import { WebSocketProvider } from './context/WebSocketContext';
+import { WebSocketProvider } from "./context/WebSocketContext";
 function App() {
     return (
     // Wrap the whole app with WebSocketProvider
@@ -15,6 +15,5 @@ function App() {
                                     } }) }), _jsx(Route, { path: "/playlist", element: _jsx(PlayList, { isOpen: false, onClose: function () {
                                         throw new Error("Function not implemented.");
                                     } }) })] })] }) }) }));
-
 }
 export default App;
