@@ -5,6 +5,7 @@ import SideNavigationBar from "./components/SideNavigationBar";
 import PlayList from "./components/Playlist";
 // import AdminAuthentication from "./components/AdminAuthentication";
 import SearchModal from "./components/SearchSong";
+import QRCodeGenerator from "./components/admin/QRCodeGenerator";
 // Import WebSocketProvider
 import { WebSocketProvider } from './context/WebSocketContext';
 function App() {
@@ -15,5 +16,6 @@ function App() {
                                     } }) }), _jsx(Route, { path: "/playlist", element: _jsx(PlayList, { isOpen: false, onClose: function () {
                                         throw new Error("Function not implemented.");
                                     } }) })] })] }) }) }));
+
 }
 export default App;
