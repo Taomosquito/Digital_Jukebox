@@ -3,7 +3,6 @@ import "../styles/SideNavigation.scss";
 import SearchModal from "./SearchSong";
 import { useApplication } from "../hooks/useApplicationData";
 import { useNavigate, useLocation } from "react-router-dom";
-import AdminAuthentication from "./AdminAuthentication";
 
 const SideNavigation = () => {
   const {
