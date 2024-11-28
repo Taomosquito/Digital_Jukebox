@@ -11,6 +11,7 @@ import SearchModal from "./components/SearchSong";
 
 // Import WebSocketProvider
 import { WebSocketProvider } from "./context/WebSocketContext";
+import GeoCheck from "./components/GeoCheck";
 
 function App() {
   return (
