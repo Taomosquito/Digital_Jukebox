@@ -9,6 +9,7 @@ import PlayList from "./components/Playlist";
 import AdminAuthentication from "./components/AdminAuthentication";
 import SearchModal from "./components/SearchSong";
 import QRCodeGenerator from "./components/admin/QRCodeGenerator";
+import JukeBoxPlayer from "./components/client/JukeBoxPlayer";
 
 // Import WebSocketProvider
 import { WebSocketProvider } from "./context/WebSocketContext";
@@ -21,6 +22,7 @@ function App() {
       <Router>
         <div className="App">
           <SideNavigationBar />
+          <JukeBoxPlayer />
           <Routes>
             <Route path="/admin-auth" element={<AdminAuthentication />} />
             <Route
