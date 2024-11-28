@@ -7,9 +7,10 @@ import '../styles/Playlist.scss';
 const PlayList = ({ isOpen, onClose }) => {
     const [songs, setSongs] = useState([]);
     const [likedSongs, setLikedSongs] = useState(new Set());
+    const [isLoading, setIsLoading] = useState(true);
     const { formatDuration } = useApplication();
     const socket = useWebSocket();
-    // Fetch songs from backend on initial mount
+    // //Fetch songs from backend on initial mount
     const fetchSongs = async () => {
         try {
             const response = await axios.get('http://localhost:3000/songs');
@@ -32,6 +33,12 @@ const PlayList = ({ isOpen, onClose }) => {
     // WebSocket event listener to update song likes
     useEffect(() => {
         if (socket) {
+            socket.on('playlistSong', (songs) => {
+                console.log("Received all songs from database: ", songs);
+                const allSongs = sortSongsByLikes(songs);
+                setSongs(allSongs);
+                setIsLoading(false); // Mark as done loading
+            });
             socket.on('songLiked', (updatedSong) => {
                 setSongs((prevSongs) => {
                     // Update the song in the playlist with new likes
@@ -46,7 +53,26 @@ const PlayList = ({ isOpen, onClose }) => {
                 console.log("PLAYLIST socket.on: The addedSong data: ", addedSong);
                 setSongs((existingSongs) => [...existingSongs, addedSong]);
             });
+            // Listen for the songsDeleted event
+            socket.on('songsDeleted', (data) => {
+                console.log(data.message); // Log message for debugging
+                setSongs([]);
+                setIsLoading(true);
+            });
+            // Listen for songDeleted event
+            socket.on('songDeleted', (data) => {
+                console.log('PLAYLIST socket.on: Received songDeleted event:', data.message);
+                // Update the state to remove the deleted song from the playlist
+                setSongs((existingSongs) => existingSongs.filter(song => song.id !== data.id));
+            });
         }
+        // Cleanup on component unmount
+        return () => {
+            if (socket) {
+                socket.off('playlistSong');
+                socket.off('error');
+            }
+        };
     }, [socket]);
     // Utility function to sort songs by likes in descending order
     const sortSongsByLikes = (songs) => {
@@ -95,7 +121,7 @@ const PlayList = ({ isOpen, onClose }) => {
                     : song);
                 return sortSongsByLikes(updatedSongs);
             });
-            // Optionally, emit the updated song to notify other clients
+            // emit the updated song to notify other clients
             if (socket) {
                 socket.emit('songLiked', updatedSong);
             }
