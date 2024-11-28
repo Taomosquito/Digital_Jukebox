@@ -387,13 +387,13 @@ app.get("/songs", async (req, res) => {
       };
 
       console.log("Server Fetch Songs: ", song);
-      console.log("Server fetch Songs with Deezer: ", playlistSong);
-
+      //console.log("Server fetch Songs with Deezer: ", playlistSong);
+      io.emit("playlistSong", playlistSong);
       return playlistSong;
     });
 
     const songDetails = await Promise.all(songDetailsPromises);
-
+        
     res.json(songDetails); // Return the song details including title, artist, duration, and preview, and ...
   } catch (error) {
     console.error("Error fetching songs:", error);
