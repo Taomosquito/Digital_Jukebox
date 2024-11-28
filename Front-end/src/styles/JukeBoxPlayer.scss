@@ -1,4 +1,62 @@
 .juke-box-player {
   display: flex;
+  // flex-direction: column;
+  //position: relative;
+  margin: auto;
+  margin-bottom: 30px;
+  width: 70%;
+  height: 82vh;
+  max-height: 50%;
+  background-color: rgba(81, 129, 189, 0.1);
+  backdrop-filter: blur(10.2px);
+  border: 1px solid rgba(81, 129, 189, 0.24);
+  padding: 30px;
+};
+
+.juke-box-player__content {
+  display: flex;
   flex-direction: column;
+  position: relative;
+  color: whitesmoke;
+  margin: auto;
+  width: 98%;
+  height: 100%;
+  font-size: 20px;
 }
+
+.juke-box-player__now-playing {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  border: 1px solid rgba(81, 129, 189, 0.24);
+  width: 100%;
+  height: 20%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+};
+
+.juke-box-player__next-song {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  border: 1px solid rgba(81, 129, 189, 0.24);
+  width: 100%;
+  height: 20%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+};
+
+.juke-box-player__playlist {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  border: 1px solid rgba(81, 129, 189, 0.24);
+  width: 100%;
+  height: 70%;
+  margin-top: 1em;
+  margin-bottom: 2px;
+};
+
