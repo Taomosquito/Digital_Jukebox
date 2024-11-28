@@ -27,25 +27,52 @@ const JukeBoxPlayer = () => {
   const socket = useWebSocket();
 
   // Fetch playlist songs
-  const fetchSongs = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/songs');
-      const data = response.data;
-      if (Array.isArray(data)) {
-        console.log('Fetched songs:', data);
-        const sortedSongs = sortSongsByLikes(data);
-        setSongs(sortedSongs);
-        setNowPlaying(sortedSongs[0] || null);
-        setNextSong(sortedSongs[1] || null);
-      }
-    } catch (error) {
-      console.error('Error fetching songs:', error);
-    }
-  };
-
   useEffect(() => {
+    const fetchSongs = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/songs');
+        const data = response.data;
+        if (Array.isArray(data)) {
+          console.log('Fetched songs:', data);
+          const sortedSongs = sortSongsByLikes(data);
+          setSongs(sortedSongs);
+          if (sortedSongs.length > 0) {
+            setNowPlaying(sortedSongs[0] || null); // set the first song as Now Playing
+            if (sortedSongs.length > 1) {
+              setNextSong(sortedSongs[1] || null); // set next song in the plylist
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Sorry, Error fetching songs:', error);
+      }
+    };
     fetchSongs(); // Fetch songs on mount
   }, []);
+
+  const handleSongEnd = async () => {
+    // Remove the current song from the playlist and database
+    if (nowPlaying) {
+      try {
+        await axios.delete(`http://localhost:3000/songs/${nowPlaying.id}`);
+        console.log(`Song ${nowPlaying.title} removed from database`);
+
+        // Update the playlist state
+        setSongs((prevSongs) => prevSongs.filter((song) => song.id !== nowPlaying.id));
+
+        // Set the next song as 'Now Playing'
+        if (songs.length > 1) {
+          setNowPlaying(songs[1]);
+          setNextSong(songs[2] || null); // Set the next song if available
+        } else {
+          setNowPlaying(null); // No more songs left to play
+          setNextSong(null);
+        }
+      } catch (error) {
+        console.error('Error deleting song from database:', error);
+      }
+    }
+  };
 
   // WebSocket listeners for song updates
   useEffect(() => {
@@ -105,6 +132,7 @@ const JukeBoxPlayer = () => {
                 src={nowPlaying.preview}
                 autoPlay
                 controls
+                onEnded={handleSongEnd} // Trigger when the song ends
                 className="juke-box-player__now-playing__audio"
               >
               </audio>
