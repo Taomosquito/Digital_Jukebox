@@ -318,7 +318,8 @@ app.get("/songs", async (req, res) => {
                 image: response.data.md5_image,
             };
             console.log("Server Fetch Songs: ", song);
-            console.log("Server fetch Songs with Deezer: ", playlistSong);
+            //console.log("Server fetch Songs with Deezer: ", playlistSong);
+            io.emit("playlistSong", playlistSong);
             return playlistSong;
         });
         const songDetails = await Promise.all(songDetailsPromises);
@@ -397,6 +398,21 @@ app.delete("/songs", async (req, res) => {
     catch (error) {
         console.log("Error deleting the all the songs: ", error);
         res.status(500).json({ message: "Failed to delete songs" });
+    }
+});
+//Delete the sons when finish playing
+app.delete("/songs/:id", async (req, res) => {
+    const songId = parseInt(req.params.id, 10); //ensures the id is a number.
+    try {
+        const client = await pool.connect();
+        const queryString = "DELETE FROM songs WHERE id = $1";
+        const result = await client.query(queryString, [songId]);
+        client.release(); // Release client back to the pool
+        res.status(200).json({ message: `Song with ID ${songId} deleted successfully` });
+    }
+    catch (error) {
+        console.error("Error deleting song: ", error);
+        res.status(500).json({ message: "Failed to delete song" });
     }
 });
 // Start the server
