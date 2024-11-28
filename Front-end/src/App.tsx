@@ -8,6 +8,7 @@ import SearchSong from "./components/SearchSong";
 import PlayList from "./components/Playlist";
 import AdminAuthentication from "./components/AdminAuthentication";
 import SearchModal from "./components/SearchSong";
+import QRCodeGenerator from "./components/admin/QRCodeGenerator";
 
 // Import WebSocketProvider
 import { WebSocketProvider } from "./context/WebSocketContext";
@@ -44,6 +45,7 @@ function App() {
                 />
               }
             />
+            <Route path="/QrCode" element={<QRCodeGenerator />} />
           </Routes>
         </div>
       </Router>

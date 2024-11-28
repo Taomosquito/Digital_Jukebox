@@ -73,6 +73,11 @@ io.on("connection", (socket) => {
         console.log(`Client disconnected: ${socket.id}`);
     });
 });
+//Proper closing connections helps prevent memory leaks and resource locking
+process.on("SIGNINT", () => {
+    io.close(() => console.log("Socket.io server is closed"));
+    server.close(() => console.log("HTTP server closed"));
+});
 // DB query
 const insertSongIntoDatabase = async (songApiId) => {
     console.log("Attempting to insert song with ID:", songApiId);
