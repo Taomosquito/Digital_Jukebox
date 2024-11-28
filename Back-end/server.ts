@@ -494,6 +494,22 @@ app.delete("/songs", async (req: Request, res: Response) => {
   }
 });
 
+//Delete the sons when finish playing
+app.delete("/songs/:id", async (req: Request, res: Response) => {
+  const songId = parseInt(req.params.id, 10); //ensures the id is a number.
+
+  try {
+    const client = await pool.connect();
+    const queryString = "DELETE FROM songs WHERE id = $1";
+    const result = await client.query(queryString, [songId]);
+    client.release(); // Release client back to the pool
+    res.status(200).json({ message: `Song with ID ${songId} deleted successfully` });
+  } catch (error) {
+    console.error("Error deleting song: ", error);
+    res.status(500).json({ message: "Failed to delete song" });
+  }
+});
+
 // Start the server
 server.listen(PORT, async () => {
   console.log(`Server is running on port: ${PORT}`);
