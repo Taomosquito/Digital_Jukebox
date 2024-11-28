@@ -7,7 +7,7 @@ import axios from "axios";
 import cors from "cors";
 import bcrypt from "bcrypt";
 import { Server as SocketIOServer } from "socket.io";
-import { createServer } from 'http';
+import { createServer } from "http";
 const { Pool } = pkg;
 // Use import.meta.url to resolve the path in ES Modules
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
@@ -60,7 +60,7 @@ const server = createServer(app);
 //Create Socket.IO instance attached to the HTTP server
 const io = new SocketIOServer(server, {
     cors: {
-        origin: process.env.CLIENT_URL || "http://localhost:5173", // Dynamic origin for development and deployment. 
+        origin: process.env.CLIENT_URL || "http://localhost:5173", // Dynamic origin for development and deployment.
         //.env will be CLIENT_URL=https://your-heroku-app-name.herokuapp.com
         methods: ["GET", "POST", "PATCH", "DELETE"],
         credentials: true, //Allow cookies
@@ -169,6 +169,84 @@ app.post("/addSongs", async (req, res) => {
         res.status(500).json({ message: "Failed to add songs" });
     }
 });
+const getServerLocation = async () => {
+    try {
+        const response = await axios.get("http://ip-api.com/json/");
+        const { lat, lon } = response.data;
+        return { latitude: lat, longitude: lon };
+    }
+    catch (error) {
+        console.error("Error fetching server geolocation:", error);
+        throw new Error("Failed to fetch server geolocation.");
+    }
+};
+// Haversine formula to calculate distance
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6378; // Earth's radius in kilometers
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos((lat1 * Math.PI) / 180) *
+            Math.cos((lat2 * Math.PI) / 180) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in kilometers
+}
+// Source location and maximum range
+const MAX_DISTANCE_KM = 0.25; // Define range in kilometers
+// Geolocation endpoint
+app.post("/geo", async (req, res) => {
+    const { latitude, longitude } = req.body;
+    // Validate the request
+    if (typeof latitude !== "number" || typeof longitude !== "number") {
+        res
+            .status(400)
+            .json({ success: false, message: "Invalid geolocation data." });
+        return;
+    }
+    try {
+        // Fetch the server's location
+        const serverLocation = await getServerLocation();
+        const serverLatitude = serverLocation.latitude;
+        const serverLongitude = serverLocation.longitude;
+        // Calculate the distance between the user's location and the server's location
+        const distance = calculateDistance(latitude, longitude, serverLatitude, serverLongitude);
+        const MAX_DISTANCE_KM = 1; // Set the range in kilometers
+        // Check if the user is within the specified range
+        const inRange = distance <= MAX_DISTANCE_KM;
+        // Save the result in the session (if needed)
+        req.session.geo = { latitude, longitude, inRange };
+        // Respond with the result
+        res.status(200).json({
+            success: true,
+            inRange,
+            distance,
+            message: inRange
+                ? "User is within range of the server's location."
+                : "User is out of range of the server's location.",
+        });
+    }
+    catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ success: false, message: "Server error." });
+    }
+});
+app.delete("/geo-delete", (req, res) => {
+    if (req.session.geo) {
+        delete req.session.geo; // Remove the geo property from the session
+        res.status(200).json({
+            success: true,
+            message: "Geolocation data has been cleared from the session.",
+        });
+    }
+    else {
+        res.status(400).json({
+            success: false,
+            message: "No geolocation data to clear.",
+        });
+    }
+});
 // login route event listener
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
@@ -251,7 +329,7 @@ app.get("/songs", async (req, res) => {
         res.status(500).json({ message: "Failed to fetch songs" });
     }
 });
-app.patch('/songs/:id/like', async (req, res) => {
+app.patch("/songs/:id/like", async (req, res) => {
     const { id } = req.params;
     const { action } = req.body;
     //  // Validate that the `action` is either 'like' or 'unlike'
@@ -264,7 +342,7 @@ app.patch('/songs/:id/like', async (req, res) => {
     console.log("Action:", action);
     try {
         // Set the increment/decrement value based on the action
-        const likeChange = action === 'like' ? 1 : -1;
+        const likeChange = action === "like" ? 1 : -1;
         // Query to update the likes count based on the action
         const result = await pool.query(`UPDATE songs SET likes = likes + $1, updated_at = NOW() WHERE id = $2 RETURNING *`, [likeChange, id] // Increase or decrease likes by 1 based on the action
         );
