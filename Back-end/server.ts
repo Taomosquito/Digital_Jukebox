@@ -7,7 +7,7 @@ import axios from "axios";
 import cors from "cors";
 import bcrypt from "bcrypt";
 import { Server as SocketIOServer } from "socket.io";
-import { createServer } from 'http';
+import { createServer } from "http";
 
 const { Pool } = pkg;
 // Use import.meta.url to resolve the path in ES Modules
@@ -75,7 +75,7 @@ const server = createServer(app);
 //Create Socket.IO instance attached to the HTTP server
 const io = new SocketIOServer(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:5173", // Dynamic origin for development and deployment. 
+    origin: process.env.CLIENT_URL || "http://localhost:5173", // Dynamic origin for development and deployment.
     //.env will be CLIENT_URL=https://your-heroku-app-name.herokuapp.com
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true, //Allow cookies
@@ -110,7 +110,7 @@ const insertSongIntoDatabase = async (songApiId: string) => {
     console.log("new songs added to dbase, AddSong: ", rows[0]);
     /**  {id: , song_api_id: , likes: 0, created_at: , updated_at: }  */
 
-    const newSongAdded = { song_api_id: songApiId, ...rows[0] }
+    const newSongAdded = { song_api_id: songApiId, ...rows[0] };
 
     console.log("New song object: ", newSongAdded);
     /**{
@@ -152,7 +152,6 @@ app.post("/admins", async (req: Request, res: Response): Promise<any> => {
 });
 
 app.post("/addSongs", async (req: Request, res: Response) => {
-
   try {
     for (const deezerSong of req.body) {
       const song = await insertSongIntoDatabase(deezerSong.id);
@@ -182,7 +181,7 @@ app.post("/addSongs", async (req: Request, res: Response) => {
             ....
           }
           */
-}
+    }
 
     res
       .status(200)
@@ -190,6 +189,103 @@ app.post("/addSongs", async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error adding songs:", error);
     res.status(500).json({ message: "Failed to add songs" });
+  }
+});
+
+const getServerLocation = async () => {
+  try {
+    const response = await axios.get("http://ip-api.com/json/");
+    const { lat, lon } = response.data;
+    return { latitude: lat, longitude: lon };
+  } catch (error) {
+    console.error("Error fetching server geolocation:", error);
+    throw new Error("Failed to fetch server geolocation.");
+  }
+};
+
+// Haversine formula to calculate distance
+function calculateDistance(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number {
+  const R = 6378; // Earth's radius in kilometers
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in kilometers
+}
+
+// Source location and maximum range
+const MAX_DISTANCE_KM = 0.25; // Define range in kilometers
+
+// Geolocation endpoint
+app.post("/geo", async (req: Request, res: Response): Promise<void> => {
+  const { latitude, longitude } = req.body;
+
+  // Validate the request
+  if (typeof latitude !== "number" || typeof longitude !== "number") {
+    res
+      .status(400)
+      .json({ success: false, message: "Invalid geolocation data." });
+    return;
+  }
+
+  try {
+    // Fetch the server's location
+    const serverLocation = await getServerLocation();
+    const serverLatitude = serverLocation.latitude;
+    const serverLongitude = serverLocation.longitude;
+
+    // Calculate the distance between the user's location and the server's location
+    const distance = calculateDistance(
+      latitude,
+      longitude,
+      serverLatitude,
+      serverLongitude
+    );
+    const MAX_DISTANCE_KM = 1; // Set the range in kilometers
+
+    // Check if the user is within the specified range
+    const inRange = distance <= MAX_DISTANCE_KM;
+
+    // Save the result in the session (if needed)
+    req.session.geo = { latitude, longitude, inRange };
+
+    // Respond with the result
+    res.status(200).json({
+      success: true,
+      inRange,
+      distance,
+      message: inRange
+        ? "User is within range of the server's location."
+        : "User is out of range of the server's location.",
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ success: false, message: "Server error." });
+  }
+});
+
+app.delete("/geo-delete", (req: Request, res: Response): void => {
+  if (req.session.geo) {
+    delete req.session.geo; // Remove the geo property from the session
+    res.status(200).json({
+      success: true,
+      message: "Geolocation data has been cleared from the session.",
+    });
+  } else {
+    res.status(400).json({
+      success: false,
+      message: "No geolocation data to clear.",
+    });
   }
 });
 
@@ -259,7 +355,7 @@ app.get("/songs", async (req, res) => {
     );
 
     const songs = result.rows;
-    
+
     // Fetch song details from Deezer API for each song
     const songDetailsPromises = songs.map(async (song) => {
       const response = await axios.get(
@@ -282,8 +378,8 @@ app.get("/songs", async (req, res) => {
         album_cover: response.data.album.cover,
         album_cover_medium: response.data.album.cover_medium,
         image: response.data.md5_image,
-      }
-   
+      };
+
       console.log("Server Fetch Songs: ", song);
       console.log("Server fetch Songs with Deezer: ", playlistSong);
 
@@ -302,79 +398,81 @@ app.get("/songs", async (req, res) => {
 // Routes that partially update the resource
 // TypeScript interface for the request body
 interface LikeRequestBody {
-  action: 'like' | 'unlike';
+  action: "like" | "unlike";
 }
 
-app.patch('/songs/:id/like', async (req: Request<{ id: string }, any, LikeRequestBody>, res: Response) => {
-  const { id } = req.params;
-  const { action } = req.body;
+app.patch(
+  "/songs/:id/like",
+  async (req: Request<{ id: string }, any, LikeRequestBody>, res: Response) => {
+    const { id } = req.params;
+    const { action } = req.body;
 
-//  // Validate that the `action` is either 'like' or 'unlike'
-//  if (!action || (action !== 'like' && action !== 'unlike')) {
-//   return res.status(400).json({
-//     message: "Invalid action. Must be 'like' or 'unlike'.",
-//   });
-// }
-  console.log("Received song API ID:", id);
-  console.log("Action:", action);
-
-  try {
-    // Set the increment/decrement value based on the action
-    const likeChange = action === 'like' ? 1 : -1;
-
-    // Query to update the likes count based on the action
-    const result = await pool.query(
-      `UPDATE songs SET likes = likes + $1, updated_at = NOW() WHERE id = $2 RETURNING *`,
-      [likeChange, id] // Increase or decrease likes by 1 based on the action
-    );
-
-    // // If no song was found with that `id`, return a 404 error.
-    // if (result.rows.length === 0) {
-    //   return res.status(404).json({ message: "Song not found" });
+    //  // Validate that the `action` is either 'like' or 'unlike'
+    //  if (!action || (action !== 'like' && action !== 'unlike')) {
+    //   return res.status(400).json({
+    //     message: "Invalid action. Must be 'like' or 'unlike'.",
+    //   });
     // }
+    console.log("Received song API ID:", id);
+    console.log("Action:", action);
 
-    // Get the updated song from the result
-    const updatedSong = result.rows[0];
-    console.log("Server updatedSong: ", updatedSong);
+    try {
+      // Set the increment/decrement value based on the action
+      const likeChange = action === "like" ? 1 : -1;
 
-    // Fetch Deezer data for the updated song using the `song_api_id`
-    const response = await axios.get(
-      `https://deezerdevs-deezer.p.rapidapi.com/track/${updatedSong.song_api_id}`,
-      {
-        headers: {
-          "x-rapidapi-key": process.env.VITE_DEEZER_API_KEY, // Deezer API key
-        },
-      }
-    );
+      // Query to update the likes count based on the action
+      const result = await pool.query(
+        `UPDATE songs SET likes = likes + $1, updated_at = NOW() WHERE id = $2 RETURNING *`,
+        [likeChange, id] // Increase or decrease likes by 1 based on the action
+      );
 
-    // Combine the Deezer data with the updated song data
-    const songWithDeezerData = {
-      ...updatedSong,
-      title: response.data.title,
-      artist: response.data.artist,
-      album: response.data.album,
-      duration: response.data.duration,
-      preview: response.data.preview,
-      album_title: response.data.album.title,
-      album_cover: response.data.album.cover,
-      album_cover_medium: response.data.album.cover_medium,
-      image: response.data.md5_image,
-    };
+      // // If no song was found with that `id`, return a 404 error.
+      // if (result.rows.length === 0) {
+      //   return res.status(404).json({ message: "Song not found" });
+      // }
 
-    // Emit the updated song to all clients
-    console.log("Emitting songLiked event:", songWithDeezerData);
-    io.emit("songLiked", songWithDeezerData);
+      // Get the updated song from the result
+      const updatedSong = result.rows[0];
+      console.log("Server updatedSong: ", updatedSong);
 
-    // Return the updated song with likes and Deezer details
-    res.json(songWithDeezerData);
-    return;
-  } catch (error) {
-    console.error("Error updating likes:", error);
-    res.status(500).json({ message: "Failed to update likes" });
-    return;
+      // Fetch Deezer data for the updated song using the `song_api_id`
+      const response = await axios.get(
+        `https://deezerdevs-deezer.p.rapidapi.com/track/${updatedSong.song_api_id}`,
+        {
+          headers: {
+            "x-rapidapi-key": process.env.VITE_DEEZER_API_KEY, // Deezer API key
+          },
+        }
+      );
+
+      // Combine the Deezer data with the updated song data
+      const songWithDeezerData = {
+        ...updatedSong,
+        title: response.data.title,
+        artist: response.data.artist,
+        album: response.data.album,
+        duration: response.data.duration,
+        preview: response.data.preview,
+        album_title: response.data.album.title,
+        album_cover: response.data.album.cover,
+        album_cover_medium: response.data.album.cover_medium,
+        image: response.data.md5_image,
+      };
+
+      // Emit the updated song to all clients
+      console.log("Emitting songLiked event:", songWithDeezerData);
+      io.emit("songLiked", songWithDeezerData);
+
+      // Return the updated song with likes and Deezer details
+      res.json(songWithDeezerData);
+      return;
+    } catch (error) {
+      console.error("Error updating likes:", error);
+      res.status(500).json({ message: "Failed to update likes" });
+      return;
+    }
   }
-});
-
+);
 
 //Route: Delete all songs
 app.delete("/songs", async (req: Request, res: Response) => {
