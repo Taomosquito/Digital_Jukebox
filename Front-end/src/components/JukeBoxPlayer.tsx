@@ -1,9 +1,8 @@
-import React, {useState, useEffect}from "react";
-import Playlist from './Playlist';
+import React, { useState, useEffect } from 'react';
 import { useApplication } from '../hooks/useApplicationData';
 import { useWebSocket } from '../context/WebSocketContext';
 import axios from 'axios';
-import '../styles/JukeBoxPlayer.scss'
+import '../styles/JukeBoxPlayer.scss';
 
 interface Song {
   id: number;
@@ -12,32 +11,30 @@ interface Song {
   duration: number;
   artist: {
     name: string;
-    picture_small: string;
   };
   album: {
     title: string;
   };
   likes: number;
-  created_at: string;
 }
 
 const JukeBoxPlayer = () => {
-
   const [songs, setSongs] = useState<Song[]>([]);
-  // const [likedSongs, setLikedSongs] = useState<Set<number>>(new Set());
+  const [nowPlaying, setNowPlaying] = useState<Song | null>(null);
+  const [nextSong, setNextSong] = useState<Song | null>(null);
   const { formatDuration } = useApplication();
   const socket = useWebSocket();
-  
-  // Fetch songs from backend on initial mount
+
+  // Fetch playlist songs
   const fetchSongs = async () => {
     try {
       const response = await axios.get('http://localhost:3000/songs');
       const data = response.data;
-      console.log("JukeBoxPlayer fetch songs: ", data)
       if (Array.isArray(data)) {
-        setSongs(sortSongsByLikes(data)); // Update the state with the song data sorted by likes
-      } else {
-        console.error("Expected an array of songs but got:", data);
+        console.log('Fetched songs:', data);
+        setSongs(sortSongsByLikes(data));
+        setNowPlaying(data[0] || null);
+        setNextSong(data[1] || null);
       }
     } catch (error) {
       console.error('Error fetching songs:', error);
@@ -45,42 +42,76 @@ const JukeBoxPlayer = () => {
   };
 
   useEffect(() => {
-    fetchSongs(); // Fetch songs when the component is first mounted
-
-    const intervalId = setInterval(fetchSongs, 1000); // Poll every 20 seconds
-
-    return () => {
-      clearInterval(intervalId); // Cleanup the interval on component unmount
-    };
+    fetchSongs(); // Fetch songs on mount
   }, []);
 
-   // Utility function to sort songs by likes in descending order
-   const sortSongsByLikes = (songs: Song[]) => {
+  // WebSocket listeners for song updates
+  useEffect(() => {
+    if (socket) {
+      console.log('WebSocket connected');
+      socket.on('songLiked', (updatedSong: Song) => {
+        console.log('Received songLiked event:', updatedSong);
+        setSongs((prevSongs) =>
+          sortSongsByLikes(
+            prevSongs.map((song) =>
+              song.song_api_id === updatedSong.song_api_id
+                ? { ...song, likes: updatedSong.likes }
+                : song
+            )
+          )
+        );
+      });
+
+      socket.on('songAdded', (addedSong: Song) => {
+        console.log('Received songAdded event:', addedSong);
+        setSongs((prevSongs) => {
+          const newSongs = sortSongsByLikes([...prevSongs, addedSong]);
+          console.log('Updated songs after addition:', newSongs);
+          return newSongs;
+        });
+      });
+    } else {
+      console.error('WebSocket not connected');
+    }
+  }, [socket]);
+
+  // Sort songs by likes, then creation time
+  const sortSongsByLikes = (songs: Song[]) => {
     return songs.sort((a, b) => {
       if (b.likes !== a.likes) {
-        return b.likes - a.likes; // Sort by likes (highest first)
+        return b.likes - a.likes;
       }
-      // If likes are equal, sort by creation date
-      return (a.created_at || '').localeCompare(b.created_at || '');
+      return 0;
     });
   };
-  
+
   return (
     <div className="juke-box-player">
       <div className="juke-box-player__content">
-        Now Playing
-        <div className="juke-box-player__now-playing">
-          (Now Playing Image)
-          (Title)
-          (Artist)      
-          (duration)
-        </div>
-        Next in the Playlist
-        <div className="juke-box-player__next-song">
-          Next in the Playlist
-        </div>
-        Playlist
-        <div className="juke-box-player__playlist">
+        <h2>Now Playing</h2>
+        {nowPlaying ? (
+          <div className="juke-box-player__now-playing">
+            <div className="juke-box-player__now-playing__details">
+              <strong>{nowPlaying.title}</strong>
+              <p>{nowPlaying.artist?.name}</p>
+              <p>{formatDuration(nowPlaying.duration)}</p>
+            </div>
+          </div>
+        ) : (
+          <p>No song currently playing</p>
+        )}
+
+        <h2>Next in the Playlist..</h2>
+        {nextSong ? (
+          <div className="juke-box-player__next-song">
+            <strong>{nextSong.title}</strong> by {nextSong.artist?.name}
+          </div>
+        ) : (
+          <p>No upcoming songs</p>
+        )}
+
+        <h2>Current Playlist..</h2>
+        <div className="juke-box-player__current-playlist">
           <table>
             <thead>
               <tr>
@@ -93,22 +124,16 @@ const JukeBoxPlayer = () => {
             <tbody>
               {songs.map((song) => (
                 <tr key={song.id}>
-                  {/* <td>{song.id}</td> */}
                   <td>{song.album?.title}</td>
-                  <td className="playlist__list-mgr__title">{song.title}</td>
-                  <td className="playlist__list-mgr__artist">{song.artist?.name}</td>
+                  <td>{song.title}</td>
+                  <td>{song.artist?.name}</td>
                   <td>{formatDuration(song.duration)}</td>
-                  
                 </tr>
               ))}
             </tbody>
           </table>
-
-
         </div>
-
       </div>
-
     </div>
   );
 };
