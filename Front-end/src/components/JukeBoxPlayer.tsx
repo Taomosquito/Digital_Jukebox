@@ -16,6 +16,7 @@ interface Song {
     title: string;
   };
   likes: number;
+  preview:string;
 }
 
 const JukeBoxPlayer = () => {
@@ -32,9 +33,10 @@ const JukeBoxPlayer = () => {
       const data = response.data;
       if (Array.isArray(data)) {
         console.log('Fetched songs:', data);
-        setSongs(sortSongsByLikes(data));
-        setNowPlaying(data[0] || null);
-        setNextSong(data[1] || null);
+        const sortedSongs = sortSongsByLikes(data);
+        setSongs(sortedSongs);
+        setNowPlaying(sortedSongs[0] || null);
+        setNextSong(sortedSongs[1] || null);
       }
     } catch (error) {
       console.error('Error fetching songs:', error);
@@ -67,13 +69,17 @@ const JukeBoxPlayer = () => {
         setSongs((prevSongs) => {
           const newSongs = sortSongsByLikes([...prevSongs, addedSong]);
           console.log('Updated songs after addition:', newSongs);
+          // Set the new "Now Playing" song if there isn't already one playing
+          if (!nowPlaying) {
+            setNowPlaying(newSongs[0]);
+          }
           return newSongs;
         });
       });
     } else {
       console.error('WebSocket not connected');
     }
-  }, [socket]);
+  }, [socket, nowPlaying]);
 
   // Sort songs by likes, then creation time
   const sortSongsByLikes = (songs: Song[]) => {
@@ -95,13 +101,20 @@ const JukeBoxPlayer = () => {
               <strong>{nowPlaying.title}</strong>
               <p>{nowPlaying.artist?.name}</p>
               <p>{formatDuration(nowPlaying.duration)}</p>
+              <audio
+                src={nowPlaying.preview}
+                autoPlay
+                controls
+                className="juke-box-player__now-playing__audio"
+              >
+              </audio>
             </div>
           </div>
         ) : (
           <p>No song currently playing</p>
         )}
 
-        <h2>Next in the Playlist..</h2>
+        <h2>Next in the Playlist</h2>
         {nextSong ? (
           <div className="juke-box-player__next-song">
             <strong>{nextSong.title}</strong> by {nextSong.artist?.name}
@@ -110,7 +123,7 @@ const JukeBoxPlayer = () => {
           <p>No upcoming songs</p>
         )}
 
-        <h2>Current Playlist..</h2>
+        <h2>Current Playlist</h2>
         <div className="juke-box-player__current-playlist">
           <table>
             <thead>
