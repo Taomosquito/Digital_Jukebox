@@ -27,6 +27,11 @@ export const useLoginData = () => {
     await sendToLoginRoute();
   };
 
+  const handleGeoSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    await sendToGeoRoute();
+  };
+
   const sendToLoginRoute = async () => {
     try {
       setError(null); // Reset error state
@@ -44,6 +49,46 @@ export const useLoginData = () => {
       setError(null);
     } catch (err: any) {
       setError(err.response?.data.message || "An error occurred during login");
+      setMessage(null);
+    }
+  };
+
+  const sendToGeoRoute = async () => {
+    try {
+      setError(null);
+      setMessage(null);
+
+      // Get user's current geolocation
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          // Send geolocation data to the backend
+          const response = await axios.post(
+            "http://localhost:3000/geo",
+            {
+              latitude,
+              longitude,
+            },
+            {
+              withCredentials: true, // Ensure cookies are sent
+            }
+          );
+
+          console.log(response);
+          setMessage(response.data.message);
+          setError(null);
+        },
+        (error) => {
+          setError("Unable to retrieve your location.");
+          console.error("Geolocation error:", error);
+        }
+      );
+    } catch (err: any) {
+      setError(
+        err.response?.data.message ||
+          "An error occurred during session creation."
+      );
       setMessage(null);
     }
   };
@@ -89,5 +134,6 @@ export const useLoginData = () => {
     error,
     message,
     handleLoginSubmit,
+    handleGeoSubmit,
   };
 };

@@ -2,7 +2,8 @@ import session from "express-session";
 
 declare module "express-session" {
   interface SessionData {
-    userId?: string; // Add any custom session properties here
+    userId?: string;
+    geo?: { latitude: number; longitude: number; inRange: boolean };
   }
 }
 
