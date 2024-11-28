@@ -1,25 +1,25 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import { useApplication } from '../hooks/useApplicationData';
 import { useWebSocket } from '../context/WebSocketContext';
 import axios from 'axios';
 import '../styles/JukeBoxPlayer.scss';
 const JukeBoxPlayer = () => {
     const [songs, setSongs] = useState([]);
-    // const [likedSongs, setLikedSongs] = useState<Set<number>>(new Set());
+    const [nowPlaying, setNowPlaying] = useState(null);
+    const [nextSong, setNextSong] = useState(null);
     const { formatDuration } = useApplication();
     const socket = useWebSocket();
-    // Fetch songs from backend on initial mount
+    // Fetch playlist songs
     const fetchSongs = async () => {
         try {
             const response = await axios.get('http://localhost:3000/songs');
             const data = response.data;
-            console.log("JukeBoxPlayer fetch songs: ", data);
             if (Array.isArray(data)) {
-                setSongs(sortSongsByLikes(data)); // Update the state with the song data sorted by likes
-            }
-            else {
-                console.error("Expected an array of songs but got:", data);
+                console.log('Fetched songs:', data);
+                setSongs(sortSongsByLikes(data));
+                setNowPlaying(data[0] || null);
+                setNextSong(data[1] || null);
             }
         }
         catch (error) {
@@ -27,22 +27,40 @@ const JukeBoxPlayer = () => {
         }
     };
     useEffect(() => {
-        fetchSongs(); // Fetch songs when the component is first mounted
-        const intervalId = setInterval(fetchSongs, 1000); // Poll every 20 seconds
-        return () => {
-            clearInterval(intervalId); // Cleanup the interval on component unmount
-        };
+        fetchSongs(); // Fetch songs on mount
     }, []);
-    // Utility function to sort songs by likes in descending order
+    // WebSocket listeners for song updates
+    useEffect(() => {
+        if (socket) {
+            console.log('WebSocket connected');
+            socket.on('songLiked', (updatedSong) => {
+                console.log('Received songLiked event:', updatedSong);
+                setSongs((prevSongs) => sortSongsByLikes(prevSongs.map((song) => song.song_api_id === updatedSong.song_api_id
+                    ? { ...song, likes: updatedSong.likes }
+                    : song)));
+            });
+            socket.on('songAdded', (addedSong) => {
+                console.log('Received songAdded event:', addedSong);
+                setSongs((prevSongs) => {
+                    const newSongs = sortSongsByLikes([...prevSongs, addedSong]);
+                    console.log('Updated songs after addition:', newSongs);
+                    return newSongs;
+                });
+            });
+        }
+        else {
+            console.error('WebSocket not connected');
+        }
+    }, [socket]);
+    // Sort songs by likes, then creation time
     const sortSongsByLikes = (songs) => {
         return songs.sort((a, b) => {
             if (b.likes !== a.likes) {
-                return b.likes - a.likes; // Sort by likes (highest first)
+                return b.likes - a.likes;
             }
-            // If likes are equal, sort by creation date
-            return (a.created_at || '').localeCompare(b.created_at || '');
+            return 0;
         });
     };
-    return (_jsx("div", { className: "juke-box-player", children: _jsxs("div", { className: "juke-box-player__content", children: ["Now Playing", _jsx("div", { className: "juke-box-player__now-playing", children: "(Now Playing Image) (Title) (Artist) (duration)" }), "Next in the Playlist", _jsx("div", { className: "juke-box-player__next-song", children: "Next in the Playlist" }), "Playlist", _jsx("div", { className: "juke-box-player__playlist", children: _jsxs("table", { children: [_jsx("thead", { children: _jsxs("tr", { children: [_jsx("th", { children: "Album" }), _jsx("th", { children: "Track" }), _jsx("th", { children: "Artist" }), _jsx("th", { children: "Time" })] }) }), _jsx("tbody", { children: songs.map((song) => (_jsxs("tr", { children: [_jsx("td", { children: song.album?.title }), _jsx("td", { className: "playlist__list-mgr__title", children: song.title }), _jsx("td", { className: "playlist__list-mgr__artist", children: song.artist?.name }), _jsx("td", { children: formatDuration(song.duration) })] }, song.id))) })] }) })] }) }));
+    return (_jsx("div", { className: "juke-box-player", children: _jsxs("div", { className: "juke-box-player__content", children: [_jsx("h2", { children: "Now Playing" }), nowPlaying ? (_jsx("div", { className: "juke-box-player__now-playing", children: _jsxs("div", { className: "juke-box-player__now-playing__details", children: [_jsx("strong", { children: nowPlaying.title }), _jsx("p", { children: nowPlaying.artist?.name }), _jsx("p", { children: formatDuration(nowPlaying.duration) })] }) })) : (_jsx("p", { children: "No song currently playing" })), _jsx("h2", { children: "Next in the Playlist.." }), nextSong ? (_jsxs("div", { className: "juke-box-player__next-song", children: [_jsx("strong", { children: nextSong.title }), " by ", nextSong.artist?.name] })) : (_jsx("p", { children: "No upcoming songs" })), _jsx("h2", { children: "Current Playlist.." }), _jsx("div", { className: "juke-box-player__current-playlist", children: _jsxs("table", { children: [_jsx("thead", { children: _jsxs("tr", { children: [_jsx("th", { children: "Album" }), _jsx("th", { children: "Track" }), _jsx("th", { children: "Artist" }), _jsx("th", { children: "Time" })] }) }), _jsx("tbody", { children: songs.map((song) => (_jsxs("tr", { children: [_jsx("td", { children: song.album?.title }), _jsx("td", { children: song.title }), _jsx("td", { children: song.artist?.name }), _jsx("td", { children: formatDuration(song.duration) })] }, song.id))) })] }) })] }) }));
 };
 export default JukeBoxPlayer;
