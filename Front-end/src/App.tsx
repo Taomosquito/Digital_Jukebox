@@ -9,7 +9,7 @@ import PlayList from "./components/Playlist";
 import AdminAuthentication from "./components/AdminAuthentication";
 import SearchModal from "./components/SearchSong";
 import QRCodeGenerator from "./components/admin/QRCodeGenerator";
-import JukeBoxPlayer from "./components/client/JukeBoxPlayer";
+import JukeBoxPlayer from "./components/JukeBoxPlayer";
 
 // Import WebSocketProvider
 import { WebSocketProvider } from "./context/WebSocketContext";
