@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
 
 const WebSocketContext = createContext<Socket | null>(null);
 
@@ -11,7 +11,9 @@ interface WebSocketProviderProps {
   children: React.ReactNode;
 }
 
-export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
+export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
+  children,
+}) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isSessionActive, setIsSessionActive] = useState(false);
 
@@ -33,42 +35,42 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }
     });
 
     // Store the socket ID in localStorage when the connection is established. Check stale connection
-    socketConnection.on('connect', () => {
+    socketConnection.on("connect", () => {
       const newSocketId = socketConnection.id;
       if (newSocketId) {
         if (existingSocketId && existingSocketId !== newSocketId) {
-          console.log('Clearing stale socketId from localStorage.');
+          console.log("Clearing stale socketId from localStorage.");
           localStorage.removeItem("socketId");
         }
-    
-        console.log('Socket connected:', newSocketId);
+
+        console.log("Socket connected:", newSocketId);
         localStorage.setItem("socketId", newSocketId);
         setIsSessionActive(false); // Allow session after successful connection
       } else {
-        console.error('Socket ID is undefined.');
+        console.error("Socket ID is undefined.");
       }
     });
-    
-    socketConnection.on('disconnect', () => {
-      console.log('Socket disconnected');
+
+    socketConnection.on("disconnect", () => {
+      console.log("Socket disconnected");
       // localStorage.removeItem("socketId");
       setIsSessionActive(true);
     });
 
     // Handle reconnection
-    socketConnection.on('reconnect', (attempt) => {
+    socketConnection.on("reconnect", (attempt) => {
       console.log(`Reconnected successfully after ${attempt} attempt(s)`);
       setIsSessionActive(false); // Reset session block on reconnect
     });
-  
+
     // Handle connection error
-    socketConnection.on('connect_error', (error) => {
-      console.error('Connection Error:', error);
+    socketConnection.on("connect_error", (error) => {
+      console.error("Connection Error:", error);
     });
 
     // Handle reconnect error
-    socketConnection.on('reconnect_error', (error) => {
-      console.error('Reconnection Error:', error);
+    socketConnection.on("reconnect_error", (error) => {
+      console.error("Reconnection Error:", error);
     });
 
     setSocket(socketConnection);
@@ -76,7 +78,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }
 
     // Cleanup when the component unmounts
     return () => {
-      console.log('Cleaning up WebSocket connection...');
+      console.log("Cleaning up WebSocket connection...");
       socketConnection.removeAllListeners();
       socketConnection.disconnect();
       localStorage.removeItem("socketId");
@@ -85,9 +87,25 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }
 
   return (
     <WebSocketContext.Provider value={socket}>
-      {isSessionActive ? ( /**TODO: For testing purpose, we can keep it (if True)create css styling separately, (else) or create other strategy */
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000, display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white' }}>
-          <h2>You already have an active session. Please check your other tabs.</h2>
+      {isSessionActive /**TODO: For testing purpose, we can keep it (if True)create css styling separately, (else) or create other strategy */ ? (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1000,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            color: "white",
+          }}
+        >
+          <h2>
+            You already have an active session. Please check your other tabs.
+          </h2>
         </div>
       ) : (
         children

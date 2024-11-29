@@ -1,10 +1,7 @@
-import React, { useState } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import TrackListManager from "./components/TrackListManager";
 import SideNavigationBar from "./components/SideNavigationBar";
-import SearchSong from "./components/SearchSong";
 import PlayList from "./components/Playlist";
 import AdminAuthentication from "./components/AdminAuthentication";
 import SearchModal from "./components/SearchSong";
@@ -13,7 +10,6 @@ import JukeBoxPlayer from "./components/JukeBoxPlayer";
 
 // Import WebSocketProvider
 import { WebSocketProvider } from "./context/WebSocketContext";
-import GeoCheck from "./components/GeoCheck";
 
 function App() {
   return (
