@@ -161,7 +161,7 @@ const JukeBoxPlayer = () => {
               <p>{formatDuration(nowPlaying.duration)}</p>
               <audio
                 src={nowPlaying.preview}
-                autoPlay
+                // autoPlay
                 controls
                 onEnded={handleSongEnd} // Trigger when song ends
                 className="juke-box-player__now-playing__audio"
