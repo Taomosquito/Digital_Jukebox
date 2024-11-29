@@ -69,6 +69,39 @@ const io = new SocketIOServer(server, {
 });
 io.on("connection", (socket) => {
     console.log(`New client connected: ${socket.id}`);
+    // Successful connection only. Fetch and send the complete playlist when a client connects
+    const fetchAndEmitPlaylist = async () => {
+        try {
+            const result = await pool.query("SELECT * FROM songs ORDER BY likes DESC, created_at ASC;");
+            const songs = result.rows;
+            const songDetailsPromises = songs.map(async (song) => {
+                const response = await axios.get(`https://deezerdevs-deezer.p.rapidapi.com/track/${song.song_api_id}`, {
+                    headers: {
+                        "x-rapidapi-key": process.env.VITE_DEEZER_API_KEY,
+                    },
+                });
+                const playlistSong = {
+                    ...song,
+                    title: response.data.title,
+                    artist: response.data.artist,
+                    album: response.data.album,
+                    duration: response.data.duration,
+                    preview: response.data.preview,
+                    album_title: response.data.album.title,
+                    album_cover: response.data.album.cover,
+                    album_cover_medium: response.data.album.cover_medium,
+                    image: response.data.md5_image,
+                };
+                return playlistSong;
+            });
+            const songDetails = await Promise.all(songDetailsPromises);
+            socket.emit('playlistSong', songDetails); // Emit the full playlist
+        }
+        catch (error) {
+            console.error('Error fetching songs:', error);
+        }
+    };
+    fetchAndEmitPlaylist();
     socket.on("disconnect", () => {
         console.log(`Client disconnected: ${socket.id}`);
     });
@@ -318,7 +351,8 @@ app.get("/songs", async (req, res) => {
                 image: response.data.md5_image,
             };
             console.log("Server Fetch Songs: ", song);
-            console.log("Server fetch Songs with Deezer: ", playlistSong);
+            //console.log("Server fetch Songs with Deezer: ", playlistSong);
+            // io.emit("playlistSong", playlistSong);
             return playlistSong;
         });
         const songDetails = await Promise.all(songDetailsPromises);
@@ -392,11 +426,28 @@ app.delete("/songs", async (req, res) => {
         const queryString = "TRUNCATE TABLE songs RESTART IDENTITY";
         await client.query(queryString);
         client.release(); //back to pool
+        io.emit('songsDeleted', { message: 'All songs have been deleted and ID reset' });
         res.status(200).json({ message: "All songs are now deleted and ID reset" });
     }
     catch (error) {
         console.log("Error deleting the all the songs: ", error);
         res.status(500).json({ message: "Failed to delete songs" });
+    }
+});
+//Delete the songs when finish playing
+app.delete("/songs/:id", async (req, res) => {
+    const songId = parseInt(req.params.id, 10); //ensures the id is a number.
+    try {
+        const client = await pool.connect();
+        const queryString = "DELETE FROM songs WHERE id = $1";
+        const result = await client.query(queryString, [songId]);
+        client.release(); // Release client back to the pool
+        io.emit('songDeleted', { id: songId, message: `Song with ID ${songId} has been deleted` });
+        res.status(200).json({ message: `Song with ID ${songId} deleted successfully` });
+    }
+    catch (error) {
+        console.error("Error deleting song: ", error);
+        res.status(500).json({ message: "Failed to delete song" });
     }
 });
 // Start the server

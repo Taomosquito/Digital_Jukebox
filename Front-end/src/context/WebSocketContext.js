@@ -19,13 +19,20 @@ export const WebSocketProvider = ({ children }) => {
             transports: ["websocket", "polling"],
             reconnection: true,
             reconnectionAttempts: 5,
-            timeout: 5000,
+            reconnectionDelay: 1000, // Wait 1 second between retries
+            //timeout: 5000,
         });
-        // Store the socket ID in localStorage when the connection is established
+        // Store the socket ID in localStorage when the connection is established. Check stale connection
         socketConnection.on('connect', () => {
-            if (socketConnection.id) {
-                console.log('Socket connected:', socketConnection.id);
-                localStorage.setItem("socketId", socketConnection.id);
+            const newSocketId = socketConnection.id;
+            if (newSocketId) {
+                if (existingSocketId && existingSocketId !== newSocketId) {
+                    console.log('Clearing stale socketId from localStorage.');
+                    localStorage.removeItem("socketId");
+                }
+                console.log('Socket connected:', newSocketId);
+                localStorage.setItem("socketId", newSocketId);
+                setIsSessionActive(false); // Allow session after successful connection
             }
             else {
                 console.error('Socket ID is undefined.');
@@ -33,8 +40,13 @@ export const WebSocketProvider = ({ children }) => {
         });
         socketConnection.on('disconnect', () => {
             console.log('Socket disconnected');
-            localStorage.removeItem("socketId");
-            setIsSessionActive(false);
+            // localStorage.removeItem("socketId");
+            setIsSessionActive(true);
+        });
+        // Handle reconnection
+        socketConnection.on('reconnect', (attempt) => {
+            console.log(`Reconnected successfully after ${attempt} attempt(s)`);
+            setIsSessionActive(false); // Reset session block on reconnect
         });
         // Handle connection error
         socketConnection.on('connect_error', (error) => {
@@ -48,7 +60,7 @@ export const WebSocketProvider = ({ children }) => {
         console.log("WebSocket connection established and stored in state.");
         // Cleanup when the component unmounts
         return () => {
-            console.log("Cleaning up WebSocket connection...");
+            console.log('Cleaning up WebSocket connection...');
             socketConnection.removeAllListeners();
             socketConnection.disconnect();
             localStorage.removeItem("socketId");
