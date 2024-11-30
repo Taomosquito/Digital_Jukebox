@@ -9,9 +9,6 @@
   width: 50%;
   height: 50%;
   max-height: 95%;
-  background-color: rgba(81, 129, 189, 0.1);
-  backdrop-filter: blur(10.2px);
-  border: 1px solid rgba(81, 129, 189, 0.24);
   padding: 25px
 }
 
@@ -25,7 +22,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  padding-left: 25px;
+  padding-left: 10px;
   pointer-events: none; /* prevent click functionality outside modal */
 }
 
@@ -36,6 +33,7 @@
   backdrop-filter: blur(10.2px);
   -webkit-backdrop-filter: blur(10.2px);
   border: 1px solid rgba(81, 129, 189, 0.24);
+  
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -53,7 +51,7 @@
 .playlist__results {
   display: flex;
   flex-direction: column;
-  width: 97%;
+  width: 98%;
   height: 95%;
   max-height: 95%;
   overflow-y: auto;
@@ -110,4 +108,11 @@ td {
 /* Liked Songs */
 .fa-thumbs-up.liked {
   color: green !important;
+}
+
+/* Mobile View */
+@media (max-width: 510px) {
+  .playlist__modal-overlay{
+    padding-left: 7px;
+  } 
 }
