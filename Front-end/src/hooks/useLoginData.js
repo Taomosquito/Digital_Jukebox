@@ -30,7 +30,7 @@ export const useLoginData = () => {
         try {
             setError(null); // Reset error state
             setMessage(null); // Reset message state
-            const response = await axios.post("http://localhost:3000/login", { username: adminLoginUsername, password: adminLoginPassword }, { withCredentials: true });
+            const response = await axios.post("/back-end/login", { username: adminLoginUsername, password: adminLoginPassword }, { withCredentials: true });
             // await retrieveCookie();
             console.log(response);
             setMessage(response.data.message);
@@ -49,7 +49,7 @@ export const useLoginData = () => {
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const { latitude, longitude } = position.coords;
                 // Send geolocation data to the backend
-                const response = await axios.post("http://localhost:3000/geo", {
+                const response = await axios.post("/back-end/geo", {
                     latitude,
                     longitude,
                 }, {
@@ -72,7 +72,7 @@ export const useLoginData = () => {
     const retrieveCookie = async () => {
         axios.defaults.withCredentials = true;
         axios
-            .get("http://localhost:3000/profile")
+            .get("/back-end/profile")
             .then((response) => {
             console.log(response.data);
         })
@@ -82,7 +82,7 @@ export const useLoginData = () => {
     };
     const sendToAdminDatabase = async () => {
         try {
-            const response = await axios.post("http://localhost:3000/admins", { username: adminLoginUsername, password: adminLoginPassword }, {
+            const response = await axios.post("/back-end/admins", { username: adminLoginUsername, password: adminLoginPassword }, {
                 headers: {
                     "Content-Type": "application/json",
                 },
