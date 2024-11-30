@@ -38,7 +38,7 @@ export const useLoginData = () => {
       setMessage(null); // Reset message state
 
       const response = await axios.post(
-        "http://localhost:3000/login",
+        "/back-end/login",
         { username: adminLoginUsername, password: adminLoginPassword },
         { withCredentials: true }
       );
@@ -65,7 +65,7 @@ export const useLoginData = () => {
 
           // Send geolocation data to the backend
           const response = await axios.post(
-            "http://localhost:3000/geo",
+            "/back-end/geo",
             {
               latitude,
               longitude,
@@ -97,7 +97,7 @@ export const useLoginData = () => {
     axios.defaults.withCredentials = true;
 
     axios
-      .get("http://localhost:3000/profile")
+      .get("/back-end/profile")
       .then((response) => {
         console.log(response.data);
       })
@@ -109,7 +109,7 @@ export const useLoginData = () => {
   const sendToAdminDatabase = async () => {
     try {
       const response = await axios.post<any>(
-        "http://localhost:3000/admins",
+        "/back-end/admins",
         { username: adminLoginUsername, password: adminLoginPassword },
         {
           headers: {

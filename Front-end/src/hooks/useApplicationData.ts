@@ -87,10 +87,10 @@ export const useApplication = () => {
   // Handle the add to playlist action
   const handleAddToPlaylist = async () => {
     console.log("Selected songs to be added:", selectedSongs);
-    
+
     try {
       const response = await axios.post<any>(
-        "http://localhost:3000/addSongs",
+        "/back-end/addSongs",
         selectedSongs,
         {
           headers: {
@@ -98,7 +98,7 @@ export const useApplication = () => {
           },
         }
       );
-      
+
       setSelectedSongs([]); // Clear selected songs after adding
 
       return response.data; // Return the response data to the caller,see server
@@ -117,7 +117,7 @@ export const useApplication = () => {
     if (!confirmDelete) return;
 
     try {
-      const response = await axios.delete("http://localhost:3000/songs");
+      const response = await axios.delete("/back-end/songs");
       if (response.status === 200) {
         setMessage("All songs deleted successfully.");
       } else {
