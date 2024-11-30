@@ -1,15 +1,16 @@
 .juke-box-player {
   display: flex;
-  // flex-direction: column;
-  //position: relative;
   margin: auto;
   margin-bottom: 30px;
-  width: 70%;
-  height: 82vh;
-  max-height: 50%;
+  border-radius: 16px;
+  width: 75%;
+  height: 75vh;
+  max-width: 82%;
+  max-height: 90vh;
   background-color: rgba(81, 129, 189, 0.1);
   backdrop-filter: blur(10.2px);
   border: 1px solid rgba(81, 129, 189, 0.24);
+  padding-left: 20px;
   padding: 30px;
 };
 
