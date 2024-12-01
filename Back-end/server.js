@@ -168,15 +168,15 @@ app.post("/admins", async (req, res) => {
 // event listener
 app.post("/add-location", async (req, res) => {
     console.log("Attempting to insert location into database");
-    const { latitude, longitude } = req.body;
-    console.log(latitude, longitude);
+    const { latitude, longitude, location } = req.body;
+    console.log(latitude, longitude, location);
     if (!latitude || !longitude) {
         return res.status(400).send("latitude and longitude are both required");
     }
     try {
-        const query = `INSERT INTO regions(latitude, longitude) VALUES ($1, $2)`;
-        await pool.query(query, [latitude, longitude]);
-        console.log(`Successfully inserted. The location with values: latitude = ${latitude}, longitude = ${longitude}`);
+        const query = `INSERT INTO regions(latitude, longitude, location_tag) VALUES ($1, $2, $3)`;
+        await pool.query(query, [latitude, longitude, location]);
+        console.log(`Successfully inserted. The location with values: latitude = ${latitude}, longitude = ${longitude}, location_tag = ${location}`);
         res.status(201).send("location successfully added");
     }
     catch (error) {

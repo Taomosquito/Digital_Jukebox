@@ -80,7 +80,7 @@ export const useApplication = () => {
     const handleAddToPlaylist = async () => {
         console.log("Selected songs to be added:", selectedSongs);
         try {
-            const response = await axios.post("/back-end/addSongs", selectedSongs, {
+            const response = await axios.post(selectedSongs, {
                 headers: {
                     "Content-Type": "application/json",
                 },

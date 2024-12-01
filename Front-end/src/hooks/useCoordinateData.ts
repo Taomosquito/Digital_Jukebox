@@ -4,6 +4,7 @@ import axios from "axios";
 export const useCoordinateData = () => {
   const [latitudeCoordinate, setLatitudeCoordinate] = useState<number>(0);
   const [longitudeCoordinate, setLongitudeCoordinate] = useState<number>(0);
+  const [locationReference, setLocationReference] = useState<string>("");
 
   const handleLatitudeCoordinate = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -17,11 +18,21 @@ export const useCoordinateData = () => {
     setLongitudeCoordinate(parseFloat(event.target.value));
   };
 
+  const handleLocationReference = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setLocationReference(event.target.value);
+  };
+
   const handlePushLocationToDatabase = async () => {
     try {
       const response = await axios.post<any>(
         "/back-end/add-location",
-        { latitude: latitudeCoordinate, longitude: longitudeCoordinate },
+        {
+          latitude: latitudeCoordinate,
+          longitude: longitudeCoordinate,
+          location: locationReference,
+        },
         {
           headers: {
             "Content-Type": "application/json",
@@ -39,8 +50,10 @@ export const useCoordinateData = () => {
   return {
     latitudeCoordinate,
     longitudeCoordinate,
+    locationReference,
     handleLatitudeCoordinate,
     handleLongitudeCoordinate,
     handlePushLocationToDatabase,
+    handleLocationReference,
   };
 };
