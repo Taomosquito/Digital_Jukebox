@@ -19,10 +19,11 @@ export const useApplication = () => {
   const [message, setMessage] = useState<string>("");
 
   // Format the song duration into a readable time format
-  const formatDuration = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+  const formatDuration = (timeInSeconds: number): string => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+    return `${minutes}:${formattedSeconds}`;
   };
 
   // Handle checkbox change: add or remove songs from the selected list
