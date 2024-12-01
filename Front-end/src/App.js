@@ -7,6 +7,8 @@ import AdminAuthentication from "./components/AdminAuthentication";
 import SearchModal from "./components/SearchSong";
 import QRCodeGenerator from "./components/admin/QRCodeGenerator";
 import JukeBoxPlayer from "./components/JukeBoxPlayer";
+import GeoCheck from "./components/GeoCheck";
+import Coordinates from "./components/Coordinates";
 // Import WebSocketProvider
 import { WebSocketProvider } from "./context/WebSocketContext";
 function App() {
@@ -16,6 +18,6 @@ function App() {
                                         throw new Error("Function not implemented.");
                                     } }) }), _jsx(Route, { path: "/playlist", element: _jsx(PlayList, { isOpen: false, onClose: function () {
                                         throw new Error("Function not implemented.");
-                                    } }) }), _jsx(Route, { path: "/QrCode", element: _jsx(QRCodeGenerator, {}) })] })] }) }) }));
+                                    } }) }), _jsx(Route, { path: "/QrCode", element: _jsx(QRCodeGenerator, {}) }), _jsx(Route, { path: "/coords", element: _jsx(Coordinates, {}) }), _jsx(Route, { path: "/geo-route", element: _jsx(GeoCheck, {}) })] })] }) }) }));
 }
 export default App;

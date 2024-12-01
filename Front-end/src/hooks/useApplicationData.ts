@@ -19,10 +19,11 @@ export const useApplication = () => {
   const [message, setMessage] = useState<string>("");
 
   // Format the song duration into a readable time format
-  const formatDuration = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+  const formatDuration = (timeInSeconds: number): string => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+    return `${minutes}:${formattedSeconds}`;
   };
 
   // Handle checkbox change: add or remove songs from the selected list
@@ -87,10 +88,10 @@ export const useApplication = () => {
   // Handle the add to playlist action
   const handleAddToPlaylist = async () => {
     console.log("Selected songs to be added:", selectedSongs);
-
+    
     try {
       const response = await axios.post<any>(
-        "/back-end/addSongs",
+        "http://localhost:3000/addSongs",
         selectedSongs,
         {
           headers: {
@@ -98,7 +99,6 @@ export const useApplication = () => {
           },
         }
       );
-
       setSelectedSongs([]); // Clear selected songs after adding
 
       return response.data; // Return the response data to the caller,see server
