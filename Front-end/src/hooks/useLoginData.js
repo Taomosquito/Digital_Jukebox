@@ -30,6 +30,7 @@ export const useLoginData = () => {
         try {
             setError(null); // Reset error state
             setMessage(null); // Reset message state
+
             const response = await axios.post("/back-end/login", { username: adminLoginUsername, password: adminLoginPassword }, { withCredentials: true });
             // await retrieveCookie();
             console.log(response);

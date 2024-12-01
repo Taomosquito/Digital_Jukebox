@@ -13,9 +13,10 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 85px;
+  width: 80px;
   transform: translateX(-100%); /* Initially hide the side nav */
   transition: transform 0.3s ease; /* Smooth transition when toggling */
+  z-index: 900;
 }
 
 /* When the side nav is active, show it */
@@ -35,6 +36,7 @@
   cursor: pointer;
   color: #eed559;
   font-size: 1.5em;
+  z-index: 1000;
 }
 
 /* Icons inside the navigation */

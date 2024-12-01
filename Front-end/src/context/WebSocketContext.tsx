@@ -25,7 +25,6 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       setIsSessionActive(true);
       return;
     }
-
     const socketConnection = io("/back-end", {
       transports: ["websocket", "polling"],
       reconnection: true,

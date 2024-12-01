@@ -54,5 +54,4 @@ function App() {
     </WebSocketProvider>
   );
 }
-
 export default App;
