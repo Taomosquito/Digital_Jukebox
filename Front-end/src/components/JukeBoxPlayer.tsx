@@ -14,6 +14,7 @@ interface Song {
   };
   album: {
     title: string;
+    cover: string;
   };
   likes: number;
   created_at: string;
@@ -152,37 +153,56 @@ const JukeBoxPlayer = () => {
   return (
     <div className="juke-box-player">
       <div className="juke-box-player__content">
-        <h2>Now Playing</h2>
+        <h3>Now Playing</h3>
         {nowPlaying ? (
           <div className="juke-box-player__now-playing">
-            <div className="juke-box-player__now-playing__details">
-              <strong>{nowPlaying.title}</strong>
-              <p>{nowPlaying.artist?.name}</p>
-              <p>{formatDuration(nowPlaying.duration)}</p>
-              <audio
-                src={nowPlaying.preview}
-                // autoPlay
-                controls
-                controlsList="nodownload noplaybackrate"
-                onEnded={handleSongEnd} // Trigger when song ends
-                className="juke-box-player__now-playing__audio"
-              ></audio>
+            <div className="juke-box-player__now-playing__content">
+              <img src={nowPlaying.album.cover} alt={nowPlaying.album.title} width="100" height="100" />
+
+              <div className='juke-box-player__now-playing__song-details'>
+                <strong>{nowPlaying.title} <i className="fas fa-music"></i></strong>
+                {nowPlaying.artist?.name}
+                {/* <p>{formatDuration(nowPlaying.duration)}</p> */}
+
+                <div className='juke-box-player__now-playing__song-play'> 
+                
+                  <audio
+                    src={nowPlaying.preview}
+                    // autoPlay
+                    controls
+                    controlsList="nodownload noplaybackrate"
+                    onEnded={handleSongEnd} // Trigger when song ends
+                    className="juke-box-player__now-playing__audio"
+                  ></audio>
+                </div>
+
+              </div>
+
             </div>
           </div>
         ) : (
           <p>No song currently playing</p>
         )}
 
-        <h2>Next in the Playlist</h2>
+        <h3>Next in the Playlist</h3>
         {nextSong ? (
           <div className="juke-box-player__next-song">
-            <strong>{nextSong.title}</strong> by {nextSong.artist?.name}
+            
+            <div className="juke-box-player__next-song__content">
+              <strong>{nextSong.title} <i className="fas fa-heart"></i></strong>
+              <span>by:  {nextSong.artist?.name}</span>
+              Album Title:  {nextSong.album.title}
+            </div>
+            <div className="juke-box-player__next-song__image">         
+              <img src={nextSong.album.cover} alt={nextSong.album.title} width="100" height="100" />
+              </div>
+
           </div>
         ) : (
           <p>No upcoming songs</p>
         )}
 
-        <h2>Current Playlist</h2>
+        <h3>Current Playlist</h3>
         <div className="juke-box-player__current-playlist">
           <table>
             <thead>
