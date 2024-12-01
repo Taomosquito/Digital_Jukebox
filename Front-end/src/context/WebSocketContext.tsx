@@ -26,7 +26,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       return;
     }
 
-    const socketConnection = io("http://localhost:3000", {
+    const socketConnection = io("/back-end", {
       transports: ["websocket", "polling"],
       reconnection: true,
       reconnectionAttempts: 5,
