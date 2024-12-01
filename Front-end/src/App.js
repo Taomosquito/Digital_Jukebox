@@ -9,6 +9,7 @@ import QRCodeGenerator from "./components/admin/QRCodeGenerator";
 import JukeBoxPlayer from "./components/JukeBoxPlayer";
 // Import WebSocketProvider
 import { WebSocketProvider } from "./context/WebSocketContext";
+import Coordinates from "./components/Coordinates";
 function App() {
     return (
     // Wrap the whole app with WebSocketProvider
@@ -16,6 +17,6 @@ function App() {
                                         throw new Error("Function not implemented.");
                                     } }) }), _jsx(Route, { path: "/playlist", element: _jsx(PlayList, { isOpen: false, onClose: function () {
                                         throw new Error("Function not implemented.");
-                                    } }) }), _jsx(Route, { path: "/QrCode", element: _jsx(QRCodeGenerator, {}) })] })] }) }) }));
+                                    } }) }), _jsx(Route, { path: "/QrCode", element: _jsx(QRCodeGenerator, {}) }), _jsx(Route, { path: "/coords", element: _jsx(Coordinates, {}) })] })] }) }) }));
 }
 export default App;

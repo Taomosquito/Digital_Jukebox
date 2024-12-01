@@ -51,7 +51,9 @@ const SideNavigation = () => {
   const handleLoginOrAddAdmin = () => {
     navigate("/admin-auth");
   };
-
+  const handleCoordinates = () => {
+    navigate("/coords");
+  };
   const currentUser = true; //TODO: removed when session is implemented
 
   return (
@@ -72,7 +74,6 @@ const SideNavigation = () => {
       {/* Side Navigation - this will show/hide based on isMenuActive */}
       <div className={`side-nav-bar ${isMenuActive ? "active" : "hidden"}`}>
         <div className="side-nav-bar__icon">
-
           {/* TODO: declared currentUser variable (above) to be removed, once session is implemented  */}
 
           {!currentUser ? (
@@ -82,32 +83,45 @@ const SideNavigation = () => {
               <i className="fas fa-house" onClick={handleHomeNavigation}></i>
               {/* Search */}
               <i
-              className="fas fa-magnifying-glass"
-              onClick={handleSearchNavigation}
+                className="fas fa-magnifying-glass"
+                onClick={handleSearchNavigation}
               ></i>
               {/* Login */}
               <span className="side-nav-bar__login">
-                <i className="fas fa-arrow-right-from-bracket" onClick={handleLoginOrAddAdmin}>{/* TODO: Modify the onclick accordingly */}</i>
+                <i
+                  className="fas fa-arrow-right-from-bracket"
+                  onClick={handleLoginOrAddAdmin}
+                >
+                  {/* TODO: Modify the onclick accordingly */}
+                </i>
               </span>
             </div>
-
           ) : (
-
             <div>
               <div className="side-nav-bar__admin-control">
                 {/* Admin control icons */}
-              <i className="fas fa-house" onClick={handleHomeNavigation}></i>
-                <i className="fas fa-user-plus" onClick={handleLoginOrAddAdmin}></i>
+                <i className="fas fa-house" onClick={handleHomeNavigation}></i>
+                <i
+                  className="fas fa-user-plus"
+                  onClick={handleLoginOrAddAdmin}
+                ></i>
                 <i
                   className="fas fa-magnifying-glass"
                   onClick={handleSearchNavigation}
+                ></i>
+                <i
+                  className="as fa-location-arrow"
+                  onClick={handleCoordinates}
                 ></i>
                 <i
                   className="fas fa-heart-circle-xmark"
                   onClick={handleDeleteAllSongsNavigation}
                   title="Delete All Songs"
                 ></i>
-                <i className="fas fa-music" onClick={handlePlaylistNavigation}></i>
+                <i
+                  className="fas fa-music"
+                  onClick={handlePlaylistNavigation}
+                ></i>
               </div>
               <br />
 
@@ -121,15 +135,12 @@ const SideNavigation = () => {
               <span className="side-nav-bar__logout">
                 <i className="fas fa-arrow-right-from-bracket fa-rotate-180"></i>
               </span>
-
             </div>
           )}
-            
         </div>
       </div>
 
       <SearchModal isOpen={isModalOpen} onClose={handleCloseModal} />
-
     </>
   );
 };

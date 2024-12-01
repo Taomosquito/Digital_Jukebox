@@ -179,7 +179,6 @@ const JukeBoxPlayer = () => {
         ) : (
           <p>No song currently playing</p>
         )}
-
         <h3>Next in the Playlist</h3>
         {nextSong ? (
           <div className="juke-box-player__next-song">
@@ -192,12 +191,10 @@ const JukeBoxPlayer = () => {
             <div className="juke-box-player__next-song__image">         
               <img src={nextSong.album.cover} alt={nextSong.album.title} width="100" height="100" />
               </div>
-
           </div>
         ) : (
           <p>No upcoming songs</p>
         )}
-
         <h3>Current Playlist</h3>
         <div className="juke-box-player__current-playlist">
           <table>

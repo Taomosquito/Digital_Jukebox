@@ -80,7 +80,7 @@ export const useApplication = () => {
     const handleAddToPlaylist = async () => {
         console.log("Selected songs to be added:", selectedSongs);
         try {
-            const response = await axios.post("http://localhost:3000/addSongs", selectedSongs, {
+            const response = await axios.post("/back-end/addSongs", selectedSongs, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -99,7 +99,7 @@ export const useApplication = () => {
         if (!confirmDelete)
             return;
         try {
-            const response = await axios.delete("http://localhost:3000/songs");
+            const response = await axios.delete("/back-end/songs");
             if (response.status === 200) {
                 setMessage("All songs deleted successfully.");
             }

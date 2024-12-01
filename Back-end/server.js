@@ -95,10 +95,10 @@ io.on("connection", (socket) => {
                 return playlistSong;
             });
             const songDetails = await Promise.all(songDetailsPromises);
-            socket.emit('playlistSong', songDetails); // Emit the full playlist
+            socket.emit("playlistSong", songDetails); // Emit the full playlist
         }
         catch (error) {
-            console.error('Error fetching songs:', error);
+            console.error("Error fetching songs:", error);
         }
     };
     fetchAndEmitPlaylist();
@@ -162,6 +162,26 @@ app.post("/admins", async (req, res) => {
     catch (error) {
         console.error("Sorry, Error inserting:", error);
         res.status(500).send("Error adding admin to the database");
+    }
+});
+// add locations to database
+// event listener
+app.post("/add-location", async (req, res) => {
+    console.log("Attempting to insert location into database");
+    const { latitude, longitude } = req.body;
+    console.log(latitude, longitude);
+    if (!latitude || !longitude) {
+        return res.status(400).send("latitude and longitude are both required");
+    }
+    try {
+        const query = `INSERT INTO regions(latitude, longitude) VALUES ($1, $2)`;
+        await pool.query(query, [latitude, longitude]);
+        console.log(`Successfully inserted. The location with values: latitude = ${latitude}, longitude = ${longitude}`);
+        res.status(201).send("location successfully added");
+    }
+    catch (error) {
+        console.error("Sorry, Error inserting:", error);
+        res.status(500).send("Error adding location to the database");
     }
 });
 app.post("/addSongs", async (req, res) => {
@@ -426,7 +446,9 @@ app.delete("/songs", async (req, res) => {
         const queryString = "TRUNCATE TABLE songs RESTART IDENTITY";
         await client.query(queryString);
         client.release(); //back to pool
-        io.emit('songsDeleted', { message: 'All songs have been deleted and ID reset' });
+        io.emit("songsDeleted", {
+            message: "All songs have been deleted and ID reset",
+        });
         res.status(200).json({ message: "All songs are now deleted and ID reset" });
     }
     catch (error) {
@@ -442,8 +464,13 @@ app.delete("/songs/:id", async (req, res) => {
         const queryString = "DELETE FROM songs WHERE id = $1";
         const result = await client.query(queryString, [songId]);
         client.release(); // Release client back to the pool
-        io.emit('songDeleted', { id: songId, message: `Song with ID ${songId} has been deleted` });
-        res.status(200).json({ message: `Song with ID ${songId} deleted successfully` });
+        io.emit("songDeleted", {
+            id: songId,
+            message: `Song with ID ${songId} has been deleted`,
+        });
+        res
+            .status(200)
+            .json({ message: `Song with ID ${songId} deleted successfully` });
     }
     catch (error) {
         console.error("Error deleting song: ", error);
