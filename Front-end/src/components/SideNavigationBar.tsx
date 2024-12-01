@@ -51,11 +51,9 @@ const SideNavigation = () => {
   const handleLoginOrAddAdmin = () => {
     navigate("/admin-auth");
   };
-
   const handleCoordinates = () => {
     navigate("/coords");
   };
-
   const currentUser = true; //TODO: removed when session is implemented
 
   return (

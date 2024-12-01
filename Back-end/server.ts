@@ -127,7 +127,6 @@ io.on("connection", (socket) => {
       console.error("Error fetching songs:", error);
     }
   };
-
   fetchAndEmitPlaylist();
 
   socket.on("disconnect", () => {
@@ -461,7 +460,6 @@ app.get("/songs", async (req, res) => {
     });
 
     const songDetails = await Promise.all(songDetailsPromises);
-
     res.json(songDetails); // Return the song details including title, artist, duration, and preview, and ...
   } catch (error) {
     console.error("Error fetching songs:", error);
@@ -555,11 +553,9 @@ app.delete("/songs", async (req: Request, res: Response) => {
     const queryString = "TRUNCATE TABLE songs RESTART IDENTITY";
     await client.query(queryString);
     client.release(); //back to pool
-
     io.emit("songsDeleted", {
       message: "All songs have been deleted and ID reset",
     });
-
     res.status(200).json({ message: "All songs are now deleted and ID reset" });
   } catch (error) {
     console.log("Error deleting the all the songs: ", error);
@@ -576,7 +572,6 @@ app.delete("/songs/:id", async (req: Request, res: Response) => {
     const queryString = "DELETE FROM songs WHERE id = $1";
     const result = await client.query(queryString, [songId]);
     client.release(); // Release client back to the pool
-
     io.emit("songDeleted", {
       id: songId,
       message: `Song with ID ${songId} has been deleted`,
