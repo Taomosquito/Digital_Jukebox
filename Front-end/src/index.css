@@ -25,7 +25,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background-image: url('../Images/ConcertImage.jpg');
+  /* background-image: url('../Images/music_abstract.mov'); */
   background-size: cover;  
   background-position: center; 
   background-repeat: no-repeat;
@@ -68,3 +68,4 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+

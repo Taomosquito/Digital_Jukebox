@@ -7,15 +7,16 @@ import AdminAuthentication from "./components/AdminAuthentication";
 import SearchModal from "./components/SearchSong";
 import QRCodeGenerator from "./components/admin/QRCodeGenerator";
 import JukeBoxPlayer from "./components/JukeBoxPlayer";
+import "../Images/music_abstract.mov";
 // Import WebSocketProvider
 import { WebSocketProvider } from "./context/WebSocketContext";
 function App() {
     return (
     // Wrap the whole app with WebSocketProvider
-    _jsx(WebSocketProvider, { children: _jsx(Router, { children: _jsxs("div", { className: "App", children: [_jsx(SideNavigationBar, {}), _jsx(JukeBoxPlayer, {}), _jsxs(Routes, { children: [_jsx(Route, { path: "/admin-auth", element: _jsx(AdminAuthentication, {}) }), _jsx(Route, { path: "/search", element: _jsx(SearchModal, { isOpen: false, onClose: function () {
-                                        throw new Error("Function not implemented.");
-                                    } }) }), _jsx(Route, { path: "/playlist", element: _jsx(PlayList, { isOpen: false, onClose: function () {
-                                        throw new Error("Function not implemented.");
-                                    } }) }), _jsx(Route, { path: "/QrCode", element: _jsx(QRCodeGenerator, {}) })] })] }) }) }));
+    _jsxs(WebSocketProvider, { children: [_jsx("div", { children: _jsx("video", { className: "background-video", autoPlay: true, loop: true, muted: true, children: _jsx("source", { src: "/Images/music_abstract.mov", type: "video/mp4" }) }) }), _jsx(Router, { children: _jsxs("div", { className: "App", children: [_jsx(SideNavigationBar, {}), _jsx(JukeBoxPlayer, {}), _jsxs(Routes, { children: [_jsx(Route, { path: "/admin-auth", element: _jsx(AdminAuthentication, {}) }), _jsx(Route, { path: "/search", element: _jsx(SearchModal, { isOpen: false, onClose: function () {
+                                            throw new Error("Function not implemented.");
+                                        } }) }), _jsx(Route, { path: "/playlist", element: _jsx(PlayList, { isOpen: false, onClose: function () {
+                                            throw new Error("Function not implemented.");
+                                        } }) }), _jsx(Route, { path: "/QrCode", element: _jsx(QRCodeGenerator, {}) })] })] }) })] }));
 }
 export default App;

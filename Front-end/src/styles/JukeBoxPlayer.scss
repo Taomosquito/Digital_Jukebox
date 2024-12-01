@@ -38,11 +38,6 @@
   backdrop-filter: blur(10.2px);
 };
 
-.fa-music{
-  font-size: 1em;
-  color: goldenrod;
-}
-
 .juke-box-player__now-playing__content {
   display: flex;
   flex-direction: row;
@@ -96,7 +91,6 @@ audio::-webkit-media-controls-mute-button {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  //border: 1px solid rgba(81, 129, 189, 0.24);
   width: 100%;
   height: 30%;
   margin: auto;

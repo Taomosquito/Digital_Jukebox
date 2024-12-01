@@ -160,7 +160,7 @@ const JukeBoxPlayer = () => {
               <img src={nowPlaying.album.cover} alt={nowPlaying.album.title} width="100" height="100" />
 
               <div className='juke-box-player__now-playing__song-details'>
-                <strong>{nowPlaying.title} <i className="fas fa-music"></i></strong>
+                <strong>{nowPlaying.title} <i className="fas fa-heart" /></strong>
                 {nowPlaying.artist?.name}
                 {/* <p>{formatDuration(nowPlaying.duration)}</p> */}
 
