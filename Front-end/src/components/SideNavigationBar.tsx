@@ -54,6 +54,9 @@ const SideNavigation = () => {
   const handleCoordinates = () => {
     navigate("/coords");
   };
+  const handleGeoLocation = () => {
+    navigate("/geo-route");
+  };
   const currentUser = true; //TODO: removed when session is implemented
 
   return (
@@ -110,7 +113,11 @@ const SideNavigation = () => {
                   onClick={handleSearchNavigation}
                 ></i>
                 <i
-                  className="as fa-location-arrow"
+                  className="fas fa-mobile-alt"
+                  onClick={handleGeoLocation}
+                ></i>
+                <i
+                  className="fas fa-location-arrow"
                   onClick={handleCoordinates}
                 ></i>
                 <i
