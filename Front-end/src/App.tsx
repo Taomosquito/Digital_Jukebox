@@ -17,7 +17,7 @@ function App() {
     <WebSocketProvider>
       <div>
         <video className="background-video" autoPlay loop muted>
-        <source src="/videos/music_abstract.mov" type="video/mp4" />
+        <source src="/videos/abstract_1.mov" type="video/mp4" />
       </video>
       </div>
       <Router>
