@@ -5,9 +5,11 @@ const Coordinates: React.FC = () => {
   const {
     latitudeCoordinate,
     longitudeCoordinate,
+    locationReference,
     handleLatitudeCoordinate,
     handleLongitudeCoordinate,
     handlePushLocationToDatabase,
+    handleLocationReference,
   } = useCoordinateData();
 
   return (
@@ -40,6 +42,17 @@ const Coordinates: React.FC = () => {
             type="number"
             value={longitudeCoordinate}
             onChange={handleLongitudeCoordinate}
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="location_tag">ENTER LOCATION REFERENCE</label>
+          <input
+            id="loactionRef"
+            type="text"
+            value={locationReference}
+            onChange={handleLocationReference}
             required
           />
         </div>
