@@ -27,7 +27,7 @@
 
 .juke-box-player__now-playing {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-evenly;
   align-items: flex-start;
   border: 1px solid rgba(81, 129, 189, 0.24);
@@ -35,7 +35,20 @@
   height: 20%;
   margin-top: 1em;
   margin-bottom: 1em;
+  // background-color: black;
 };
+
+// .juke-box-player__now-playing__details{
+//   background-color: black;
+// }
+
+.juke-box-player__now-playing__audio{
+  width: 50vw;
+  height: 30px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
 
 .juke-box-player__next-song {
   display: flex;
@@ -62,3 +75,15 @@
   overflow-y: auto;
 };
 
+audio::-webkit-media-controls-volume-slider {
+  display: none;
+}
+
+audio::-webkit-media-controls-mute-button {
+  display: none;
+}
+
+.juke-box-player__now-playing__audio::-webkit-media-controls-panel {
+  background-color: black !important;
+  backdrop-filter: blur(10.2px);
+}
