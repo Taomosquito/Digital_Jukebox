@@ -10,6 +10,7 @@ import JukeBoxPlayer from "./components/JukeBoxPlayer";
 
 // Import WebSocketProvider
 import { WebSocketProvider } from "./context/WebSocketContext";
+import Coordinates from "./components/Coordinates";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
               }
             />
             <Route path="/QrCode" element={<QRCodeGenerator />} />
+            <Route path="/coords" element={<Coordinates />} />
           </Routes>
         </div>
       </Router>
