@@ -162,10 +162,8 @@ const JukeBoxPlayer = () => {
               <div className='juke-box-player__now-playing__song-details'>
                 <strong>{nowPlaying.title} <i className="fas fa-heart" /></strong>
                 {nowPlaying.artist?.name}
-                {/* <p>{formatDuration(nowPlaying.duration)}</p> */}
-
-                <div className='juke-box-player__now-playing__song-play'> 
                 
+                <div className='juke-box-player__now-playing__song-play'>
                   <audio
                     src={nowPlaying.preview}
                     // autoPlay
@@ -175,9 +173,7 @@ const JukeBoxPlayer = () => {
                     className="juke-box-player__now-playing__audio"
                   ></audio>
                 </div>
-
               </div>
-
             </div>
           </div>
         ) : (
@@ -207,6 +203,7 @@ const JukeBoxPlayer = () => {
           <table>
             <thead>
               <tr>
+                <th>#</th>
                 <th>Album</th>
                 <th>Track</th>
                 <th>Artist</th>
@@ -214,8 +211,9 @@ const JukeBoxPlayer = () => {
               </tr>
             </thead>
             <tbody>
-              {songs.map((song) => (
+              {songs.map((song, index) => (
                 <tr key={song.id}>
+                  <td>{(index + 1).toString().padStart(3, '0')}</td>
                   <td>{song.album?.title}</td>
                   <td>{song.title}</td>
                   <td>{song.artist?.name}</td>
