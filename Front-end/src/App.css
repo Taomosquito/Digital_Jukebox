@@ -3,24 +3,25 @@
 
 .App {
   display: flex;
-  background-image: url('../Images/ConcertImage.jpg');
+  /* background-image: url('../Images/ConcertImage.jpg');
   background-size: cover;  
   background-position: center; 
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; */
   min-height: 100vh;
   min-width: 100vw;
   margin: 0 auto;
   position: relative;
   z-index: 1;
 }
-
+/* The video will be positioned fixed, taking up the full screen */
 .background-video {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover; /* Ensures the video covers the whole screen */
-  z-index: -1; /* Sends the video to the background */
+  z-index: -1; /* Puts the video behind other elements */
 }
+
 

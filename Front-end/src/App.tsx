@@ -7,7 +7,6 @@ import AdminAuthentication from "./components/AdminAuthentication";
 import SearchModal from "./components/SearchSong";
 import QRCodeGenerator from "./components/admin/QRCodeGenerator";
 import JukeBoxPlayer from "./components/JukeBoxPlayer";
-import "../Images/music_abstract.mov";
 
 // Import WebSocketProvider
 import { WebSocketProvider } from "./context/WebSocketContext";
@@ -18,7 +17,7 @@ function App() {
     <WebSocketProvider>
       <div>
         <video className="background-video" autoPlay loop muted>
-        <source src="/Images/music_abstract.mov" type="video/mp4" />
+        <source src="/videos/music_abstract.mov" type="video/mp4" />
       </video>
       </div>
       <Router>
