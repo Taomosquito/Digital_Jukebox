@@ -88,10 +88,8 @@ export const useApplication = () => {
   // Handle the add to playlist action
   const handleAddToPlaylist = async () => {
     console.log("Selected songs to be added:", selectedSongs);
-    
     try {
-      const response = await axios.post<any>(
-        "http://localhost:3000/addSongs",
+      const response = await axios.post<any>("/back-end/addSongs",
         selectedSongs,
         {
           headers: {
