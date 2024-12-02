@@ -13,9 +13,11 @@ const AdminAuthentication: React.FC = () => {
   };
 
   return (
-    <div>
-      <button onClick={toggler}>Creation / Login Toggle</button>
-      {isToggled ? <AddAdmin /> : <Login />}
+    <div className="admin-authentication__modal_overlay">
+      <div className="admin-authentication__modal_content">
+        <button onClick={toggler}>Login / Add new Admin user</button>
+        {isToggled ? <AddAdmin /> : <Login />}
+      </div>
     </div>
   );
 };

@@ -1,0 +1,36 @@
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: white;
+  font-size: 1em;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  margin-top: 1em
+};
+.admin_username {
+  margin-bottom: 2em;
+  color: black;
+  size: 2em;
+}
+
+.admin_password {
+  margin-bottom: 3em;
+  color: black;
+}
+input {
+  background: rgba(255, 255, 255, 0.052);
+  height: 1em;
+}
+
+.login-button {
+  color: white;
+}
+
+button {
+  background-color: rgba(15, 14, 14, 0.528);;
+}

@@ -10,6 +10,6 @@ const AdminAuthentication = () => {
     const toggler = () => {
         setIsToggled((prev) => !prev);
     };
-    return (_jsxs("div", { children: [_jsx("button", { onClick: toggler, children: "Creation / Login Toggle" }), isToggled ? _jsx(AddAdmin, {}) : _jsx(Login, {})] }));
+    return (_jsx("div", { className: "admin-authentication__modal_overlay", children: _jsxs("div", { className: "admin-authentication__modal_content", children: [_jsx("button", { onClick: toggler, children: "Login / Add new Admin user" }), isToggled ? _jsx(AddAdmin, {}) : _jsx(Login, {})] }) }));
 };
 export default AdminAuthentication;
