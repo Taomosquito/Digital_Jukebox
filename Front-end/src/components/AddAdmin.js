@@ -1,5 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useLoginData } from "../hooks/useLoginData";
+import "../styles/admin/AddAdmin.scss";
 function AddAdmin() {
     const { adminLoginUsername, adminLoginPassword, adminHandleUser, adminHandlePass, handleSubmit, } = useLoginData();
     console.log("Add Admin component is rendering");

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Login from "./Login";
 import AddAdmin from "./AddAdmin";
+import "../styles/admin/AdminAuthentication.scss"
 
 const AdminAuthentication: React.FC = () => {
   // Centralized state to manage authentication

@@ -1,5 +1,6 @@
 import React from "react";
 import { useLoginData } from "../hooks/useLoginData";
+import "../styles/admin/Login.scss"
 
 const Login: React.FC = () => {
   const {

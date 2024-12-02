@@ -1,4 +1,5 @@
 import { useLoginData } from "../hooks/useLoginData";
+import "../styles/admin/AddAdmin.scss";
 
 function AddAdmin() {
   const {
