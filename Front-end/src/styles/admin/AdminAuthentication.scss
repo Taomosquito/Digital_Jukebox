@@ -14,6 +14,8 @@
 }
 
 .admin-authentication__modal_content{ 
+  display: flex;
+  justify-content: flex-start;
   background: rgba(81, 129, 189, 0.1);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -23,7 +25,6 @@
   padding: 30px;
   display: flex;
   flex-direction: column;
-  // align-items: center;
   width: 40vw;
   height: 50vh;
   position: relative;
@@ -31,4 +32,8 @@
   max-width: 900px; /* Ensures the modal doesn't get too large on wide screens */
   max-height: 90vh; /* Prevents modal from being too tall on large screens */
   pointer-events: auto; /* clickable only inside modal */
+}
+
+.admin-authentication__toggle {
+  margin-bottom: 2em;
 }

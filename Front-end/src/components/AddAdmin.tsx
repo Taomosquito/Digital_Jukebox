@@ -15,7 +15,7 @@ function AddAdmin() {
 
   return (
     <div className="admin-authentication__modal-overlay">
-      <h2>Create Admin User</h2>
+      <h3>Create Admin User</h3>
       <div className="admin-authentication__modal-content">
         <form className="login-form" onSubmit={handleSubmit}>
           <label htmlFor="admin_username">Create Username:</label>
