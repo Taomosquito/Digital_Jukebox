@@ -161,7 +161,6 @@ i {
   .side-nav-bar__media-control,
   .fa-user-plus,
   .fa-heart-circle-xmark,
-  .fa-music,
   .fa-magnifying-glass,
   .fa-location-arrow,
   .fa-mobile-alt,
@@ -205,7 +204,13 @@ i {
     margin-left: 30%;
   }
 
-  .side-nav-bar__logout {
+  .fa-music {
+    display: flex;
+    position: fixed;
     margin-left: 45%;
+  }
+
+  .side-nav-bar__logout {
+    margin-left: 60%;
   }
 }
