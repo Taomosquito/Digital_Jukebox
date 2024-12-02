@@ -31,9 +31,11 @@ const JukeBoxPlayer = () => {
   // Fetch songs from server initially
   useEffect(() => {
     const fetchSongs = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/songs');
+      try { 
+        const response = await axios.get("/back-end/songs", { headers: { 'Accept': 'application/json' }});
+
         const data = response.data;
+        
         if (Array.isArray(data)) {
           const sortedSongs = sortSongsByLikes(data);
           setSongs(sortedSongs);
@@ -139,7 +141,7 @@ const JukeBoxPlayer = () => {
     if (nowPlaying) {
       try {
         // Send the delete request to the server
-        await axios.delete(`http://localhost:3000/songs/${nowPlaying.id}`);
+        await axios.delete(`/back-end/songs/${nowPlaying.id}`);
         console.log(`Song ${nowPlaying.title} removed from database`);
 
         // Emit the 'songDeleted' event to notify the server and other clients

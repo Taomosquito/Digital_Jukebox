@@ -14,7 +14,6 @@ const PlayList = ({ isOpen, onClose }) => {
     const fetchSongs = async () => {
         try {
             const response = await axios.get("/back-end/songs", { headers: { 'Accept': 'application/json' } });
-            // const response = await axios.get("/back-end/songs", { headers: { 'Accept': 'application/json' }});
             const data = response.data;
             console.log("Playlist fetch songs: ", data);
             if (Array.isArray(data)) {
