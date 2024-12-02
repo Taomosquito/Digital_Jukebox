@@ -60,8 +60,7 @@ const server = createServer(app);
 //Create Socket.IO instance attached to the HTTP server
 const io = new SocketIOServer(server, {
     cors: {
-        origin: process.env.CLIENT_URL || "http://localhost:5173", // Dynamic origin for development and deployment.
-        //.env will be CLIENT_URL=https://your-heroku-app-name.herokuapp.com
+        origin: "http://localhost:5173", // Dynamic origin for development and deployment.
         methods: ["GET", "POST", "PATCH", "DELETE"],
         credentials: true, //Allow cookies
     },

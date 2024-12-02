@@ -21,11 +21,13 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     const existingSocketId = localStorage.getItem("socketId");
 
     if (existingSocketId) {
+      console.log("Existing socket ID found:", existingSocketId);
+      console.log("Blocking new session establishment.");
       alert("You already have an active session in another tab.");
       setIsSessionActive(true);
       return;
     }
-    const socketConnection = io("/back-end", {
+    const socketConnection = io("http://localhost:3000", {
       transports: ["websocket", "polling"],
       reconnection: true,
       reconnectionAttempts: 5,
@@ -52,7 +54,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
     socketConnection.on("disconnect", () => {
       console.log("Socket disconnected");
-      // localStorage.removeItem("socketId");
+      localStorage.removeItem("socketId");
       setIsSessionActive(true);
     });
 
@@ -64,7 +66,8 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
     // Handle connection error
     socketConnection.on("connect_error", (error) => {
-      console.error("Connection Error:", error);
+      console.error("Connection Error:", error.message);
+      console.error("Error Details: ", error);
     });
 
     // Handle reconnect error

@@ -13,7 +13,7 @@ const PlayList = ({ isOpen, onClose }) => {
     // //Fetch songs from backend on initial mount
     const fetchSongs = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/songs');
+            const response = await axios.get("/back-end/songs", { headers: { 'Accept': 'application/json' } });
             const data = response.data;
             console.log("Playlist fetch songs: ", data);
             if (Array.isArray(data)) {
@@ -92,7 +92,7 @@ const PlayList = ({ isOpen, onClose }) => {
             // *Check if the song is currently liked or not
             const isLiked = isSongLiked(id);
             // Send the like to the backend via PATCH request
-            const response = await axios.patch(`http://localhost:3000/songs/${id}/like`, {
+            const response = await axios.patch(`/back-end/songs/${id}/like`, {
                 action: isLiked ? 'unlike' : 'like', //*Send 'unlike' if already liked, 'like' if not liked
             });
             const updatedSong = response.data;
@@ -131,6 +131,6 @@ const PlayList = ({ isOpen, onClose }) => {
         }
     };
     const currentPlayList = songs.length === 0;
-    return (_jsx(_Fragment, { children: _jsx("div", { className: "playlist__modal-overlay", onClick: onClose, children: _jsx("div", { className: "playlist__modal-content", onClick: (e) => e.stopPropagation(), children: _jsx("div", { className: "playlist__results", children: _jsx("div", { className: "playlist__list-mgr", children: _jsx("table", { children: currentPlayList ? (_jsx("div", { className: "playlist__empty-alert", children: _jsx("h2", { children: "Loading..." }) })) : (_jsxs("div", { children: [_jsx("thead", { children: _jsxs("tr", { children: [_jsx("th", { children: "Song id" }), _jsx("th", { children: "Track" }), _jsx("th", { children: "Artist" }), _jsx("th", { children: "Time" }), _jsx("th", { children: "Album" }), _jsx("th", { children: "Likes" })] }) }), _jsx("tbody", { children: songs.map((song) => (_jsxs("tr", { children: [_jsx("td", { children: song.id }), _jsx("td", { className: "playlist__list-mgr__title", children: song.title }), _jsx("td", { className: "playlist__list-mgr__artist", children: song.artist?.name }), _jsx("td", { children: formatDuration(song.duration) }), _jsx("td", { children: song.album?.title }), _jsxs("td", { children: [_jsx("i", { className: `fa-regular fa-thumbs-up ${isSongLiked(song.id) ? 'liked' : ''}`, onClick: () => handleLikeClick(song.id) }), _jsx("span", { children: song.likes })] })] }, song.id))) })] })) }) }) }) }) }) }));
+    return (_jsx(_Fragment, { children: _jsx("div", { className: "playlist__modal-overlay", onClick: onClose, children: _jsx("div", { className: "playlist__modal-content", onClick: (e) => e.stopPropagation(), children: _jsx("div", { className: "playlist__results", children: _jsx("div", { className: "playlist__list-mgr", children: currentPlayList ? (_jsx("div", { className: "playlist__empty-alert", children: _jsx("h2", { children: "Loading..." }) })) : (_jsxs("table", { children: [_jsx("thead", { children: _jsxs("tr", { children: [_jsx("th", { children: "#" }), _jsx("th", { children: "Album" }), _jsx("th", { children: "Track" }), _jsx("th", { children: "Artist" }), _jsx("th", { children: "Time" }), _jsx("th", { children: "Likes" })] }) }), _jsx("tbody", { children: songs.map((song, index) => (_jsxs("tr", { children: [_jsx("td", { children: (index + 1).toString().padStart(3, '0') }), _jsx("td", { children: song.album?.title }), _jsx("td", { className: "playlist__list-mgr__title", children: song.title }), _jsx("td", { className: "playlist__list-mgr__artist", children: song.artist?.name }), _jsx("td", { children: formatDuration(song.duration) }), _jsxs("td", { children: [_jsx("i", { className: `fa-regular fa-thumbs-up ${isSongLiked(song.id) ? 'liked' : ''}`, onClick: () => handleLikeClick(song.id) }), _jsx("span", { children: song.likes })] })] }, song.id))) })] })) }) }) }) }) }));
 };
 export default PlayList;
