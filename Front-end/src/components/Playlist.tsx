@@ -35,7 +35,7 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
   // //Fetch songs from backend on initial mount
   const fetchSongs = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/songs');
+      const response = await axios.get("http://localhost:3000/songs");
       const data = response.data;
       console.log("Playlist fetch songs: ", data)
       if (Array.isArray(data)) {
@@ -178,56 +178,106 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
 
   const currentPlayList = songs.length === 0;
 
+  // return (
+  //   <>
+  //     <div className="playlist__modal-overlay" onClick={onClose}>
+  //       <div className="playlist__modal-content" onClick={(e) => e.stopPropagation()}>
+  //         <div className="playlist__results">
+  //           <div className="playlist__list-mgr">
+  //             <table>
+  //               {currentPlayList ? (
+  //                 <div className="playlist__empty-alert">
+  //                   <h2>Loading...</h2>
+  //                 </div>
+  //               ) : (
+  //                 <div>
+  //                   <thead>
+  //                     <tr>
+  //                       <th>Song id</th>
+  //                       <th>Track</th>
+  //                       <th>Artist</th>
+  //                       <th>Time</th>
+  //                       <th>Album</th>
+  //                       <th>Likes</th>
+  //                     </tr>
+  //                   </thead>
+  //                   <tbody>
+  //                     {songs.map((song) => (
+  //                       <tr key={song.id}>
+  //                         <td>{song.id}</td>
+  //                         <td className="playlist__list-mgr__title">{song.title}</td>
+  //                         <td className="playlist__list-mgr__artist">{song.artist?.name}</td>
+  //                         <td>{formatDuration(song.duration)}</td>
+  //                         <td>{song.album?.title}</td>
+  //                         <td>
+  //                           <i
+  //                             className={`fa-regular fa-thumbs-up ${isSongLiked(song.id) ? 'liked' : ''}`}
+  //                             onClick={() => handleLikeClick(song.id)}
+  //                           ></i>
+  //                           <span>{song.likes}</span>
+  //                         </td>
+  //                       </tr>
+  //                     ))}
+  //                   </tbody>
+  //                 </div>
+  //               )}
+  //             </table>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </>
+  // );
+
   return (
     <>
       <div className="playlist__modal-overlay" onClick={onClose}>
         <div className="playlist__modal-content" onClick={(e) => e.stopPropagation()}>
           <div className="playlist__results">
             <div className="playlist__list-mgr">
-              <table>
-                {currentPlayList ? (
-                  <div className="playlist__empty-alert">
-                    <h2>Loading...</h2>
-                  </div>
-                ) : (
-                  <div>
-                    <thead>
-                      <tr>
-                        <th>Song id</th>
-                        <th>Track</th>
-                        <th>Artist</th>
-                        <th>Time</th>
-                        <th>Album</th>
-                        <th>Likes</th>
+              {currentPlayList ? (
+                <div className="playlist__empty-alert">
+                  <h2>Loading...</h2>
+                </div>
+              ) : (
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Song id</th>
+                      <th>Track</th>
+                      <th>Artist</th>
+                      <th>Time</th>
+                      <th>Album</th>
+                      <th>Likes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {songs.map((song) => (
+                      <tr key={song.id}>
+                        <td>{song.id}</td>
+                        <td className="playlist__list-mgr__title">{song.title}</td>
+                        <td className="playlist__list-mgr__artist">{song.artist?.name}</td>
+                        <td>{formatDuration(song.duration)}</td>
+                        <td>{song.album?.title}</td>
+                        <td>
+                          <i
+                            className={`fa-regular fa-thumbs-up ${isSongLiked(song.id) ? 'liked' : ''}`}
+                            onClick={() => handleLikeClick(song.id)}
+                          ></i>
+                          <span>{song.likes}</span>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {songs.map((song) => (
-                        <tr key={song.id}>
-                          <td>{song.id}</td>
-                          <td className="playlist__list-mgr__title">{song.title}</td>
-                          <td className="playlist__list-mgr__artist">{song.artist?.name}</td>
-                          <td>{formatDuration(song.duration)}</td>
-                          <td>{song.album?.title}</td>
-                          <td>
-                            <i
-                              className={`fa-regular fa-thumbs-up ${isSongLiked(song.id) ? 'liked' : ''}`}
-                              onClick={() => handleLikeClick(song.id)}
-                            ></i>
-                            <span>{song.likes}</span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </div>
-                )}
-              </table>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         </div>
       </div>
     </>
   );
+  
 };
 
 export default PlayList;

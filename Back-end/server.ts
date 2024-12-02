@@ -75,8 +75,7 @@ const server = createServer(app);
 //Create Socket.IO instance attached to the HTTP server
 const io = new SocketIOServer(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:5173", // Dynamic origin for development and deployment.
-    //.env will be CLIENT_URL=https://your-heroku-app-name.herokuapp.com
+    origin: "http://localhost:5173", // Dynamic origin for development and deployment.
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true, //Allow cookies
   },
@@ -88,13 +87,14 @@ io.on("connection", (socket) => {
 
   // Successful connection only. Fetch and send the complete playlist when a client connects
   const fetchAndEmitPlaylist = async () => {
+    
     try {
       const result = await pool.query(
         "SELECT * FROM songs ORDER BY likes DESC, created_at ASC;"
       );
 
       const songs = result.rows;
-
+     
       const songDetailsPromises = songs.map(async (song) => {
         const response = await axios.get(
           `https://deezerdevs-deezer.p.rapidapi.com/track/${song.song_api_id}`,
