@@ -9,6 +9,7 @@ export default defineConfig({
             "/back-end": {
                 target: "http://localhost:3000",
                 changeOrigin: true,
+                ws: true,
                 rewrite: (path) => path.replace(/^\/back-end/, ""),
             },
         },
