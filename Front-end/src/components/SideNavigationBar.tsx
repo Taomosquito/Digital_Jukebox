@@ -49,9 +49,12 @@ const SideNavigation = () => {
   };
 
   const handleLoginOrAddAdmin = () => {
+    handleHomeClick(); //Close Playlist and Search
+    handleCloseSideNav(); //Close SideNavBar
     navigate("/admin-auth");
   };
   const handleCoordinates = () => {
+    handleCloseSideNav();
     navigate("/coords");
   };
   const handleGeoLocation = () => {
