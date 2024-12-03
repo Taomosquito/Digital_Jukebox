@@ -164,7 +164,6 @@ i {
   .fa-heart-circle-xmark,
   .fa-magnifying-glass,
   .fa-location-arrow,
-  .fa-mobile-alt,
   .side-nav-bar__search-link,
   .side-nav-bar__login {
     display: none;
@@ -188,6 +187,7 @@ i {
 
   .fa-house,
   .fa-magnifying-glass,
+  .fa-mobile-alt,
   .side-nav-bar__logout {
     font-size: 1.2em;
     top: 8px;
@@ -197,21 +197,26 @@ i {
     margin-left: 15%;
   }
 
+  .fa-mobile-alt {
+    display: flex;
+    position: fixed;
+    margin-top: 0.7em;
+    margin-left: 30%;
+  }
   .fa-magnifying-glass {
     display: flex;
     position: fixed;
-
-    margin-top: 1em;
-    margin-left: 30%;
+    margin-top: 0.8em;
+    margin-left: 45%;
   }
 
   .fa-music {
     display: flex;
     position: fixed;
-    margin-left: 45%;
+    margin-left: 60%;
   }
 
   .side-nav-bar__logout {
-    margin-left: 60%;
+    margin-left: 75%;
   }
 }

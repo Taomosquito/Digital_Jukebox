@@ -60,7 +60,7 @@ const SideNavigation = () => {
   const handleGeoLocation = () => {
     navigate("/geo-route");
   };
-  const currentUser = true; //TODO: removed when session is implemented
+  const currentUser = false; //TODO: removed when session is implemented
 
   return (
     <>
@@ -69,7 +69,7 @@ const SideNavigation = () => {
         <i className="fas fa-sliders"></i>
       </div>
 
-      {/* Mobile search toggle link */}
+      {/* TODO: KEEP OR REMOVE. Mobile - search link */}
       <div className="side-nav-bar__search-link">
         <i
           className="fas fa-magnifying-glass"
@@ -86,7 +86,15 @@ const SideNavigation = () => {
             /* Admin control icons */
             <div>
               {/* Home */}
-              <i className="fas fa-house" onClick={handleHomeNavigation}></i>
+              <i 
+                className="fas fa-house"
+                onClick={handleHomeNavigation}
+              ></i>
+              {/* Mobile Login */}
+              <i
+                className="fas fa-mobile-alt"
+                onClick={handleGeoLocation}
+              ></i>
               {/* Search */}
               <i
                 className="fas fa-magnifying-glass"
