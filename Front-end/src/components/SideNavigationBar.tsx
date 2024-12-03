@@ -69,7 +69,7 @@ const SideNavigation = () => {
         <i className="fas fa-sliders"></i>
       </div>
 
-      {/* Mobile search toggle link */}
+      {/* TODO: KEEP OR REMOVE. Mobile - search link */}
       <div className="side-nav-bar__search-link">
         <i
           className="fas fa-magnifying-glass"
@@ -86,13 +86,16 @@ const SideNavigation = () => {
             /* Admin control icons */
             <div>
               {/* Home */}
-              <i className="fas fa-house" onClick={handleHomeNavigation}></i>
-              {/* Search */}
-              <i
-                className="fas fa-magnifying-glass"
-                onClick={handleSearchNavigation}
+              <i 
+                className="fas fa-house"
+                onClick={handleHomeNavigation}
               ></i>
-              {/* Login */}
+              {/* Mobile Login */}
+              <i
+                className="fas fa-mobile-alt"
+                onClick={handleGeoLocation}
+              ></i>
+              {/* Admin Login */}
               <span className="side-nav-bar__login">
                 <i
                   className="fas fa-arrow-right-from-bracket"
