@@ -219,6 +219,8 @@ i {
   }
 
   .side-nav-bar__logout {
+    display: flex;
+    position: fixed;
     margin-left: 75%;
     font-size: 1em;
   }
