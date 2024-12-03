@@ -60,7 +60,7 @@ const SideNavigation = () => {
   const handleGeoLocation = () => {
     navigate("/geo-route");
   };
-  const currentUser = false; //TODO: removed when session is implemented
+  const currentUser = true; //TODO: removed when session is implemented
 
   return (
     <>
