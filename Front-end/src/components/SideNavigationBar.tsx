@@ -1,66 +1,46 @@
-import { useState, useEffect } from "react";
 import "../styles/SideNavigation.scss";
+import { useEffect, useState } from "react";
 import SearchModal from "./SearchSong";
 import { useApplication } from "../hooks/useApplicationData";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useLoginData } from "../hooks/useLoginData";
+import NavBarUser from "./NavBarUser";
+import NavBarAdmin from "./NavBarAdmin";
 
-const SideNavigation = () => {
+type SideNavigationProps = {
+  loggedIn: boolean; // expects a boolean
+};
+
+const SideNavigation: React.FC<SideNavigationProps> = ({ loggedIn }) => {
   const {
     isMenuActive,
     isModalOpen,
-    isPlaylistOpen,
     handleToggleMenu,
     handleSearchClick,
-    handlePlaylistClick,
-    handleDeleteAllSongs,
-    handleHomeClick,
     handleCloseModal,
     handleCloseSideNav,
   } = useApplication();
 
+  const { isLoggedIn } = useLoginData();
+
+  const [currentState, setCurrentState] = useState(false);
+
+  // useEffect to react to changes in props or state
+  useEffect(() => {
+    if (isLoggedIn) {
+      setCurrentState(true); // Trigger some state update on login
+    } else {
+      setCurrentState(false); // Handle logout
+    }
+  }, [isLoggedIn]);
+
   const navigate = useNavigate();
-  const location = useLocation();
-
-  //Handle home page, close other modals and sideNavigationBar
-  const handleHomeNavigation = () => {
-    handleCloseModal(); // Close any open modal
-    handleHomeClick(); //Open the Home Page
-    handleCloseSideNav(); //Close the side navigation
-    navigate("/"); // Navigate to Home route
-  };
-
-  const handlePlaylistNavigation = () => {
-    handleCloseModal();
-    handlePlaylistClick(); // Open the Playlist Modal
-    handleCloseSideNav();
-    navigate("/playlist"); // Navigate to playlist route
-  };
 
   const handleSearchNavigation = () => {
     handleSearchClick(); // Open the Search Modal
     handleCloseSideNav();
     navigate("/search");
   };
-
-  const handleDeleteAllSongsNavigation = () => {
-    handleCloseModal();
-    handleDeleteAllSongs();
-    navigate("/");
-  };
-
-  const handleLoginOrAddAdmin = () => {
-    handleHomeClick(); //Close Playlist and Search
-    handleCloseSideNav(); //Close SideNavBar
-    navigate("/admin-auth");
-  };
-  const handleCoordinates = () => {
-    handleCloseSideNav();
-    navigate("/coords");
-  };
-  const handleGeoLocation = () => {
-    navigate("/geo-route");
-  };
-  const currentUser = true; //TODO: removed when session is implemented
 
   return (
     <>
@@ -82,71 +62,7 @@ const SideNavigation = () => {
         <div className="side-nav-bar__icon">
           {/* TODO: declared currentUser variable (above) to be removed, once session is implemented  */}
 
-          {!currentUser ? (
-            /* Admin control icons */
-            <div>
-              {/* Home */}
-              <i className="fas fa-house" onClick={handleHomeNavigation}></i>
-              {/* Search */}
-              <i
-                className="fas fa-magnifying-glass"
-                onClick={handleSearchNavigation}
-              ></i>
-              {/* Login */}
-              <span className="side-nav-bar__login">
-                <i
-                  className="fas fa-arrow-right-from-bracket"
-                  onClick={handleLoginOrAddAdmin}
-                >
-                  {/* TODO: Modify the onclick accordingly */}
-                </i>
-              </span>
-            </div>
-          ) : (
-            <div>
-              <div className="side-nav-bar__admin-control">
-                {/* Admin control icons */}
-                <i className="fas fa-house" onClick={handleHomeNavigation}></i>
-                <i
-                  className="fas fa-user-plus"
-                  onClick={handleLoginOrAddAdmin}
-                ></i>
-                <i
-                  className="fas fa-magnifying-glass"
-                  onClick={handleSearchNavigation}
-                ></i>
-                <i
-                  className="fas fa-mobile-alt"
-                  onClick={handleGeoLocation}
-                ></i>
-                <i
-                  className="fas fa-location-arrow"
-                  onClick={handleCoordinates}
-                ></i>
-                <i
-                  className="fas fa-heart-circle-xmark"
-                  onClick={handleDeleteAllSongsNavigation}
-                  title="Delete All Songs"
-                ></i>
-                <i
-                  className="fas fa-music"
-                  onClick={handlePlaylistNavigation}
-                ></i>
-              </div>
-              <br />
-
-              {/* Media control icons */}
-              <div className="side-nav-bar__media-control">
-                <i className="fas fa-circle-pause"></i>
-                <i className="fas fa-forward-step"></i>
-              </div>
-
-              {/* Logout */}
-              <span className="side-nav-bar__logout">
-                <i className="fas fa-arrow-right-from-bracket fa-rotate-180"></i>
-              </span>
-            </div>
-          )}
+          {currentState ? <NavBarUser /> : <NavBarAdmin />}
         </div>
       </div>
 

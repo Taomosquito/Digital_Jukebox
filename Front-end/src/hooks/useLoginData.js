@@ -3,6 +3,7 @@ import axios from "axios";
 export const useLoginData = () => {
     const [adminLoginUsername, setAdminLoginUsername] = useState("");
     const [adminLoginPassword, setAdminLoginPassword] = useState("");
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [error, setError] = useState(null);
     const [message, setMessage] = useState(null);
     // Handle input change for admin username
@@ -31,7 +32,21 @@ export const useLoginData = () => {
             setError(null); // Reset error state
             setMessage(null); // Reset message state
             const response = await axios.post("/back-end/login", { username: adminLoginUsername, password: adminLoginPassword }, { withCredentials: true });
-            // await retrieveCookie();
+            setIsLoggedIn(response.data.loggedIn);
+            console.log(response.data.loggedIn);
+            setMessage(response.data.message);
+            setError(null);
+        }
+        catch (err) {
+            setError(err.response?.data.message || "An error occurred during login");
+            setMessage(null);
+        }
+    };
+    const sendToLogoutRoute = async () => {
+        try {
+            setError(null); // Reset error state
+            setMessage(null); // Reset message state
+            const response = await axios.post("/back-end/login", { action: "logout" }, { withCredentials: true });
             console.log(response);
             setMessage(response.data.message);
             setError(null);
@@ -69,17 +84,6 @@ export const useLoginData = () => {
             setMessage(null);
         }
     };
-    const retrieveCookie = async () => {
-        axios.defaults.withCredentials = true;
-        axios
-            .get("/back-end/profile")
-            .then((response) => {
-            console.log(response.data);
-        })
-            .catch((error) => {
-            console.log(error);
-        });
-    };
     const sendToAdminDatabase = async () => {
         try {
             const response = await axios.post("/back-end/admins", { username: adminLoginUsername, password: adminLoginPassword }, {
@@ -105,5 +109,6 @@ export const useLoginData = () => {
         message,
         handleLoginSubmit,
         handleGeoSubmit,
+        isLoggedIn,
     };
 };

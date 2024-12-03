@@ -1,10 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 export const useLoginData = () => {
   const [adminLoginUsername, setAdminLoginUsername] = useState<string>("");
   const [adminLoginPassword, setAdminLoginPassword] = useState<string>("");
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -42,8 +42,27 @@ export const useLoginData = () => {
         { username: adminLoginUsername, password: adminLoginPassword },
         { withCredentials: true }
       );
+      setIsLoggedIn(response.data.loggedIn);
+      console.log(response.data.loggedIn);
+      setMessage(response.data.message);
+      setError(null);
+    } catch (err: any) {
+      setError(err.response?.data.message || "An error occurred during login");
+      setMessage(null);
+    }
+  };
 
-      // await retrieveCookie();
+  const sendToLogoutRoute = async () => {
+    try {
+      setError(null); // Reset error state
+      setMessage(null); // Reset message state
+
+      const response = await axios.post(
+        "/back-end/login",
+        { action: "logout" },
+        { withCredentials: true }
+      );
+
       console.log(response);
       setMessage(response.data.message);
       setError(null);
@@ -93,19 +112,6 @@ export const useLoginData = () => {
     }
   };
 
-  const retrieveCookie = async () => {
-    axios.defaults.withCredentials = true;
-
-    axios
-      .get("/back-end/profile")
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   const sendToAdminDatabase = async () => {
     try {
       const response = await axios.post<any>(
@@ -135,5 +141,6 @@ export const useLoginData = () => {
     message,
     handleLoginSubmit,
     handleGeoSubmit,
+    isLoggedIn,
   };
 };

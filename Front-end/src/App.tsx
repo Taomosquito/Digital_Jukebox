@@ -12,14 +12,16 @@ import Coordinates from "./components/Coordinates";
 
 // Import WebSocketProvider
 import { WebSocketProvider } from "./context/WebSocketContext";
+import { useLoginData } from "./hooks/useLoginData";
 
 function App() {
+  const { isLoggedIn } = useLoginData();
   return (
     // Wrap the whole app with WebSocketProvider
     <WebSocketProvider>
       <Router>
         <div className="App">
-          <SideNavigationBar />
+          <SideNavigationBar loggedIn={isLoggedIn} />
           <JukeBoxPlayer />
           <Routes>
             <Route path="/admin-auth" element={<AdminAuthentication />} />

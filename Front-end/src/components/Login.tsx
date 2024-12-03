@@ -1,6 +1,6 @@
 import React from "react";
 import { useLoginData } from "../hooks/useLoginData";
-import "../styles/admin/Login.scss"
+import "../styles/admin/Login.scss";
 
 const Login: React.FC = () => {
   const {
@@ -11,6 +11,7 @@ const Login: React.FC = () => {
     error,
     message,
     handleLoginSubmit,
+    isLoggedIn,
   } = useLoginData();
 
   return (
@@ -19,7 +20,8 @@ const Login: React.FC = () => {
       <div className="admin-authentication__modal-content">
         <form className="login-form" onSubmit={handleLoginSubmit}>
           <div>
-            <label htmlFor="username">Username: </label><br />
+            <label htmlFor="username">Username: </label>
+            <br />
             <input
               id="username"
               type="text"
@@ -30,7 +32,8 @@ const Login: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="password">Password: </label><br />
+            <label htmlFor="password">Password: {String(isLoggedIn)}</label>
+            <br />
             <input
               id="password"
               type="password"
@@ -39,6 +42,7 @@ const Login: React.FC = () => {
               required
             />
           </div>
+          {isLoggedIn}
 
           {error && <p style={{ color: "red" }}>{error}</p>}
           {message && <p style={{ color: "green" }}>{message}</p>}
@@ -46,7 +50,6 @@ const Login: React.FC = () => {
           <button type="submit">Login</button>
         </form>
       </div>
-      
     </div>
   );
 };

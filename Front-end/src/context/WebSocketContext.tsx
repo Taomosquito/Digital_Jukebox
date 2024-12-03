@@ -89,7 +89,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
   return (
     <WebSocketContext.Provider value={socket}>
-      {isSessionActive /**TODO: For testing purpose, we can keep it (if True)create css styling separately, (else) or create other strategy */ ? (
+      {!isSessionActive /**TODO: For testing purpose, we can keep it (if True)create css styling separately, (else) or create other strategy */ ? (
         <div
           style={{
             position: "fixed",

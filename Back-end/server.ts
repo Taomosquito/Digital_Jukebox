@@ -8,6 +8,7 @@ import cors from "cors";
 import bcrypt from "bcrypt";
 import { Server as SocketIOServer } from "socket.io";
 import { createServer } from "http";
+import cookieParser from "cookie-parser";
 
 const { Pool } = pkg;
 // Use import.meta.url to resolve the path in ES Modules
@@ -43,6 +44,7 @@ app.use(
     },
   })
 );
+app.use(cookieParser());
 //Middleware to parse JSON and URL-encoded data
 app.use(express.json()); // Parse JSON.
 app.use(express.urlencoded({ extended: true }));
@@ -87,14 +89,13 @@ io.on("connection", (socket) => {
 
   // Successful connection only. Fetch and send the complete playlist when a client connects
   const fetchAndEmitPlaylist = async () => {
-    
     try {
       const result = await pool.query(
         "SELECT * FROM songs ORDER BY likes DESC, created_at ASC;"
       );
 
       const songs = result.rows;
-     
+
       const songDetailsPromises = songs.map(async (song) => {
         const response = await axios.get(
           `https://deezerdevs-deezer.p.rapidapi.com/track/${song.song_api_id}`,
@@ -347,6 +348,7 @@ app.post("/geo", async (req: Request, res: Response): Promise<void> => {
   }
 });
 
+// move inside of "/geo to simplify as this will  be too many calls."
 app.delete("/geo-delete", (req: Request, res: Response): void => {
   if (req.session.geo) {
     delete req.session.geo; // Remove the geo property from the session
@@ -363,61 +365,60 @@ app.delete("/geo-delete", (req: Request, res: Response): void => {
 });
 
 // login route event listener
+// Login route
 app.post("/login", async (req: Request, res: Response): Promise<any> => {
-  const { username, password } = req.body;
+  const { username, password, action } = req.body;
+
+  if (action === "logout") {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Failed to log out" });
+      }
+      res.clearCookie(`connect.sid`);
+      res.clearCookie(`username`);
+      return res.status(200).json({ message: "Logged out successfully" });
+    });
+    return;
+  }
 
   if (!username || !password) {
     return res
       .status(400)
-      .send({ message: "Username and password are required" });
+      .json({ message: "Username and password are required" });
   }
 
   try {
-    // Retrieve the user from the database
-    const query = `SELECT * FROM administrators WHERE username = $1`;
+    const query = "SELECT * FROM administrators WHERE username = $1";
     const result = await pool.query(query, [username]);
 
     if (result.rows.length === 0) {
-      return res.status(401).send({ message: "Invalid username or password" });
+      return res.status(401).json({ message: "Invalid username or password" });
     }
 
-    const admin = result.rows[0];
-
-    // Compare the provided password with the stored hashed password
+    const user = result.rows[0];
     const isPasswordValid = await bcrypt.compare(
       password,
-      admin.password_digest
+      user.password_digest
     );
 
     if (!isPasswordValid) {
-      return res.status(401).send({ message: "Invalid username or password" });
+      return res.status(401).json({ message: "Invalid username or password" });
     }
 
-    req.session.userId = username;
-    console.log(req.session);
+    req.session.userId = user.id;
+    req.session.username = user.username;
 
-    return res.status(200).send({
-      message: "Login successful",
-    });
-  } catch (error) {
-    console.error("Error during login:", error);
-    return res.status(500).send({ message: "Internal server error" });
-  }
-});
+    console.log(
+      `login after creation id = ${req.session.userId} username = ${req.session.username} `
+    );
 
-// Protected Route (Profile)
-app.get("/profile", async (req: Request, res: Response): Promise<any> => {
-  if (req.session.userId) {
     res
       .status(200)
-      .send({ message: "Welcome to your profile", user: req.session.userId });
-  } else {
-    res.status(401).send({ message: "Please log in first" });
+      .json({ message: "Login successful", userId: user.id, loggedIn: true });
+  } catch (error) {
+    console.error("Error logging in:", error);
+    res.status(500).json({ message: "Server error during login" });
   }
-});
-
-app.get("/status", async (req, res) => {
-  await res.json({ message: "Success" }); // Awaited
 });
 
 app.get("/songs", async (req, res) => {

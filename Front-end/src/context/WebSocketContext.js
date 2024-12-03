@@ -69,7 +69,7 @@ export const WebSocketProvider = ({ children, }) => {
             localStorage.removeItem("socketId");
         };
     }, []);
-    return (_jsx(WebSocketContext.Provider, { value: socket, children: isSessionActive /**TODO: For testing purpose, we can keep it (if True)create css styling separately, (else) or create other strategy */ ? (_jsx("div", { style: {
+    return (_jsx(WebSocketContext.Provider, { value: socket, children: !isSessionActive /**TODO: For testing purpose, we can keep it (if True)create css styling separately, (else) or create other strategy */ ? (_jsx("div", { style: {
                 position: "fixed",
                 top: 0,
                 left: 0,
