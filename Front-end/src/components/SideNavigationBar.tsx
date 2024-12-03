@@ -95,12 +95,7 @@ const SideNavigation = () => {
                 className="fas fa-mobile-alt"
                 onClick={handleGeoLocation}
               ></i>
-              {/* Search */}
-              <i
-                className="fas fa-magnifying-glass"
-                onClick={handleSearchNavigation}
-              ></i>
-              {/* Login */}
+              {/* Admin Login */}
               <span className="side-nav-bar__login">
                 <i
                   className="fas fa-arrow-right-from-bracket"
