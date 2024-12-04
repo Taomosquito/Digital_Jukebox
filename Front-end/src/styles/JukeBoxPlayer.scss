@@ -35,7 +35,7 @@
   height: 30%;
   margin: auto;
   background-color: rgba(81, 129, 189, 0.1);
-  backdrop-filter: blur(10.2px);
+  // backdrop-filter: blur(10.2px);
 };
 
 .juke-box-player__now-playing__content {
@@ -73,7 +73,8 @@
 }
 
 audio::-webkit-media-controls-volume-slider {
-  display: none;
+  // display: none;
+  background-color: rgba(42, 85, 106, 0.6); /* Custom volume slider color */
 }
 
 audio::-webkit-media-controls-mute-button {
@@ -81,8 +82,7 @@ audio::-webkit-media-controls-mute-button {
 }
 
 .juke-box-player__now-playing__audio::-webkit-media-controls-panel {
-  background-color: rgb(42, 85, 106);
-  backdrop-filter: blur(10.2px);
+  background-color: rgba(42, 85, 106, 0.3);
 }
 
 
@@ -95,7 +95,7 @@ audio::-webkit-media-controls-mute-button {
   height: 30%;
   margin: auto;
   background-color: rgba(81, 129, 189, 0.1);
-  backdrop-filter: blur(10.2px);
+  // backdrop-filter: blur(10.2px);
 }
 
 .juke-box-player__next-song__content {
@@ -127,3 +127,15 @@ audio::-webkit-media-controls-mute-button {
   margin-bottom: 2px;
   overflow-y: auto;
 };
+
+thead th:first-child {
+  border-left: none;
+}
+
+thead th:last-child {
+  border-right: none;
+}
+thead th {
+  border-top: none;
+  border-bottom: none;
+}

@@ -197,7 +197,7 @@ const JukeBoxPlayer = () => {
         ) : (
           <p>No upcoming songs</p>
         )}
-        <h3>Current Playlist</h3>
+        <h3>Playlist</h3>
         <div className="juke-box-player__current-playlist">
           <table>
             <thead>
