@@ -234,7 +234,6 @@ const JukeBoxPlayer = () => {
             </tbody>
           </table>
         </div>
-
       </div>
     </div>
   );
