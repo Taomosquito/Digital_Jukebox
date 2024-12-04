@@ -1,4 +1,18 @@
-.qrcode {
+.qrcode__modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding-left: 25px;
+  pointer-events: none; /* prevent click functionality outside modal */
+}
+
+.qrcode__modal-content {
   display: flex;
   position: relative;
   display: flex;
@@ -7,8 +21,8 @@
   align-items: center;
   color: whitesmoke;
   margin: auto;
-  width: 30%;
-  height: 90%;
+  width: 45%;
+  height: 70%;
   max-height: 75%;
   background-color: rgba(81, 129, 189, 0.1);
   backdrop-filter: blur(10.2px);

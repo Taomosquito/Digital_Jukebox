@@ -60,6 +60,11 @@ const SideNavigation = () => {
   const handleGeoLocation = () => {
     navigate("/geo-route");
   };
+
+  const handleQRCodeClick = () => {
+    navigate('/QrCode');
+  };
+
   const currentUser = true; //TODO: removed when session is implemented
 
   return (
@@ -113,6 +118,10 @@ const SideNavigation = () => {
                 <i
                   className="fas fa-user-plus"
                   onClick={handleLoginOrAddAdmin}
+                ></i>
+                <i
+                  className="fa-solid fa-qrcode"
+                  onClick={handleQRCodeClick}
                 ></i>
                 <i
                   className="fas fa-location-arrow"
