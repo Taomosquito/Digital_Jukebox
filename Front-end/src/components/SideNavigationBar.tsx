@@ -118,10 +118,10 @@ const SideNavigation = () => {
                   className="fas fa-magnifying-glass"
                   onClick={handleSearchNavigation}
                 ></i>
-                <i
+                {/* <i
                   className="fas fa-mobile-alt"
                   onClick={handleGeoLocation}
-                ></i>
+                ></i> */}
                 <i
                   className="fas fa-location-arrow"
                   onClick={handleCoordinates}
