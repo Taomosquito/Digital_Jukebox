@@ -161,6 +161,7 @@ i {
   /* Initially hide the side nav and all icons */
   .side-nav-bar__media-control,
   .fa-user-plus,
+  .fa-mobile-alt,
   .fa-heart-circle-xmark,
   .fa-magnifying-glass,
   .fa-location-arrow,
@@ -198,24 +199,26 @@ i {
     margin-left: 15%;
   }
 
-  .fa-mobile-alt {
-    display: flex;
-    position: fixed;
-    margin-top: 0.8em;
-    margin-left: 30%;
-  }
+  /*Ready for Future app improvement*/
+  // .fa-mobile-alt {
+  //   display: flex;
+  //   position: fixed;
+  //   margin-top: 0.8em;
+  //   margin-left: 30%;
+  // }
+
   .fa-magnifying-glass {
     display: flex;
     position: fixed;
     margin-top: 0.8em;
-    margin-left: 45%;
+    margin-left: 30%;
   }
 
   .fa-music {
     display: flex;
     position: fixed;
     margin-top: 0.8em;
-    margin-left: 60%;
+    margin-left: 45%;
   }
 
   .side-nav-bar__logout {

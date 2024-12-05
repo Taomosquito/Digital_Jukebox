@@ -90,11 +90,11 @@ const SideNavigation = () => {
                 className="fas fa-house"
                 onClick={handleHomeNavigation}
               ></i>
-              {/* Mobile Login */}
-              <i
+              {/* Mobile Login. Ready for Future App feature */}
+              {/* <i
                 className="fas fa-mobile-alt"
                 onClick={handleGeoLocation}
-              ></i>
+              ></i> */}
               {/* Admin Login */}
               <span className="side-nav-bar__login">
                 <i
@@ -115,25 +115,26 @@ const SideNavigation = () => {
                   onClick={handleLoginOrAddAdmin}
                 ></i>
                 <i
+                  className="fas fa-location-arrow"
+                  onClick={handleCoordinates}
+                ></i>
+                <i
                   className="fas fa-magnifying-glass"
                   onClick={handleSearchNavigation}
                 ></i>
+                {/* Mobile Login. Ready for Future App feature
                 <i
                   className="fas fa-mobile-alt"
                   onClick={handleGeoLocation}
-                ></i>
+                ></i> */}
                 <i
-                  className="fas fa-location-arrow"
-                  onClick={handleCoordinates}
+                  className="fas fa-music"
+                  onClick={handlePlaylistNavigation}
                 ></i>
                 <i
                   className="fas fa-heart-circle-xmark"
                   onClick={handleDeleteAllSongsNavigation}
                   title="Delete All Songs"
-                ></i>
-                <i
-                  className="fas fa-music"
-                  onClick={handlePlaylistNavigation}
                 ></i>
               </div>
               <br />

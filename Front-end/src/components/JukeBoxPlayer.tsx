@@ -179,7 +179,9 @@ const JukeBoxPlayer = () => {
             </div>
           </div>
         ) : (
-          <p>No song currently playing</p>
+          <p className="juke-box-player__now-playing">
+            "No music playing. Add a tune to get things rolling."
+          </p>
         )}
         <h3>Next in the Playlist</h3>
         {nextSong ? (
@@ -195,7 +197,9 @@ const JukeBoxPlayer = () => {
               </div>
           </div>
         ) : (
-          <p>No upcoming songs</p>
+          <p className="juke-box-player__next-song">
+            "No future hits lined up. Let's change that!"
+          </p>
         )}
         <h3>Current Playlist</h3>
         <div className="juke-box-player__current-playlist">
@@ -210,15 +214,23 @@ const JukeBoxPlayer = () => {
               </tr>
             </thead>
             <tbody>
-              {songs.map((song, index) => (
-                <tr key={song.id}>
-                  <td>{(index + 1).toString().padStart(3, '0')}</td>
-                  <td>{song.album?.title}</td>
-                  <td>{song.title}</td>
-                  <td>{song.artist?.name}</td>
-                  <td>{formatDuration(song.duration)}</td>
+              {songs.length === 0 ? (
+                <tr>
+                  <td colSpan={5} style={{ textAlign: "center" }}>
+                  "The jukebox is waiting for your pick!"
+                  </td>
                 </tr>
-              ))}
+              ) : (
+                songs.map((song, index) => (
+                  <tr key={song.id}>
+                    <td>{(index + 1).toString().padStart(3, "0")}</td>
+                    <td>{song.album?.title || "Unknown Album"}</td>
+                    <td>{song.title || "Unknown Title"}</td>
+                    <td>{song.artist?.name || "Unknown Artist"}</td>
+                    <td>{formatDuration(song.duration)}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
