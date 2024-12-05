@@ -8,8 +8,21 @@ const JukeBoxPlayer = () => {
     const [songs, setSongs] = useState([]);
     const [nowPlaying, setNowPlaying] = useState(null);
     const [nextSong, setNextSong] = useState(null);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 770); //
     const { formatDuration } = useApplication();
     const socket = useWebSocket();
+    useEffect(() => {
+        // Function to check window width and update the state
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 770);
+        };
+        // Listen for window resize event
+        window.addEventListener('resize', handleResize);
+        // Cleanup event listener on component unmount
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
     // Fetch songs from server initially
     useEffect(() => {
         const fetchSongs = async () => {
@@ -119,7 +132,7 @@ const JukeBoxPlayer = () => {
         }
     };
     return (_jsx("div", { className: "juke-box-player", children: _jsxs("div", { className: "juke-box-player__content", children: [_jsx("h3", { children: "Now Playing" }), nowPlaying ? (_jsx("div", { className: "juke-box-player__now-playing", children: _jsxs("div", { className: "juke-box-player__now-playing__content", children: [_jsx("img", { src: nowPlaying.album.cover, alt: nowPlaying.album.title, width: "100", height: "100" }), _jsxs("div", { className: 'juke-box-player__now-playing__song-details', children: [_jsxs("strong", { children: [nowPlaying.title, " ", _jsx("i", { className: "fas fa-heart" })] }), nowPlaying.artist?.name, _jsx("div", { className: 'juke-box-player__now-playing__song-play', children: _jsx("audio", { src: nowPlaying.preview, 
-                                            // autoPlay
-                                            controls: true, controlsList: "nodownload noplaybackrate", onEnded: handleSongEnd, className: "juke-box-player__now-playing__audio" }) })] })] }) })) : (_jsx("p", { className: "juke-box-player__now-playing", children: "\"No music playing. Add a tune to get things rolling.\"" })), _jsx("h3", { children: "Next in the Playlist" }), nextSong ? (_jsxs("div", { className: "juke-box-player__next-song", children: [_jsxs("div", { className: "juke-box-player__next-song__content", children: [_jsxs("strong", { children: [nextSong.title, " ", _jsx("i", { className: "fas fa-heart" })] }), _jsxs("span", { children: ["by:  ", nextSong.artist?.name] }), "Album Title:  ", nextSong.album.title] }), _jsx("div", { className: "juke-box-player__next-song__image", children: _jsx("img", { src: nextSong.album.cover, alt: nextSong.album.title, width: "100", height: "100" }) })] })) : (_jsx("p", { className: "juke-box-player__next-song", children: "\"No future hits lined up. Let's change that!\"" })), _jsx("h3", { children: "Current Playlist" }), _jsx("div", { className: "juke-box-player__current-playlist", children: _jsxs("table", { children: [_jsx("thead", { children: _jsxs("tr", { children: [_jsx("th", { children: "#" }), _jsx("th", { children: "Album" }), _jsx("th", { children: "Track" }), _jsx("th", { children: "Artist" }), _jsx("th", { children: "Time" })] }) }), _jsx("tbody", { children: songs.length === 0 ? (_jsx("tr", { children: _jsx("td", { colSpan: 5, style: { textAlign: "center" }, children: "\"The JukeBox is waiting for your pick!\"" }) })) : (songs.map((song, index) => (_jsxs("tr", { children: [_jsx("td", { children: (index + 1).toString().padStart(3, "0") }), _jsx("td", { children: song.album?.title || "Unknown Album" }), _jsx("td", { children: song.title || "Unknown Title" }), _jsx("td", { children: song.artist?.name || "Unknown Artist" }), _jsx("td", { children: formatDuration(song.duration) })] }, song.id)))) })] }) })] }) }));
+                                            //autoPlay
+                                            controls: true, controlsList: "nodownload noplaybackrate", onEnded: handleSongEnd, className: "juke-box-player__now-playing__audio", muted: isMobile }) })] })] }) })) : (_jsx("p", { className: "juke-box-player__now-playing", children: "\"No music playing. Add a tune to get things rolling.\"" })), _jsx("h3", { children: "Next in the Playlist" }), nextSong ? (_jsxs("div", { className: "juke-box-player__next-song", children: [_jsxs("div", { className: "juke-box-player__next-song__content", children: [_jsxs("strong", { children: [nextSong.title, " ", _jsx("i", { className: "fas fa-heart" })] }), _jsxs("span", { children: ["by:  ", nextSong.artist?.name] }), "Album Title:  ", nextSong.album.title] }), _jsx("div", { className: "juke-box-player__next-song__image", children: _jsx("img", { src: nextSong.album.cover, alt: nextSong.album.title, width: "100", height: "100" }) })] })) : (_jsx("p", { className: "juke-box-player__next-song", children: "\"No future hits lined up. Let's change that!\"" })), _jsx("h3", { children: "Current Playlist" }), _jsx("div", { className: "juke-box-player__current-playlist", children: _jsxs("table", { children: [_jsx("thead", { children: _jsxs("tr", { children: [_jsx("th", { children: "#" }), _jsx("th", { children: "Album" }), _jsx("th", { children: "Track" }), _jsx("th", { children: "Artist" }), _jsx("th", { children: "Time" })] }) }), _jsx("tbody", { children: songs.length === 0 ? (_jsx("tr", { children: _jsx("td", { colSpan: 5, style: { textAlign: "center" }, children: "\"The JukeBox is waiting for your pick!\"" }) })) : (songs.map((song, index) => (_jsxs("tr", { children: [_jsx("td", { children: (index + 1).toString().padStart(3, "0") }), _jsx("td", { children: song.album?.title || "Unknown Album" }), _jsx("td", { children: song.title || "Unknown Title" }), _jsx("td", { children: song.artist?.name || "Unknown Artist" }), _jsx("td", { children: formatDuration(song.duration) })] }, song.id)))) })] }) })] }) }));
 };
 export default JukeBoxPlayer;

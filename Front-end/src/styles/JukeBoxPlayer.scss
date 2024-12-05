@@ -140,8 +140,8 @@ thead th {
   border-bottom: none;
 }
 
-/* Mobile View */
-@media (max-width: 510px) {
+/* tablets View */
+@media (max-width: 770px) {
   .juke-box-player__now-playing__audio::-webkit-media-controls-play-button,
   .juke-box-player__now-playing__audio::-webkit-media-controls-pause-button {
     display: none;
