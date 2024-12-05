@@ -25,8 +25,24 @@ const JukeBoxPlayer = () => {
   const [songs, setSongs] = useState<Song[]>([]);
   const [nowPlaying, setNowPlaying] = useState<Song | null>(null);
   const [nextSong, setNextSong] = useState<Song | null>(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 770); //
   const { formatDuration } = useApplication();
   const socket = useWebSocket();
+
+  useEffect(() => {
+    // Function to check window width and update the state
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 770);
+    };
+
+    // Listen for window resize event
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   // Fetch songs from server initially
   useEffect(() => {
@@ -168,11 +184,12 @@ const JukeBoxPlayer = () => {
                 <div className='juke-box-player__now-playing__song-play'>
                   <audio
                     src={nowPlaying.preview}
-                    // autoPlay
+                    //autoPlay
                     controls
                     controlsList="nodownload noplaybackrate"
                     onEnded={handleSongEnd} // Trigger when song ends
                     className="juke-box-player__now-playing__audio"
+                    muted={isMobile} //Mute audio if on mobile view
                   ></audio>
                 </div>
               </div>
@@ -217,7 +234,7 @@ const JukeBoxPlayer = () => {
               {songs.length === 0 ? (
                 <tr>
                   <td colSpan={5} style={{ textAlign: "center" }}>
-                  "The jukebox is waiting for your pick!"
+                  "The JukeBox is waiting for your pick!"
                   </td>
                 </tr>
               ) : (

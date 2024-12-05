@@ -188,7 +188,7 @@ const PlayList = ({ isOpen, onClose }: PlayListProps) => {
             <div className="playlist__list-mgr">
               {currentPlayList ? (
                 <div className="playlist__empty-alert">
-                  <h2>Loading...</h2>
+                  <h2>"The JukeBox is waiting for your pick!"</h2>
                 </div>
               ) : (
                 <table>
