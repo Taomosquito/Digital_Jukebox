@@ -139,3 +139,11 @@ thead th {
   border-top: none;
   border-bottom: none;
 }
+
+/* Mobile View */
+@media (max-width: 510px) {
+  .juke-box-player__now-playing__audio::-webkit-media-controls-play-button,
+  .juke-box-player__now-playing__audio::-webkit-media-controls-pause-button {
+    display: none;
+  }
+};
