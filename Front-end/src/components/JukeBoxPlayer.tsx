@@ -217,7 +217,7 @@ const JukeBoxPlayer = () => {
               {songs.length === 0 ? (
                 <tr>
                   <td colSpan={5} style={{ textAlign: "center" }}>
-                  "The jukebox is waiting for your pick!"
+                  "The JukeBox is waiting for your pick!"
                   </td>
                 </tr>
               ) : (
